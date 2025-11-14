@@ -206,6 +206,8 @@ jobs:
           path: dist/
 
       - name: Run Lighthouse CI
+        env:
+          LHCI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install -g @lhci/cli wait-on
           npx vite preview --port 4173 &
