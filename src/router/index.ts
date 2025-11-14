@@ -1,41 +1,45 @@
 /**
- * Vue Router configuration
+ * Vue Router configuration with i18n support
  */
 
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import { getCurrentLocale, setCurrentLocale } from '@/i18n/helpers'
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/',
-    name: 'home',
-    component: () => import('@/views/Home.vue'),
-    meta: {
-      title: 'Home - TV Show Dashboard',
-    },
-  },
-  {
-    path: '/show/:id',
-    name: 'show-detail',
-    component: () => import('@/views/ShowDetail.vue'),
-    meta: {
-      title: 'Show Details - TV Show Dashboard',
-    },
-  },
-  {
-    path: '/search',
-    name: 'search',
-    component: () => import('@/views/Search.vue'),
-    meta: {
-      title: 'Search - TV Show Dashboard',
-    },
+    path: '/:locale(en|nl)?',
+    children: [
+      {
+        path: '',
+        name: 'home',
+        component: () => import('@/views/Home.vue'),
+        meta: {
+          title: 'Home - TV Show Dashboard',
+        },
+      },
+      {
+        path: 'show/:id',
+        name: 'show-detail',
+        component: () => import('@/views/ShowDetail.vue'),
+        meta: {
+          title: 'Show Details - TV Show Dashboard',
+        },
+      },
+      {
+        path: 'search',
+        name: 'search',
+        component: () => import('@/views/Search.vue'),
+        meta: {
+          title: 'Search - TV Show Dashboard',
+        },
+      },
+    ],
   },
   {
     path: '/:pathMatch(.*)*',
-    name: 'not-found',
-    component: () => import('@/views/Home.vue'),
-    meta: {
-      title: '404 - Page Not Found',
+    redirect: () => {
+      return `/${getCurrentLocale()}`
     },
   },
 ]
@@ -54,14 +58,62 @@ const router = createRouter({
 
 // Navigation guards
 router.beforeEach((to, _from, next) => {
+  // Get locale from route or use default
+  const locale = to.params.locale as string
+  
+  // If no locale in route, redirect to default locale
+  if (!locale && to.name !== 'not-found') {
+    const defaultLocale = getCurrentLocale()
+    const newPath = `/${defaultLocale}${to.path}`
+    return next(newPath)
+  }
+  
+  // Set i18n locale from route
+  if (locale && (locale === 'en' || locale === 'nl')) {
+    setCurrentLocale(locale)
+    document.documentElement.setAttribute('lang', locale)
+    localStorage.setItem('locale', locale)
+  }
+  
   // Update document title
   const title = to.meta.title
   if (title && typeof title === 'string') {
     document.title = title
   }
+  
+  // Add hreflang tags for SEO
+  updateHreflangTags(to.path)
 
   next()
 })
+
+/**
+ * Update hreflang tags for multilingual SEO
+ */
+function updateHreflangTags(path: string) {
+  // Remove existing hreflang tags
+  document.querySelectorAll('link[rel="alternate"]').forEach((link) => link.remove())
+  
+  // Get base path without locale
+  const basePath = path.replace(/^\/(en|nl)/, '')
+  
+  // Add hreflang tags for each locale
+  const locales = ['en', 'nl']
+  locales.forEach((locale) => {
+    const link = document.createElement('link')
+    link.rel = 'alternate'
+    link.hreflang = locale
+    link.href = `${window.location.origin}/${locale}${basePath}`
+    document.head.appendChild(link)
+  })
+  
+  // Add x-default
+  const defaultLink = document.createElement('link')
+  defaultLink.rel = 'alternate'
+  defaultLink.hreflang = 'x-default'
+  defaultLink.href = `${window.location.origin}/en${basePath}`
+  document.head.appendChild(defaultLink)
+}
 
 // Error handling
 router.onError((error) => {

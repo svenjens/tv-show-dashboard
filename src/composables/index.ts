@@ -5,4 +5,6 @@
 export * from './useApi'
 export * from './useDebounce'
 export * from './useIntersectionObserver'
+export * from './useSEO'
+export * from './usePagination'
 

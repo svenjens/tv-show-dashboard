@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "TV Show Dashboard",
+    "description": "Discover and explore thousands of TV shows organized by genre"
+  },
+  "navigation": {
+    "home": "Home",
+    "search": "Search",
+    "back": "Back"
+  },
+  "home": {
+    "title": "TV Show Dashboard",
+    "subtitle": "Discover and explore thousands of TV shows organized by genre",
+    "showsCount": "Showing {count} shows across {genres} genres",
+    "noShows": "No TV shows found",
+    "noShowsMessage": "Try refreshing the page or check back later."
+  },
+  "search": {
+    "title": "Search TV Shows",
+    "placeholder": "Search TV shows...",
+    "searchByName": "Search for TV shows by name...",
+    "resultsFor": "Found {count} result for \"{query}\" | Found {count} results for \"{query}\"",
+    "noResults": "No results found for \"{query}\"",
+    "noResultsMessage": "Try searching with different keywords or check your spelling.",
+    "recentSearches": "Recent Searches",
+    "clearRecent": "Clear",
+    "startSearching": "Start searching",
+    "startSearchingMessage": "Enter a TV show name to search through our extensive database.",
+    "searching": "Searching..."
+  },
+  "show": {
+    "rating": "Rating",
+    "premiered": "Premiered",
+    "status": "Status",
+    "network": "Network",
+    "schedule": "Schedule",
+    "runtime": "Runtime",
+    "minutes": "{count} minute | {count} minutes",
+    "summary": "Summary",
+    "relatedShows": "Related Shows",
+    "officialWebsite": "Official Website",
+    "genres": "Genres",
+    "notFound": "Show Not Found",
+    "notFoundMessage": "The show you're looking for doesn't exist.",
+    "goHome": "Go to Home",
+    "scheduleNotAvailable": "Schedule not available",
+    "timeTBA": "Time TBA"
+  },
+  "genre": {
+    "showMore": "Show More ({count} more)"
+  },
+  "status": {
+    "loading": "Loading...",
+    "loadingShows": "Loading TV shows...",
+    "loadingDetails": "Loading show details...",
+    "error": "Error",
+    "tryAgain": "Try Again"
+  },
+  "accessibility": {
+    "skipToContent": "Skip to main content",
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right",
+    "clearSearch": "Clear search",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "toggleLanguage": "Toggle language",
+    "externalLink": "Opens in new window"
+  },
+  "pagination": {
+    "navigation": "Pagination navigation",
+    "previous": "Previous",
+    "next": "Next",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page {page}",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results"
+  }
+}
+

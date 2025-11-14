@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "TV Show Dashboard",
+    "description": "Ontdek en verken duizenden tv-series georganiseerd per genre"
+  },
+  "navigation": {
+    "home": "Home",
+    "search": "Zoeken",
+    "back": "Terug"
+  },
+  "home": {
+    "title": "TV Show Dashboard",
+    "subtitle": "Ontdek en verken duizenden tv-series georganiseerd per genre",
+    "showsCount": "{count} series weergegeven over {genres} genres",
+    "noShows": "Geen tv-series gevonden",
+    "noShowsMessage": "Probeer de pagina te vernieuwen of kom later terug."
+  },
+  "search": {
+    "title": "TV-series zoeken",
+    "placeholder": "Zoek tv-series...",
+    "searchByName": "Zoek tv-series op naam...",
+    "resultsFor": "{count} resultaat gevonden voor \"{query}\" | {count} resultaten gevonden voor \"{query}\"",
+    "noResults": "Geen resultaten gevonden voor \"{query}\"",
+    "noResultsMessage": "Probeer te zoeken met andere trefwoorden of controleer je spelling.",
+    "recentSearches": "Recente zoekopdrachten",
+    "clearRecent": "Wissen",
+    "startSearching": "Begin met zoeken",
+    "startSearchingMessage": "Voer een serienaam in om te zoeken in onze uitgebreide database.",
+    "searching": "Zoeken..."
+  },
+  "show": {
+    "rating": "Waardering",
+    "premiered": "Première",
+    "status": "Status",
+    "network": "Zender",
+    "schedule": "Schema",
+    "runtime": "Speelduur",
+    "minutes": "{count} minuut | {count} minuten",
+    "summary": "Samenvatting",
+    "relatedShows": "Gerelateerde series",
+    "officialWebsite": "Officiële website",
+    "genres": "Genres",
+    "notFound": "Serie niet gevonden",
+    "notFoundMessage": "De serie die je zoekt bestaat niet.",
+    "goHome": "Ga naar Home",
+    "scheduleNotAvailable": "Schema niet beschikbaar",
+    "timeTBA": "Tijd nog niet bekend"
+  },
+  "genre": {
+    "showMore": "Toon meer ({count} meer)"
+  },
+  "status": {
+    "loading": "Laden...",
+    "loadingShows": "TV-series laden...",
+    "loadingDetails": "Seriedetails laden...",
+    "error": "Fout",
+    "tryAgain": "Opnieuw proberen"
+  },
+  "accessibility": {
+    "skipToContent": "Spring naar hoofdinhoud",
+    "scrollLeft": "Scroll naar links",
+    "scrollRight": "Scroll naar rechts",
+    "clearSearch": "Zoekopdracht wissen",
+    "closeMenu": "Menu sluiten",
+    "openMenu": "Menu openen",
+    "toggleLanguage": "Taal wisselen",
+    "externalLink": "Opent in nieuw venster"
+  },
+  "pagination": {
+    "navigation": "Paginanavigatie",
+    "previous": "Vorige",
+    "next": "Volgende",
+    "previousPage": "Vorige pagina",
+    "nextPage": "Volgende pagina",
+    "page": "Pagina {page}",
+    "showing": "Weergave",
+    "to": "tot",
+    "of": "van",
+    "results": "resultaten"
+  }
+}
+

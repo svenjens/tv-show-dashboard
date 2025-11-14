@@ -1,10 +1,14 @@
 <template>
   <div class="min-h-screen bg-gray-50">
+    <SkipToContent />
+    
     <!-- Loading State -->
     <LoadingSpinner
       v-if="loading"
-      text="Loading show details..."
+      :text="t('status.loadingDetails')"
       :full-screen="true"
+      role="status"
+      :aria-label="t('status.loading')"
     />
 
     <!-- Error State -->
@@ -19,11 +23,13 @@
     <!-- Show Details -->
     <div v-else-if="show" class="pb-12">
       <!-- Hero Section -->
-      <div class="relative bg-gray-900 text-white">
+      <div class="relative bg-gray-900 text-white" role="banner">
         <!-- Background Image -->
         <div
           v-if="show.image?.original"
           class="absolute inset-0 opacity-20"
+          role="img"
+          :aria-label="`${show.name} background`"
           :style="{
             backgroundImage: `url(${show.image.original})`,
             backgroundSize: 'cover',
@@ -33,10 +39,11 @@
 
         <div class="relative max-w-7xl mx-auto px-4 py-12">
           <button
-            class="inline-flex items-center gap-2 text-white hover:text-primary-300 mb-6 transition-colors"
+            class="inline-flex items-center gap-2 text-white hover:text-primary-300 mb-6 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-lg px-2 py-1"
+            :aria-label="t('navigation.back')"
             @click="router.back()"
           >
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -44,7 +51,7 @@
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back
+            {{ t('navigation.back') }}
           </button>
 
           <div class="flex flex-col md:flex-row gap-8">
@@ -52,68 +59,74 @@
             <div class="flex-shrink-0">
               <img
                 :src="getShowImage(show, 'original')"
-                :alt="show.name"
+                :alt="`${show.name} poster`"
                 class="w-64 rounded-lg shadow-2xl"
+                loading="eager"
               />
             </div>
 
             <!-- Info -->
             <div class="flex-1">
-              <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ show.name }}</h1>
+              <h1 class="text-4xl md:text-5xl font-bold mb-4" id="show-title">{{ show.name }}</h1>
 
               <div class="flex flex-wrap items-center gap-4 mb-6">
                 <RatingBadge v-if="show.rating.average" :rating="show.rating.average" />
                 <GenreTags v-if="show.genres" :genres="show.genres" :max-display="5" />
               </div>
 
-              <div class="space-y-3 text-gray-200">
+              <dl class="space-y-3 text-gray-200">
                 <div v-if="show.premiered" class="flex items-center gap-2">
-                  <span class="font-semibold">Premiered:</span>
-                  <span>{{ formatDate(show.premiered) }}</span>
-                  <span v-if="show.ended" class="text-gray-400">
-                    - {{ formatDate(show.ended) }}
-                  </span>
+                  <dt class="font-semibold">{{ t('show.premiered') }}:</dt>
+                  <dd>
+                    {{ formatDate(show.premiered) }}
+                    <span v-if="show.ended" class="text-gray-400">
+                      - {{ formatDate(show.ended) }}
+                    </span>
+                  </dd>
                 </div>
 
                 <div v-if="show.status" class="flex items-center gap-2">
-                  <span class="font-semibold">Status:</span>
-                  <span
-                    class="px-2 py-1 rounded text-sm"
-                    :class="
-                      show.status === 'Running'
-                        ? 'bg-green-600'
-                        : 'bg-gray-600'
-                    "
-                  >
-                    {{ show.status }}
-                  </span>
+                  <dt class="font-semibold">{{ t('show.status') }}:</dt>
+                  <dd>
+                    <span
+                      class="px-2 py-1 rounded text-sm"
+                      :class="
+                        show.status === 'Running'
+                          ? 'bg-green-600'
+                          : 'bg-gray-600'
+                      "
+                    >
+                      {{ show.status }}
+                    </span>
+                  </dd>
                 </div>
 
                 <div v-if="show.network" class="flex items-center gap-2">
-                  <span class="font-semibold">Network:</span>
-                  <span>{{ show.network.name }}</span>
+                  <dt class="font-semibold">{{ t('show.network') }}:</dt>
+                  <dd>{{ show.network.name }}</dd>
                 </div>
 
                 <div v-if="show.schedule" class="flex items-center gap-2">
-                  <span class="font-semibold">Schedule:</span>
-                  <span>{{ formatSchedule(show.schedule) }}</span>
+                  <dt class="font-semibold">{{ t('show.schedule') }}:</dt>
+                  <dd>{{ formatSchedule(show.schedule) }}</dd>
                 </div>
 
                 <div v-if="show.runtime" class="flex items-center gap-2">
-                  <span class="font-semibold">Runtime:</span>
-                  <span>{{ show.runtime }} minutes</span>
+                  <dt class="font-semibold">{{ t('show.runtime') }}:</dt>
+                  <dd>{{ t('show.minutes', { count: show.runtime }) }}</dd>
                 </div>
-              </div>
+              </dl>
 
               <div v-if="show.officialSite" class="mt-6">
                 <a
                   :href="show.officialSite"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 btn-primary"
+                  class="inline-flex items-center gap-2 btn-primary focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+                  :aria-label="`${t('show.officialWebsite')} - ${t('accessibility.externalLink')}`"
                 >
-                  Official Website
-                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {{ t('show.officialWebsite') }}
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -129,29 +142,32 @@
       </div>
 
       <!-- Summary Section -->
-      <div class="max-w-7xl mx-auto px-4 py-12">
-        <div v-if="show.summary" class="mb-12">
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">Summary</h2>
-          <div class="prose prose-lg max-w-none text-gray-700" v-html="show.summary"></div>
-        </div>
+      <main id="main-content" class="max-w-7xl mx-auto px-4 py-12" tabindex="-1">
+        <article v-if="show.summary" class="mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ t('show.summary') }}</h2>
+          <div class="prose prose-lg max-w-none text-gray-700" v-html="show.summary" role="region" :aria-labelledby="'show-title'"></div>
+        </article>
 
         <!-- Related Shows -->
-        <div v-if="relatedShows.length > 0" class="mt-12">
-          <h2 class="text-3xl font-bold text-gray-900 mb-6">Related Shows</h2>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <ShowCard v-for="relatedShow in relatedShows" :key="relatedShow.id" :show="relatedShow" />
+        <section v-if="relatedShows.length > 0" class="mt-12" :aria-label="t('show.relatedShows')">
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ t('show.relatedShows') }}</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" role="list">
+            <ShowCard v-for="relatedShow in relatedShows" :key="relatedShow.id" :show="relatedShow" role="listitem" />
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
 
     <!-- Not Found -->
-    <div v-else class="flex items-center justify-center min-h-screen">
+    <div v-else class="flex items-center justify-center min-h-screen" role="alert">
       <div class="text-center">
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">Show Not Found</h2>
-        <p class="text-gray-600 mb-6">The show you're looking for doesn't exist.</p>
-        <button class="btn-primary" @click="router.push({ name: 'home' })">
-          Go to Home
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ t('show.notFound') }}</h2>
+        <p class="text-gray-600 mb-6">{{ t('show.notFoundMessage') }}</p>
+        <button 
+          class="btn-primary focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2" 
+          @click="router.push({ name: 'home' })"
+        >
+          {{ t('show.goHome') }}
         </button>
       </div>
     </div>
@@ -159,16 +175,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useShowsStore } from '@/stores'
 import type { Show, ApiError } from '@/types'
 import { getShowImage, formatSchedule } from '@/utils'
+import { useSEO, getShowSEO, generateShowStructuredData } from '@/composables'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import RatingBadge from '@/components/RatingBadge.vue'
 import GenreTags from '@/components/GenreTags.vue'
 import ShowCard from '@/components/ShowCard.vue'
+import SkipToContent from '@/components/SkipToContent.vue'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -182,6 +203,21 @@ const relatedShows = computed(() => {
   if (!show.value) return []
   return showsStore.getRelatedShows(show.value, 6)
 })
+
+// SEO
+const { updateMeta } = useSEO()
+
+// Update SEO when show changes
+watch(show, (newShow) => {
+  if (newShow) {
+    const seoConfig = getShowSEO(newShow)
+    updateMeta()
+    // Update with show-specific config
+    useSEO(seoConfig)
+    // Add structured data
+    generateShowStructuredData(newShow)
+  }
+}, { immediate: true })
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('en-US', {
