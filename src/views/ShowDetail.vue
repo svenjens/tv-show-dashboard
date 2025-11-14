@@ -179,12 +179,14 @@
       <main id="main-content" class="max-w-7xl mx-auto px-4 py-12" tabindex="-1">
         <article v-if="show.summary" class="mb-12">
           <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ t('show.summary') }}</h2>
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <div
             class="prose prose-lg max-w-none text-gray-700"
             role="region"
             :aria-labelledby="'show-title'"
             v-html="sanitizedSummary"
           ></div>
+          <!-- Safe: HTML is sanitized with DOMPurify before rendering -->
         </article>
 
         <!-- Related Shows -->
