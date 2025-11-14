@@ -125,6 +125,7 @@ import { ref, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSearchStore } from '@/stores'
+import { useSEO } from '@/composables'
 import SearchBar from '@/components/SearchBar.vue'
 import ShowCard from '@/components/ShowCard.vue'
 
@@ -138,6 +139,13 @@ const router = useRouter()
 const searchStore = useSearchStore()
 
 const searchQuery = ref('')
+
+// SEO (multilingual)
+useSEO({
+  title: t('seo.search.title'),
+  description: t('seo.search.description'),
+  keywords: t('seo.search.keywords').split(', '),
+})
 
 async function handleSearch(query: string) {
   searchQuery.value = query

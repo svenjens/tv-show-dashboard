@@ -96,14 +96,19 @@
           :shows="showsStore.getShowsByGenre(genre)"
         />
         
-        <!-- Load More Button -->
-        <div v-if="canLoadMore" class="text-center py-8">
-          <button
-            class="btn-primary"
-            @click="visibleGenresCount += genresPerPage"
-          >
-            {{ t('home.loadMore') }} ({{ remainingGenres }} {{ t('home.moreGenres') }})
-          </button>
+        <!-- Infinite Scroll Trigger -->
+        <div
+          v-if="canLoadMore"
+          ref="loadMoreTrigger"
+          class="text-center py-8 text-gray-500 text-sm"
+        >
+          <div class="flex items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>{{ t('home.loadingMore') }}...</span>
+          </div>
         </div>
       </div>
 
@@ -130,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, defineAsyncComponent } from 'vue'
+import { ref, computed, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useShowsStore } from '@/stores'
@@ -153,9 +158,11 @@ const showsStore = useShowsStore()
 const searchStore = useSearchStore()
 const searchQuery = ref('')
 
-// Performance: Lazy load genres
+// Performance: Lazy load genres with infinite scroll
 const genresPerPage = 5
 const visibleGenresCount = ref(genresPerPage)
+const loadMoreTrigger = ref<HTMLElement | null>(null)
+let observer: IntersectionObserver | null = null
 
 const displayedGenres = computed(() => {
   return showsStore.genres.slice(0, visibleGenresCount.value)
@@ -165,16 +172,40 @@ const canLoadMore = computed(() => {
   return visibleGenresCount.value < showsStore.genres.length
 })
 
-const remainingGenres = computed(() => {
-  return showsStore.genres.length - visibleGenresCount.value
+// Setup intersection observer for infinite scroll
+function setupInfiniteScroll() {
+  if (!loadMoreTrigger.value) return
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0]
+      if (entry && entry.isIntersecting && canLoadMore.value) {
+        // Load more genres when trigger comes into view
+        visibleGenresCount.value += genresPerPage
+      }
+    },
+    {
+      root: null,
+      rootMargin: '100px', // Start loading 100px before the trigger
+      threshold: 0.1,
+    }
+  )
+
+  observer.observe(loadMoreTrigger.value)
+}
+
+onUnmounted(() => {
+  if (observer && loadMoreTrigger.value) {
+    observer.unobserve(loadMoreTrigger.value)
+    observer.disconnect()
+  }
 })
 
-// SEO
+// SEO (multilingual)
 useSEO({
-  title: 'TV Show Dashboard - Discover thousands of TV shows',
-  description:
-    'Explore and discover thousands of TV shows organized by genre. Search, browse, and find detailed information about your favorite series.',
-  keywords: ['tv shows', 'series', 'entertainment', 'genres', 'streaming'],
+  title: t('seo.home.title'),
+  description: t('seo.home.description'),
+  keywords: t('seo.home.keywords').split(', '),
 })
 
 function handleSearch(query: string) {
@@ -184,7 +215,9 @@ function handleSearch(query: string) {
   }
 }
 
-onMounted(() => {
-  showsStore.fetchAllShows()
+onMounted(async () => {
+  await showsStore.fetchAllShows()
+  // Setup infinite scroll after genres are loaded
+  setTimeout(() => setupInfiniteScroll(), 100)
 })
 </script>

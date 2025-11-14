@@ -124,10 +124,11 @@ const genreShows = computed(() => {
 })
 
 // SEO
+// SEO (multilingual)
 useSEO({
-  title: `${genreName.value} TV Shows - TV Show Dashboard`,
-  description: `Browse all ${genreName.value} TV shows. Discover the best ${genreName.value} series sorted by rating.`,
-  keywords: [genreName.value, 'tv shows', 'series', 'entertainment'],
+  title: t('seo.genre.title', { genre: genreName.value }),
+  description: t('seo.genre.description', { genre: genreName.value }),
+  keywords: t('seo.genre.keywords', { genre: genreName.value }).split(', '),
 })
 
 onMounted(() => {

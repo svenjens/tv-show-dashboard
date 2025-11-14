@@ -262,12 +262,13 @@ const relatedShows = computed(() => {
   return showsStore.getRelatedShows(show.value, 6)
 })
 
-// Update SEO when show changes
+// Update SEO when show changes (multilingual)
 watch(
   show,
   (newShow) => {
     if (newShow) {
-      const seoConfig = getShowSEO(newShow)
+      const fallbackDesc = t('seo.show.fallbackDescription', { name: newShow.name })
+      const seoConfig = getShowSEO(newShow, fallbackDesc)
       // Update with show-specific config
       useSEO(seoConfig)
       // Add structured data
