@@ -433,6 +433,44 @@ No environment variables are required for this project as it uses the public TVM
 2. **Large Dataset**: Loading all shows (~60K shows) can take a few seconds on first load
 3. **No Pagination**: The show index endpoint returns all shows at once
 
+## 🌍 Internationalization
+
+The application supports multiple languages with locale-based routing:
+
+- **English (en)**: `https://example.com/en/`
+- **Dutch (nl)**: `https://example.com/nl/`
+
+Language preference is:
+1. Detected from URL path
+2. Loaded from localStorage
+3. Falls back to browser language
+4. Defaults to English
+
+### SEO Benefits
+- Locale prefixes in URLs for better indexing
+- Automatic hreflang tags for language variants
+- x-default tag pointing to English version
+- Separate indexing per language
+
+## ♿ Accessibility
+
+The application is built with accessibility in mind:
+
+- **WCAG 2.1 AA compliant**
+- **Keyboard navigation**: Full keyboard support with visible focus rings
+- **Screen readers**: Proper ARIA labels, roles, and live regions
+- **Semantic HTML**: Correct use of HTML5 semantic elements
+- **Skip links**: Skip to main content for keyboard users
+- **Color contrast**: Meets WCAG AA standards
+- **Focus management**: Logical tab order throughout the application
+
+### Testing Accessibility
+```bash
+# Use axe DevTools or WAVE browser extension
+# Test with keyboard only (Tab, Enter, Space, Arrow keys)
+# Test with screen readers (NVDA, JAWS, VoiceOver)
+```
+
 ## 🤝 Contributing
 
 This project follows standard Git workflow:
