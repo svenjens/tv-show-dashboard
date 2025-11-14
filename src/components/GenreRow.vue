@@ -12,8 +12,8 @@
     </h2>
     
     <!-- Desktop: Horizontal Scroll -->
-    <div class="hidden md:block">
-      <div class="relative group">
+    <div class="hidden md:block overflow-visible">
+      <div class="relative group overflow-visible">
         <button
           v-if="canScrollLeft"
           class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -27,7 +27,8 @@
         
         <div
           ref="scrollContainer"
-          class="flex gap-4 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth px-4 py-2"
+          class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-4 py-2"
+          style="overflow-y: visible;"
           @scroll="updateScrollButtons"
         >
           <div

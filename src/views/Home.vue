@@ -25,8 +25,8 @@
       </div>
     </div>
 
-    <!-- Main Content -->
-    <main id="main-content" class="max-w-7xl mx-auto py-8" tabindex="-1">
+        <!-- Main Content -->
+        <main id="main-content" class="max-w-7xl mx-auto py-8 overflow-visible" tabindex="-1">
       <!-- Loading State -->
       <LoadingSpinner
         v-if="showsStore.isLoading"
