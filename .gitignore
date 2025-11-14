@@ -24,6 +24,14 @@ dist-ssr
 *.sln
 *.sw?
 
+# Environment variables
+.env
+.env.local
+
+# Generated assets metadata
+public/branding-metadata.json
+public/BRANDING.md
+
 # Testing
 coverage
 *.lcov
