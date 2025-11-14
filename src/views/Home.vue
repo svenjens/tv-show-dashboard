@@ -100,7 +100,7 @@
         <div v-if="canLoadMore" class="text-center py-8">
           <button
             class="btn-primary"
-            @click="loadMoreGenres"
+            @click="visibleGenresCount += genresPerPage"
           >
             {{ t('home.loadMore') }} ({{ remainingGenres }} {{ t('home.moreGenres') }})
           </button>
@@ -168,10 +168,6 @@ const canLoadMore = computed(() => {
 const remainingGenres = computed(() => {
   return showsStore.genres.length - visibleGenresCount.value
 })
-
-function loadMoreGenres() {
-  visibleGenresCount.value += genresPerPage
-}
 
 // SEO
 useSEO({
