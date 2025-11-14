@@ -2,8 +2,6 @@
  * Composable for managing SEO meta tags
  */
 
-import { onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
 import type { Show } from '@/types'
 
 interface SEOConfig {
@@ -19,8 +17,6 @@ interface SEOConfig {
  * Update SEO meta tags for the current page
  */
 export function useSEO(config: SEOConfig = {}) {
-  const route = useRoute()
-
   const updateMeta = () => {
     const {
       title = 'TV Show Dashboard',
@@ -55,11 +51,8 @@ export function useSEO(config: SEOConfig = {}) {
     updateCanonicalUrl(url)
   }
 
-  onMounted(() => {
-    updateMeta()
-  })
-
-  watch(() => route.fullPath, updateMeta)
+  // Update meta immediately
+  updateMeta()
 
   return {
     updateMeta,
