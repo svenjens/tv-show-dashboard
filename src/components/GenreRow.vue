@@ -3,7 +3,7 @@
     v-motion
     :initial="{ opacity: 0, x: -20 }"
     :visible="{ opacity: 1, x: 0, transition: { duration: 500 } }"
-    class="mb-8"
+    class="mb-8 overflow-visible"
   >
     <h2 
       class="text-2xl font-bold text-gray-900 mb-4 px-4 md:px-0 transition-colors hover:text-primary-600"
@@ -27,7 +27,7 @@
         
         <div
           ref="scrollContainer"
-          class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-4"
+          class="flex gap-4 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth px-4 py-2"
           @scroll="updateScrollButtons"
         >
           <div
