@@ -39,14 +39,14 @@
     </div>
 
     <div class="p-4 flex-1 flex flex-col min-h-0">
-      <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 group-hover/card:text-primary-600 transition-colors">
+      <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 group-hover/card:text-primary-600 transition-colors min-h-[3.5rem]">
         {{ show.name }}
       </h3>
       
-      <div class="mt-auto">
+      <div class="mt-auto space-y-2">
         <GenreTags v-if="show.genres && show.genres.length > 0" :genres="show.genres" :max-display="2" />
         
-        <div v-if="show.premiered" class="mt-2 text-sm text-gray-500">
+        <div v-if="show.premiered" class="text-sm text-gray-500">
           {{ premieredYear }}
         </div>
       </div>
