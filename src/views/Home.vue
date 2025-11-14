@@ -10,7 +10,7 @@
       <!-- Hero Background -->
       <div
         class="absolute inset-0 opacity-10 bg-cover bg-center"
-        :style="{ backgroundImage: `url(${heroBackground})` }"
+        style="background-image: url('/hero-background.png')"
         aria-hidden="true"
       ></div>
 
@@ -19,7 +19,7 @@
           <div class="flex items-center gap-4">
             <!-- Logo -->
             <img
-              :src="logoImage"
+              src="/logo-main.png"
               alt="TV Show Dashboard Logo"
               class="h-16 w-16 object-contain"
             />
@@ -84,15 +84,12 @@
 
       <!-- Empty State -->
       <div v-else class="text-center py-16 px-4" role="status">
-        <picture>
-          <source srcset="/optimized/empty-state-illustration.webp" type="image/webp" />
-          <img
-            src="/optimized/empty-state-illustration.png"
-            alt=""
-            class="mx-auto h-48 w-48 object-contain opacity-50"
-            aria-hidden="true"
-          />
-        </picture>
+        <img
+          src="/empty-state-illustration.png"
+          alt=""
+          class="mx-auto h-48 w-48 object-contain opacity-50"
+          aria-hidden="true"
+        />
         <h3 class="mt-6 text-lg font-medium text-gray-900">{{ t('home.noShows') }}</h3>
         <p class="mt-2 text-sm text-gray-500">{{ t('home.noShowsMessage') }}</p>
       </div>
@@ -113,8 +110,6 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import SkipToContent from '@/components/SkipToContent.vue'
-import logoImage from '/optimized/logo-main.webp?url'
-import heroBackground from '/optimized/hero-background.webp?url'
 
 const { t } = useI18n()
 
