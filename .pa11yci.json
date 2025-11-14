@@ -1,0 +1,18 @@
+{
+  "defaults": {
+    "timeout": 10000,
+    "wait": 1000,
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+    },
+    "standard": "WCAG2AA",
+    "threshold": 5,
+    "runners": ["axe", "htmlcs"]
+  },
+  "urls": [
+    "http://localhost:4173/",
+    "http://localhost:4173/en",
+    "http://localhost:4173/en/search"
+  ]
+}
+
