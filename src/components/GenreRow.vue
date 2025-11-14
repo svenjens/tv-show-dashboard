@@ -43,6 +43,9 @@
           ref="scrollContainer"
           class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-4 py-2"
           style="overflow-y: visible"
+          role="region"
+          :aria-label="`${genre} shows, scroll horizontally`"
+          tabindex="0"
           @scroll="updateScrollButtons"
         >
           <div v-for="show in shows" :key="show.id" class="flex-none w-48">
