@@ -61,7 +61,7 @@
         </div>
 
         <!-- Results Grid -->
-        <div v-if="searchStore.hasResults" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div v-if="searchStore.hasResults" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-fr">
           <ShowCard
             v-for="show in searchStore.results"
             :key="show.id"

@@ -3,10 +3,10 @@
     v-motion
     :initial="{ opacity: 0, y: 20 }"
     :visible="{ opacity: 1, y: 0, transition: { duration: 400, delay: 50 } }"
-    class="card group/card cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1"
+    class="card group/card cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1 h-full flex flex-col"
     @click="navigateToShow"
   >
-    <div class="relative aspect-[2/3] overflow-hidden bg-gray-200">
+    <div class="relative aspect-[2/3] overflow-hidden bg-gray-200 flex-shrink-0">
       <img
         v-if="imageLoaded"
         :src="showImage"
@@ -38,15 +38,17 @@
       </div>
     </div>
 
-    <div class="p-4">
+    <div class="p-4 flex-1 flex flex-col min-h-0">
       <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 group-hover/card:text-primary-600 transition-colors">
         {{ show.name }}
       </h3>
       
-      <GenreTags v-if="show.genres && show.genres.length > 0" :genres="show.genres" :max-display="2" />
-      
-      <div v-if="show.premiered" class="mt-2 text-sm text-gray-500">
-        {{ premieredYear }}
+      <div class="mt-auto">
+        <GenreTags v-if="show.genres && show.genres.length > 0" :genres="show.genres" :max-display="2" />
+        
+        <div v-if="show.premiered" class="mt-2 text-sm text-gray-500">
+          {{ premieredYear }}
+        </div>
       </div>
     </div>
   </div>
