@@ -3,4 +3,5 @@
  */
 
 export * from './show'
+export * from './cache'
 

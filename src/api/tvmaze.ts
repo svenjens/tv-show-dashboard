@@ -7,12 +7,12 @@
 
 import axios, { type AxiosInstance, AxiosError } from 'axios'
 import type { Show, SearchResult, ApiError } from '@/types'
+import { apiCache, searchCache, showCache } from '@/utils/cache'
 
 const BASE_URL = 'https://api.tvmaze.com'
 
 class TVMazeAPI {
   private client: AxiosInstance
-  private cache: Map<string, { data: unknown; timestamp: number }>
 
   constructor() {
     this.client = axios.create({
@@ -22,8 +22,6 @@ class TVMazeAPI {
         'Content-Type': 'application/json',
       },
     })
-
-    this.cache = new Map()
 
     // Request interceptor for logging
     this.client.interceptors.request.use(
@@ -52,38 +50,22 @@ class TVMazeAPI {
   }
 
   /**
-   * Get data from cache if available and not expired
-   * @param key - Cache key
-   * @param ttl - Time to live in milliseconds (default: 5 minutes)
-   */
-  private getCached<T>(key: string, ttl: number = 5 * 60 * 1000): T | null {
-    const cached = this.cache.get(key)
-    if (cached && Date.now() - cached.timestamp < ttl) {
-      console.log(`[API Cache] Hit for ${key}`)
-      return cached.data as T
-    }
-    return null
-  }
-
-  /**
-   * Set data in cache
-   */
-  private setCache(key: string, data: unknown): void {
-    this.cache.set(key, { data, timestamp: Date.now() })
-  }
-
-  /**
    * Fetch all TV shows from the show index
    * Note: This returns a paginated list. For production, implement proper pagination.
    */
   async fetchAllShows(): Promise<Show[]> {
     const cacheKey = 'all-shows'
-    const cached = this.getCached<Show[]>(cacheKey)
-    if (cached) return cached
+    
+    // Check cache
+    const cached = apiCache.get(cacheKey)
+    if (cached) {
+      console.log(`[API Cache] Hit for ${cacheKey}`)
+      return cached as Show[]
+    }
 
     try {
       const response = await this.client.get<Show[]>('/shows')
-      this.setCache(cacheKey, response.data)
+      apiCache.set(cacheKey, response.data)
       return response.data
     } catch (error) {
       throw this.handleError(error)
@@ -96,14 +78,21 @@ class TVMazeAPI {
    * @param embed - Optional embed parameters (e.g., 'cast', 'episodes')
    */
   async fetchShowById(id: number, embed?: string[]): Promise<Show> {
-    const embedParam = embed ? `?embed[]=${embed.join('&embed[]=')}` : ''
+    const embedParam = embed ? `-${embed.join('-')}` : ''
     const cacheKey = `show-${id}${embedParam}`
-    const cached = this.getCached<Show>(cacheKey)
-    if (cached) return cached
+    
+    // Check cache
+    const cached = showCache.get(cacheKey)
+    if (cached) {
+      console.log(`[API Cache] Hit for ${cacheKey}`)
+      return cached as Show
+    }
 
+    const embedQuery = embed ? `?embed[]=${embed.join('&embed[]=')}` : ''
+    
     try {
-      const response = await this.client.get<Show>(`/shows/${id}${embedParam}`)
-      this.setCache(cacheKey, response.data)
+      const response = await this.client.get<Show>(`/shows/${id}${embedQuery}`)
+      showCache.set(cacheKey, response.data)
       return response.data
     } catch (error) {
       throw this.handleError(error)
@@ -120,14 +109,19 @@ class TVMazeAPI {
     }
 
     const cacheKey = `search-${query.toLowerCase()}`
-    const cached = this.getCached<SearchResult[]>(cacheKey, 2 * 60 * 1000) // 2 minutes TTL
-    if (cached) return cached
+    
+    // Check cache
+    const cached = searchCache.get(cacheKey)
+    if (cached) {
+      console.log(`[API Cache] Hit for ${cacheKey}`)
+      return cached as SearchResult[]
+    }
 
     try {
       const response = await this.client.get<SearchResult[]>('/search/shows', {
         params: { q: query },
       })
-      this.setCache(cacheKey, response.data)
+      searchCache.set(cacheKey, response.data)
       return response.data
     } catch (error) {
       throw this.handleError(error)
@@ -138,8 +132,32 @@ class TVMazeAPI {
    * Clear all cached data
    */
   clearCache(): void {
-    this.cache.clear()
-    console.log('[API Cache] Cleared')
+    apiCache.clear()
+    searchCache.clear()
+    showCache.clear()
+    console.log('[API Cache] All caches cleared')
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats() {
+    return {
+      api: apiCache.getStats(),
+      search: searchCache.getStats(),
+      show: showCache.getStats(),
+    }
+  }
+
+  /**
+   * Prune expired entries from all caches
+   */
+  pruneCache(): void {
+    const apiPruned = apiCache.prune()
+    const searchPruned = searchCache.prune()
+    const showPruned = showCache.prune()
+    
+    console.log(`[API Cache] Pruned ${apiPruned + searchPruned + showPruned} expired entries`)
   }
 
   /**
