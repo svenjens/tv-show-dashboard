@@ -1,0 +1,102 @@
+<template>
+  <div
+    class="card group cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105"
+    @click="navigateToShow"
+  >
+    <div class="relative aspect-[2/3] overflow-hidden bg-gray-200">
+      <img
+        v-if="imageLoaded"
+        :src="showImage"
+        :alt="show.name"
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+        @error="handleImageError"
+      />
+      <div
+        v-else
+        class="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400"
+      >
+        <svg
+          class="h-16 w-16"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      
+      <!-- Rating Badge Overlay -->
+      <div v-if="show.rating.average" class="absolute top-2 right-2">
+        <RatingBadge :rating="show.rating.average" />
+      </div>
+    </div>
+
+    <div class="p-4">
+      <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-primary-600 transition-colors">
+        {{ show.name }}
+      </h3>
+      
+      <GenreTags v-if="show.genres && show.genres.length > 0" :genres="show.genres" :max-display="2" />
+      
+      <div v-if="show.premiered" class="mt-2 text-sm text-gray-500">
+        {{ premieredYear }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import type { Show } from '@/types'
+import { getShowImage } from '@/utils'
+import RatingBadge from './RatingBadge.vue'
+import GenreTags from './GenreTags.vue'
+
+interface Props {
+  show: Show
+  lazy?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  lazy: true,
+})
+
+const router = useRouter()
+const imageLoaded = ref(!props.lazy)
+const imageError = ref(false)
+
+const showImage = computed(() => {
+  if (imageError.value) {
+    return getShowImage(props.show, 'medium')
+  }
+  return props.show.image?.medium || getShowImage(props.show, 'medium')
+})
+
+const premieredYear = computed(() => {
+  if (!props.show.premiered) return ''
+  return new Date(props.show.premiered).getFullYear()
+})
+
+function navigateToShow() {
+  router.push({ name: 'show-detail', params: { id: props.show.id } })
+}
+
+function handleImageError() {
+  imageError.value = true
+}
+
+onMounted(() => {
+  if (props.lazy) {
+    // Simulate lazy loading - in production, use IntersectionObserver
+    setTimeout(() => {
+      imageLoaded.value = true
+    }, 100)
+  }
+})
+</script>
+

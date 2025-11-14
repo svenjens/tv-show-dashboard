@@ -1,0 +1,131 @@
+<template>
+  <section class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4 px-4 md:px-0">{{ genre }}</h2>
+    
+    <!-- Desktop: Horizontal Scroll -->
+    <div class="hidden md:block">
+      <div class="relative group">
+        <button
+          v-if="canScrollLeft"
+          class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+          @click="scrollLeft"
+          aria-label="Scroll left"
+        >
+          <svg class="h-6 w-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <div
+          ref="scrollContainer"
+          class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-4"
+          @scroll="updateScrollButtons"
+        >
+          <div
+            v-for="show in shows"
+            :key="show.id"
+            class="flex-none w-48"
+          >
+            <ShowCard :show="show" />
+          </div>
+        </div>
+        
+        <button
+          v-if="canScrollRight"
+          class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+          @click="scrollRight"
+          aria-label="Scroll right"
+        >
+          <svg class="h-6 w-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile: Grid -->
+    <div class="md:hidden px-4">
+      <div class="grid grid-cols-2 gap-4">
+        <ShowCard v-for="show in limitedShows" :key="show.id" :show="show" />
+      </div>
+      <button
+        v-if="shows.length > mobileLimit"
+        class="mt-4 w-full btn-primary"
+        @click="expandMobile"
+      >
+        Show More ({{ shows.length - mobileLimit }} more)
+      </button>
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import type { Show } from '@/types'
+import ShowCard from './ShowCard.vue'
+
+interface Props {
+  genre: string
+  shows: Show[]
+}
+
+const props = defineProps<Props>()
+
+const scrollContainer = ref<HTMLElement | null>(null)
+const canScrollLeft = ref(false)
+const canScrollRight = ref(true)
+const mobileLimit = ref(6)
+
+const limitedShows = computed(() => {
+  return props.shows.slice(0, mobileLimit.value)
+})
+
+function scrollLeft() {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollBy({ left: -400, behavior: 'smooth' })
+  }
+}
+
+function scrollRight() {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollBy({ left: 400, behavior: 'smooth' })
+  }
+}
+
+function updateScrollButtons() {
+  if (!scrollContainer.value) return
+  
+  const { scrollLeft, scrollWidth, clientWidth } = scrollContainer.value
+  canScrollLeft.value = scrollLeft > 0
+  canScrollRight.value = scrollLeft < scrollWidth - clientWidth - 10
+}
+
+function expandMobile() {
+  mobileLimit.value += 6
+}
+
+onMounted(() => {
+  updateScrollButtons()
+  if (scrollContainer.value) {
+    scrollContainer.value.addEventListener('scroll', updateScrollButtons)
+  }
+})
+
+onUnmounted(() => {
+  if (scrollContainer.value) {
+    scrollContainer.value.removeEventListener('scroll', updateScrollButtons)
+  }
+})
+</script>
+
+<style scoped>
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
+
