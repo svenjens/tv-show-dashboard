@@ -482,3 +482,16 @@ This project follows standard Git workflow:
 5. Create a pull request
 
 
+
+## 📞 Support
+
+For questions or issues, please refer to the TVMaze API documentation or contact the development team.
+
+## 🔗 Links
+
+- **GitHub Repository**: https://github.com/svenjens/abn-amro-tv-dashboard
+- **TVMaze API Documentation**: http://www.tvmaze.com/api
+
+---
+
+**Built with ❤️ using Vue 3, TypeScript, Tailwind CSS, and Vue I18n for ABN AMRO**
