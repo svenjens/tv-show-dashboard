@@ -1,0 +1,76 @@
+{
+  "generated_at": "2025-11-14T10:25:38.301Z",
+  "model": "gpt-image-1",
+  "brand_colors": {
+    "primary": "#2563eb",
+    "primaryLight": "#3b82f6",
+    "primaryDark": "#1d4ed8",
+    "accent": "#f59e0b",
+    "style": "modern, entertainment-focused, clean, cinematic"
+  },
+  "total_assets": 10,
+  "successful": 10,
+  "failed": 0,
+  "assets": [
+    {
+      "name": "logo-main",
+      "filename": "logo-main.png",
+      "size_kb": "1340.79",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/logo-main.png"
+    },
+    {
+      "name": "logo-full",
+      "filename": "logo-full.png",
+      "size_kb": "2034.44",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/logo-full.png"
+    },
+    {
+      "name": "hero-background",
+      "filename": "hero-background.png",
+      "size_kb": "2125.11",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/hero-background.png"
+    },
+    {
+      "name": "og-image",
+      "filename": "og-image.png",
+      "size_kb": "1458.76",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/og-image.png"
+    },
+    {
+      "name": "favicon",
+      "filename": "favicon.png",
+      "size_kb": "1388.17",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/favicon.png"
+    },
+    {
+      "name": "icon-192",
+      "filename": "icon-192.png",
+      "size_kb": "1436.88",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/icon-192.png"
+    },
+    {
+      "name": "icon-512",
+      "filename": "icon-512.png",
+      "size_kb": "1530.33",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/icon-512.png"
+    },
+    {
+      "name": "apple-touch-icon",
+      "filename": "apple-touch-icon.png",
+      "size_kb": "1350.62",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/apple-touch-icon.png"
+    },
+    {
+      "name": "loading-animation",
+      "filename": "loading-animation.png",
+      "size_kb": "1412.84",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/loading-animation.png"
+    },
+    {
+      "name": "empty-state-illustration",
+      "filename": "empty-state-illustration.png",
+      "size_kb": "1594.40",
+      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/empty-state-illustration.png"
+    }
+  ]
+}

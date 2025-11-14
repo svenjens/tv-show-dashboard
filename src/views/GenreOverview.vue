@@ -66,22 +66,14 @@
 
       <!-- Empty State -->
       <div v-else class="text-center py-16" role="status">
-        <svg
-          class="mx-auto h-12 w-12 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        <img 
+          src="/empty-state-illustration.png" 
+          alt="" 
+          class="mx-auto h-48 w-48 object-contain opacity-50"
           aria-hidden="true"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
-          />
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">{{ t('genre.noShows') }}</h3>
-        <p class="mt-1 text-sm text-gray-500">{{ t('genre.noShowsMessage') }}</p>
+        />
+        <h3 class="mt-6 text-lg font-medium text-gray-900">{{ t('genre.noShows') }}</h3>
+        <p class="mt-2 text-sm text-gray-500">{{ t('genre.noShowsMessage') }}</p>
       </div>
     </main>
   </div>

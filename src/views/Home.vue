@@ -3,14 +3,29 @@
     <SkipToContent />
     
     <!-- Hero Section -->
-    <div class="bg-gradient-to-r from-primary-600 to-primary-800 text-white" role="banner">
-      <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white overflow-hidden" role="banner">
+      <!-- Hero Background -->
+      <div 
+        class="absolute inset-0 opacity-10 bg-cover bg-center"
+        :style="{ backgroundImage: 'url(/hero-background.png)' }"
+        aria-hidden="true"
+      ></div>
+      
+      <div class="relative max-w-7xl mx-auto px-4 py-12">
         <div class="flex justify-between items-start mb-6">
-          <div>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ t('home.title') }}</h1>
-            <p class="text-lg md:text-xl text-primary-100 mb-8">
-              {{ t('home.subtitle') }}
-            </p>
+          <div class="flex items-center gap-4">
+            <!-- Logo -->
+            <img 
+              src="/logo-main.png" 
+              alt="TV Show Dashboard Logo" 
+              class="h-16 w-16 object-contain"
+            />
+            <div>
+              <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ t('home.title') }}</h1>
+              <p class="text-lg md:text-xl text-primary-100 mb-8">
+                {{ t('home.subtitle') }}
+              </p>
+            </div>
           </div>
           <LanguageSwitcher />
         </div>
@@ -61,22 +76,14 @@
 
       <!-- Empty State -->
       <div v-else class="text-center py-16 px-4" role="status">
-        <svg
-          class="mx-auto h-12 w-12 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        <img 
+          src="/empty-state-illustration.png" 
+          alt="" 
+          class="mx-auto h-48 w-48 object-contain opacity-50"
           aria-hidden="true"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
-          />
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">{{ t('home.noShows') }}</h3>
-        <p class="mt-1 text-sm text-gray-500">{{ t('home.noShowsMessage') }}</p>
+        />
+        <h3 class="mt-6 text-lg font-medium text-gray-900">{{ t('home.noShows') }}</h3>
+        <p class="mt-2 text-sm text-gray-500">{{ t('home.noShowsMessage') }}</p>
       </div>
     </main>
   </div>

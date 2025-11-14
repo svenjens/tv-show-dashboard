@@ -93,20 +93,13 @@
 
       <!-- Initial State -->
       <div v-else class="text-center py-16">
-        <svg
-          class="mx-auto h-16 w-16 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg>
-        <h3 class="mt-4 text-lg font-medium text-gray-900">Start searching</h3>
+        <img 
+          src="/empty-state-illustration.png" 
+          alt="" 
+          class="mx-auto h-48 w-48 object-contain opacity-50"
+          aria-hidden="true"
+        />
+        <h3 class="mt-6 text-lg font-medium text-gray-900">Start searching</h3>
         <p class="mt-2 text-gray-500">
           Enter a TV show name to search through our extensive database.
         </p>

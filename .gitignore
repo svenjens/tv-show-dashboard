@@ -28,10 +28,6 @@ dist-ssr
 .env
 .env.local
 
-# Generated assets metadata
-public/branding-metadata.json
-public/BRANDING.md
-
 # Testing
 coverage
 *.lcov
