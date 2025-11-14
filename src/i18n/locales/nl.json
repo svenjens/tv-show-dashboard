@@ -48,7 +48,11 @@
     "timeTBA": "Tijd nog niet bekend"
   },
   "genre": {
-    "showMore": "Toon meer ({count} meer)"
+    "showMore": "Toon meer ({count} meer)",
+    "viewAll": "Bekijk Alles",
+    "showsInGenre": "{count} serie | {count} series",
+    "noShows": "Geen series in dit genre",
+    "noShowsMessage": "Probeer andere genres te bekijken."
   },
   "status": {
     "loading": "Laden...",

@@ -5,11 +5,20 @@
     :visible="{ opacity: 1, x: 0, transition: { duration: 500 } }"
     class="mb-8 overflow-visible"
   >
-    <h2 
-      class="text-2xl font-bold text-gray-900 mb-4 px-4 md:px-0 transition-colors hover:text-primary-600"
-    >
-      {{ genre }}
-    </h2>
+    <div class="flex items-center justify-between mb-4 px-4 md:px-0">
+      <h2 
+        class="text-2xl font-bold text-gray-900 transition-colors hover:text-primary-600 cursor-pointer"
+        @click="navigateToGenre"
+      >
+        {{ genre }}
+      </h2>
+      <button
+        class="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 rounded px-2 py-1"
+        @click="navigateToGenre"
+      >
+        {{ t('genre.viewAll') }} →
+      </button>
+    </div>
     
     <!-- Desktop: Horizontal Scroll -->
     <div class="hidden md:block overflow-visible">
@@ -71,6 +80,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import type { Show } from '@/types'
 import ShowCard from './ShowCard.vue'
 
@@ -80,6 +91,10 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+const { t } = useI18n()
+const router = useRouter()
+const route = useRoute()
 
 const scrollContainer = ref<HTMLElement | null>(null)
 const canScrollLeft = ref(false)
@@ -112,6 +127,11 @@ function updateScrollButtons() {
 
 function expandMobile() {
   mobileLimit.value += 6
+}
+
+function navigateToGenre() {
+  const locale = route.params.locale || 'en'
+  router.push({ name: 'genre-overview', params: { locale, genre: props.genre } })
 }
 
 onMounted(() => {

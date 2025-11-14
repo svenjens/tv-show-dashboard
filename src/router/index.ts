@@ -34,6 +34,14 @@ const routes: RouteRecordRaw[] = [
           title: 'Search - TV Show Dashboard',
         },
       },
+      {
+        path: 'genre/:genre',
+        name: 'genre-overview',
+        component: () => import('@/views/GenreOverview.vue'),
+        meta: {
+          title: 'Genre - TV Show Dashboard',
+        },
+      },
     ],
   },
   {

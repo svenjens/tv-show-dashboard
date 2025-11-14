@@ -48,7 +48,11 @@
     "timeTBA": "Time TBA"
   },
   "genre": {
-    "showMore": "Show More ({count} more)"
+    "showMore": "Show More ({count} more)",
+    "viewAll": "View All",
+    "showsInGenre": "{count} show | {count} shows",
+    "noShows": "No shows in this genre",
+    "noShowsMessage": "Try browsing other genres."
   },
   "status": {
     "loading": "Loading...",
