@@ -15,12 +15,13 @@
           <LanguageSwitcher />
         </div>
         
-        <SearchBar
-          v-model="searchQuery"
-          :recent-searches="searchStore.recentSearches"
-          @search="handleSearch"
-          @clear-recent="searchStore.clearRecentSearches()"
-        />
+            <SearchBar
+              v-model="searchQuery"
+              :placeholder="t('home.searchPlaceholder')"
+              :recent-searches="searchStore.recentSearches"
+              @search="handleSearch"
+              @clear-recent="searchStore.clearRecentSearches()"
+            />
       </div>
     </div>
 
@@ -83,7 +84,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useShowsStore } from '@/stores'
 import { useSearchStore } from '@/stores'
@@ -98,6 +99,7 @@ import SkipToContent from '@/components/SkipToContent.vue'
 const { t } = useI18n()
 
 const router = useRouter()
+const route = useRoute()
 const showsStore = useShowsStore()
 const searchStore = useSearchStore()
 const searchQuery = ref('')
@@ -111,7 +113,8 @@ useSEO({
 
 function handleSearch(query: string) {
   if (query.trim()) {
-    router.push({ name: 'search', query: { q: query } })
+    const locale = route.params.locale || 'en'
+    router.push({ name: 'search', params: { locale }, query: { q: query } })
   }
 }
 

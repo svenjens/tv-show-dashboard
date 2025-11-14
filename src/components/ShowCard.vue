@@ -1,6 +1,9 @@
 <template>
   <div
-    class="card group cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105"
+    v-motion
+    :initial="{ opacity: 0, y: 20 }"
+    :visible="{ opacity: 1, y: 0, transition: { duration: 400, delay: 50 } }"
+    class="card group/card cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1"
     @click="navigateToShow"
   >
     <div class="relative aspect-[2/3] overflow-hidden bg-gray-200">
@@ -8,7 +11,7 @@
         v-if="imageLoaded"
         :src="showImage"
         :alt="show.name"
-        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+        class="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-110"
         @error="handleImageError"
       />
       <div
@@ -36,7 +39,7 @@
     </div>
 
     <div class="p-4">
-      <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-primary-600 transition-colors">
+      <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 group-hover/card:text-primary-600 transition-colors">
         {{ show.name }}
       </h3>
       
@@ -83,7 +86,9 @@ const premieredYear = computed(() => {
 })
 
 function navigateToShow() {
-  router.push({ name: 'show-detail', params: { id: props.show.id } })
+  const currentRoute = router.currentRoute.value
+  const locale = currentRoute.params.locale || 'en'
+  router.push({ name: 'show-detail', params: { locale, id: props.show.id } })
 }
 
 function handleImageError() {

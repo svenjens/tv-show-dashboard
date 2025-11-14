@@ -1,6 +1,15 @@
 <template>
-  <section class="mb-8">
-    <h2 class="text-2xl font-bold text-gray-900 mb-4 px-4 md:px-0">{{ genre }}</h2>
+  <section 
+    v-motion
+    :initial="{ opacity: 0, x: -20 }"
+    :visible="{ opacity: 1, x: 0, transition: { duration: 500 } }"
+    class="mb-8"
+  >
+    <h2 
+      class="text-2xl font-bold text-gray-900 mb-4 px-4 md:px-0 transition-colors hover:text-primary-600"
+    >
+      {{ genre }}
+    </h2>
     
     <!-- Desktop: Horizontal Scroll -->
     <div class="hidden md:block">

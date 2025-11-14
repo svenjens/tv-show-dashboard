@@ -165,7 +165,7 @@
         <p class="text-gray-600 mb-6">{{ t('show.notFoundMessage') }}</p>
         <button 
           class="btn-primary focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2" 
-          @click="router.push({ name: 'home' })"
+          @click="router.push({ name: 'home', params: { locale: route.params.locale || 'en' } })"
         >
           {{ t('show.goHome') }}
         </button>

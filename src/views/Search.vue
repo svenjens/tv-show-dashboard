@@ -6,7 +6,7 @@
         <div class="flex items-center gap-4 mb-4">
           <button
             class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            @click="router.push({ name: 'home' })"
+            @click="router.push({ name: 'home', params: { locale: route.params.locale || 'en' } })"
             aria-label="Go back"
           >
             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,7 +23,7 @@
 
         <SearchBar
           v-model="searchQuery"
-          placeholder="Search for TV shows by name..."
+          :placeholder="t('search.searchByName')"
           :recent-searches="searchStore.recentSearches"
           @search="handleSearch"
           @clear-recent="searchStore.clearRecentSearches()"
@@ -118,12 +118,14 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useSearchStore } from '@/stores'
 import SearchBar from '@/components/SearchBar.vue'
 import ShowCard from '@/components/ShowCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const searchStore = useSearchStore()
@@ -135,7 +137,8 @@ async function handleSearch(query: string) {
   
   // Update URL query parameter
   if (query) {
-    router.push({ name: 'search', query: { q: query } })
+    const locale = route.params.locale || 'en'
+    router.push({ name: 'search', params: { locale }, query: { q: query } })
   }
 
   // Perform search

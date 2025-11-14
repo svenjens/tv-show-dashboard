@@ -9,6 +9,54 @@ An Vue 3 application for browsing and searching TV shows using the TVMaze API. B
 
 ## 🚀 Features
 
+### 🎬 Micro Animations
+
+The application includes subtle, performant micro-animations that enhance UX:
+
+- **Page Load Animations**: Smooth fade-in and slide-up transitions using VueUse Motion
+- **Card Hover Effects**: 
+  - Scale and lift effect on show cards with isolated hover states
+  - Image zoom on hover
+  - Rating badge rotation and scale
+  - Title color transition
+- **Search Bar**: 
+  - Smooth dropdown transitions for recent searches
+  - Focus state with shadow effect
+  - Slide animation on list items
+- **Button Interactions**: 
+  - Active scale-down effect on clicks
+  - Hover shadow transitions
+- **Loading States**: 
+  - Fade-in animations
+  - Shimmer skeleton loaders for content placeholders
+- **Staggered Animations**: Sequential fade-in for lists
+- **Smooth Scrolling**: HTML scroll-behavior for anchor links
+
+**Animation Principles:**
+- ⚡ **Performance-first**: GPU-accelerated transforms and opacity
+- ♿ **Accessible**: Respects `prefers-reduced-motion` where applicable
+- 🎯 **Purposeful**: Every animation serves a UX purpose
+- ⏱️ **Timing**: Carefully tuned duration (150-400ms) for responsiveness
+
+**Libraries Used:**
+- **@vueuse/motion**: Declarative animation directives (`v-motion`)
+- **Tailwind CSS Transitions**: Utility-based micro-interactions
+- **Custom CSS Keyframes**: Specialized animations (shimmer, bounce, fade-in)
+
+**Implementation Example:**
+```vue
+<!-- Animated show card with isolated hover using named groups -->
+<div
+  v-motion
+  :initial="{ opacity: 0, y: 20 }"
+  :visible="{ opacity: 1, y: 0, transition: { duration: 400, delay: 50 } }"
+  class="card group/card cursor-pointer hover:scale-105 hover:-translate-y-1"
+>
+  <img class="group-hover/card:scale-110" />
+  <RatingBadge class="group-hover/card:scale-105" />
+</div>
+```
+
 ### Core Functionality
 - **Genre-Based Browsing**: Browse TV shows organized by genre with horizontal scrollable lists
 - **Show Details**: View comprehensive information about each show including ratings, schedule, and summary
