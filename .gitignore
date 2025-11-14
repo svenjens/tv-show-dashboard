@@ -28,6 +28,10 @@ dist-ssr
 .env
 .env.local
 
+# Vercel
+.vercel
+scripts/setup-vercel.sh
+
 # Optimized images (generated)
 public/optimized/
 
