@@ -688,5 +688,5 @@ For questions or issues, please refer to the TVMaze API documentation or contact
 
 ## 🔗 Links
 
-- **GitHub Repository**: https://github.com/svenjens/abn-amro-tv-dashboard
+- **GitHub Repository**: https://github.com/svenjens/tv-show-dashboard
 - **TVMaze API Documentation**: http://www.tvmaze.com/api
