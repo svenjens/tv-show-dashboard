@@ -8,21 +8,36 @@
       role="banner"
     >
       <!-- Hero Background -->
-      <div
-        class="absolute inset-0 opacity-10 bg-cover bg-center"
-        style="background-image: url('/hero-background.png')"
-        aria-hidden="true"
-      ></div>
+      <picture class="absolute inset-0 opacity-10" aria-hidden="true">
+        <source
+          type="image/webp"
+          srcset="/optimized/hero-background-768.webp 768w, /optimized/hero-background-1280.webp 1280w, /optimized/hero-background.webp 1920w"
+          sizes="100vw"
+        />
+        <img
+          src="/hero-background.png"
+          alt=""
+          class="w-full h-full object-cover"
+          aria-hidden="true"
+        />
+      </picture>
 
       <div class="relative max-w-7xl mx-auto px-4 py-12">
         <div class="flex justify-between items-start mb-6">
           <div class="flex items-center gap-4">
             <!-- Logo -->
-            <img
-              src="/logo-main.png"
-              alt="TV Show Dashboard Logo"
-              class="h-16 w-16 object-contain"
-            />
+        <picture>
+          <source
+            type="image/webp"
+            srcset="/optimized/logo-main-64.webp 64w, /optimized/logo-main-128.webp 128w, /optimized/logo-main-256.webp 256w"
+            sizes="64px"
+          />
+          <img
+            src="/logo-main.png"
+            alt="TV Show Dashboard Logo"
+            class="h-16 w-16 object-contain"
+          />
+        </picture>
             <div>
               <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ t('home.title') }}</h1>
               <p class="text-lg md:text-xl text-primary-100 mb-8">
@@ -75,21 +90,38 @@
         </div>
 
         <GenreRow
-          v-for="genre in showsStore.genres"
+          v-for="genre in displayedGenres"
           :key="genre"
           :genre="genre"
           :shows="showsStore.getShowsByGenre(genre)"
         />
+        
+        <!-- Load More Button -->
+        <div v-if="canLoadMore" class="text-center py-8">
+          <button
+            class="btn-primary"
+            @click="loadMoreGenres"
+          >
+            {{ t('home.loadMore') }} ({{ remainingGenres }} {{ t('home.moreGenres') }})
+          </button>
+        </div>
       </div>
 
       <!-- Empty State -->
       <div v-else class="text-center py-16 px-4" role="status">
-        <img
-          src="/empty-state-illustration.png"
-          alt=""
-          class="mx-auto h-48 w-48 object-contain opacity-50"
-          aria-hidden="true"
-        />
+        <picture>
+          <source
+            type="image/webp"
+            srcset="/optimized/empty-state-illustration-256.webp 256w, /optimized/empty-state-illustration.webp 512w"
+            sizes="192px"
+          />
+          <img
+            src="/empty-state-illustration.png"
+            alt=""
+            class="mx-auto h-48 w-48 object-contain opacity-50"
+            aria-hidden="true"
+          />
+        </picture>
         <h3 class="mt-6 text-lg font-medium text-gray-900">{{ t('home.noShows') }}</h3>
         <p class="mt-2 text-sm text-gray-500">{{ t('home.noShowsMessage') }}</p>
       </div>
@@ -98,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useShowsStore } from '@/stores'
@@ -106,10 +138,12 @@ import { useSearchStore } from '@/stores'
 import { useSEO } from '@/composables'
 import GenreRow from '@/components/GenreRow.vue'
 import SearchBar from '@/components/SearchBar.vue'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import ErrorMessage from '@/components/ErrorMessage.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import SkipToContent from '@/components/SkipToContent.vue'
+
+// Lazy load conditional components
+const LoadingSpinner = defineAsyncComponent(() => import('@/components/LoadingSpinner.vue'))
+const ErrorMessage = defineAsyncComponent(() => import('@/components/ErrorMessage.vue'))
 
 const { t } = useI18n()
 
@@ -118,6 +152,26 @@ const route = useRoute()
 const showsStore = useShowsStore()
 const searchStore = useSearchStore()
 const searchQuery = ref('')
+
+// Performance: Lazy load genres
+const genresPerPage = 5
+const visibleGenresCount = ref(genresPerPage)
+
+const displayedGenres = computed(() => {
+  return showsStore.genres.slice(0, visibleGenresCount.value)
+})
+
+const canLoadMore = computed(() => {
+  return visibleGenresCount.value < showsStore.genres.length
+})
+
+const remainingGenres = computed(() => {
+  return showsStore.genres.length - visibleGenresCount.value
+})
+
+function loadMoreGenres() {
+  visibleGenresCount.value += genresPerPage
+}
 
 // SEO
 useSEO({

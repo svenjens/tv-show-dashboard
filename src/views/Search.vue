@@ -98,12 +98,19 @@
 
       <!-- Initial State -->
       <div v-else class="text-center py-16">
-        <img
-          src="/empty-state-illustration.png"
-          alt=""
-          class="mx-auto h-48 w-48 object-contain opacity-50"
-          aria-hidden="true"
-        />
+        <picture>
+          <source
+            type="image/webp"
+            srcset="/optimized/empty-state-illustration-256.webp 256w, /optimized/empty-state-illustration.webp 512w"
+            sizes="192px"
+          />
+          <img
+            src="/empty-state-illustration.png"
+            alt=""
+            class="mx-auto h-48 w-48 object-contain opacity-50"
+            aria-hidden="true"
+          />
+        </picture>
         <h3 class="mt-6 text-lg font-medium text-gray-900">Start searching</h3>
         <p class="mt-2 text-gray-500">
           Enter a TV show name to search through our extensive database.
@@ -114,14 +121,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSearchStore } from '@/stores'
 import SearchBar from '@/components/SearchBar.vue'
 import ShowCard from '@/components/ShowCard.vue'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import ErrorMessage from '@/components/ErrorMessage.vue'
+
+// Lazy load conditional components
+const LoadingSpinner = defineAsyncComponent(() => import('@/components/LoadingSpinner.vue'))
+const ErrorMessage = defineAsyncComponent(() => import('@/components/ErrorMessage.vue'))
 
 const { t } = useI18n()
 const route = useRoute()

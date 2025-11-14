@@ -14,7 +14,9 @@
     "searchPlaceholder": "Zoek TV shows...",
     "showsCount": "{count} series weergegeven over {genres} genres",
     "noShows": "Geen tv-series gevonden",
-    "noShowsMessage": "Probeer de pagina te vernieuwen of kom later terug."
+    "noShowsMessage": "Probeer de pagina te vernieuwen of kom later terug.",
+    "loadMore": "Laad Meer Genres",
+    "moreGenres": "genre meer | genres meer"
   },
   "search": {
     "title": "TV-series zoeken",

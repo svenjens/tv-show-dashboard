@@ -77,12 +77,19 @@
 
       <!-- Empty State -->
       <div v-else class="text-center py-16" role="status">
-        <img
-          src="/empty-state-illustration.png"
-          alt=""
-          class="mx-auto h-48 w-48 object-contain opacity-50"
-          aria-hidden="true"
-        />
+        <picture>
+          <source
+            type="image/webp"
+            srcset="/optimized/empty-state-illustration-256.webp 256w, /optimized/empty-state-illustration.webp 512w"
+            sizes="192px"
+          />
+          <img
+            src="/empty-state-illustration.png"
+            alt=""
+            class="mx-auto h-48 w-48 object-contain opacity-50"
+            aria-hidden="true"
+          />
+        </picture>
         <h3 class="mt-6 text-lg font-medium text-gray-900">{{ t('genre.noShows') }}</h3>
         <p class="mt-2 text-sm text-gray-500">{{ t('genre.noShowsMessage') }}</p>
       </div>
@@ -91,14 +98,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useShowsStore } from '@/stores'
 import { useSEO } from '@/composables'
 import ShowCard from '@/components/ShowCard.vue'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import SkipToContent from '@/components/SkipToContent.vue'
+
+// Lazy load conditional component
+const LoadingSpinner = defineAsyncComponent(() => import('@/components/LoadingSpinner.vue'))
 
 const { t } = useI18n()
 const route = useRoute()

@@ -14,7 +14,9 @@
     "searchPlaceholder": "Search TV shows...",
     "showsCount": "Showing {count} shows across {genres} genres",
     "noShows": "No TV shows found",
-    "noShowsMessage": "Try refreshing the page or check back later."
+    "noShowsMessage": "Try refreshing the page or check back later.",
+    "loadMore": "Load More Genres",
+    "moreGenres": "more genre | more genres"
   },
   "search": {
     "title": "Search TV Shows",
