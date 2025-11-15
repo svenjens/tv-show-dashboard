@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <SkipToContent />
 
     <!-- Header -->
-    <div class="bg-gradient-to-r from-primary-600 to-primary-800 text-white" role="banner">
+    <div class="bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900 text-white" role="banner">
       <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-4">
@@ -24,7 +24,10 @@
             </button>
           </div>
 
-          <LanguageSwitcher />
+          <div class="flex items-center gap-3">
+            <DarkModeToggle variant="header" />
+            <LanguageSwitcher />
+          </div>
         </div>
 
         <div class="flex items-center justify-between">
@@ -116,6 +119,7 @@ import { useSEO } from '@/composables'
 import ShowCard from '@/components/ShowCard.vue'
 import SkipToContent from '@/components/SkipToContent.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
+import DarkModeToggle from '@/components/DarkModeToggle.vue'
 
 const { t } = useI18n()
 const router = useRouter()

@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 mb-6">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-sm font-semibold text-gray-900">{{ t('filters.title') }}</h3>
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ t('filters.title') }}</h3>
       <button
         v-if="hasActiveFilters"
-        class="text-sm text-primary-600 hover:text-primary-700 font-medium"
+        class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
         @click="clearFilters"
       >
         {{ t('filters.clearAll') }}
@@ -14,12 +14,12 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- Status Filter -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {{ t('filters.status') }}
         </label>
         <select
           v-model="localFilters.status"
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-primary-600 dark:focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-600 dark:focus:ring-primary-500"
           @change="emitFilters"
         >
           <option value="">{{ t('filters.allStatuses') }}</option>
@@ -32,12 +32,12 @@
 
       <!-- Network Filter -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {{ t('filters.network') }}
         </label>
         <select
           v-model="localFilters.network"
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-primary-600 dark:focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-600 dark:focus:ring-primary-500"
           @change="emitFilters"
         >
           <option value="">{{ t('filters.allNetworks') }}</option>
@@ -49,12 +49,12 @@
 
       <!-- Year Filter -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {{ t('filters.year') }}
         </label>
         <select
           v-model="localFilters.year"
-          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-primary-600 dark:focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-600 dark:focus:ring-primary-500"
           @change="emitFilters"
         >
           <option value="">{{ t('filters.allYears') }}</option>
@@ -66,8 +66,8 @@
     </div>
 
     <!-- Active Filters Summary -->
-    <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
-      <span class="text-xs text-gray-600">{{ t('filters.active') }}:</span>
+    <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <span class="text-xs text-gray-600 dark:text-gray-400">{{ t('filters.active') }}:</span>
       <span
         v-if="localFilters.status"
         class="inline-flex items-center gap-1 px-2 py-1 bg-primary-100 text-primary-700 rounded text-xs"

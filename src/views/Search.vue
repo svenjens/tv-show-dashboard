@@ -1,16 +1,16 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Search Header -->
-    <div class="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-6">
         <div class="flex items-center gap-4 mb-4">
           <button
-            class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             aria-label="Go back"
             @click="router.push({ name: 'home', params: { locale: route.params.locale || 'en' } })"
           >
             <svg
-              class="h-6 w-6 text-gray-600"
+              class="h-6 w-6 text-gray-600 dark:text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -23,7 +23,7 @@
               />
             </svg>
           </button>
-          <h1 class="text-2xl font-bold text-gray-900">{{ t('search.title') }}</h1>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('search.title') }}</h1>
         </div>
 
         <SearchBar
