@@ -176,38 +176,86 @@
         </div>
       </div>
 
-      <!-- Summary Section -->
+      <!-- Tabs Section -->
       <main id="main-content" class="max-w-7xl mx-auto px-4 py-12" tabindex="-1">
-        <article v-if="show.summary" class="mb-12">
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ t('show.summary') }}</h2>
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <div
-            class="prose prose-lg max-w-none text-gray-700"
-            role="region"
-            :aria-labelledby="'show-title'"
-            v-html="sanitizedSummary"
-          ></div>
-          <!-- Safe: HTML is sanitized with DOMPurify before rendering -->
-        </article>
+        <!-- Tab Navigation -->
+        <div class="border-b border-gray-200 mb-8">
+          <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+            <button
+              v-for="tab in tabs"
+              :key="tab.id"
+              class="py-4 px-1 border-b-2 font-medium text-sm transition-all"
+              :class="
+                activeTab === tab.id
+                  ? 'border-primary-600 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              "
+              :aria-selected="activeTab === tab.id"
+              role="tab"
+              @click="activeTab = tab.id"
+            >
+              {{ t(tab.label) }}
+            </button>
+          </nav>
+        </div>
 
-        <!-- Advertisement -->
-        <AdSense format="horizontal" />
+        <!-- Tab Content -->
+        <div role="tabpanel">
+          <!-- Overview Tab -->
+          <div v-if="activeTab === 'overview'">
+            <article v-if="show.summary" class="mb-12">
+              <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ t('show.summary') }}</h2>
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div
+                class="prose prose-lg max-w-none text-gray-700"
+                role="region"
+                :aria-labelledby="'show-title'"
+                v-html="sanitizedSummary"
+              ></div>
+              <!-- Safe: HTML is sanitized with DOMPurify before rendering -->
+            </article>
 
-        <!-- Related Shows -->
-        <section v-if="relatedShows.length > 0" class="mt-12" :aria-label="t('show.relatedShows')">
-          <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ t('show.relatedShows') }}</h2>
-          <div
-            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 auto-rows-fr"
-            role="list"
-          >
-            <ShowCard
-              v-for="relatedShow in relatedShows"
-              :key="relatedShow.id"
-              :show="relatedShow"
-              role="listitem"
+            <!-- Advertisement -->
+            <AdSense format="horizontal" />
+
+            <!-- Related Shows -->
+            <section v-if="relatedShows.length > 0" class="mt-12" :aria-label="t('show.relatedShows')">
+              <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ t('show.relatedShows') }}</h2>
+              <div
+                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 auto-rows-fr"
+                role="list"
+              >
+                <ShowCard
+                  v-for="relatedShow in relatedShows"
+                  :key="relatedShow.id"
+                  :show="relatedShow"
+                  role="listitem"
+                />
+              </div>
+            </section>
+          </div>
+
+          <!-- Episodes Tab -->
+          <div v-else-if="activeTab === 'episodes'">
+            <SeasonList
+              :episodes="episodes"
+              :show-id="show.id"
+              :loading="episodesLoading"
+              :error="episodesError"
+              @retry="fetchEpisodes"
             />
           </div>
-        </section>
+
+          <!-- Cast Tab -->
+          <div v-else-if="activeTab === 'cast'">
+            <CastList
+              :cast="cast"
+              :loading="castLoading"
+              :error="castError"
+              @retry="fetchCast"
+            />
+          </div>
+        </div>
       </main>
     </div>
 
@@ -233,9 +281,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import DOMPurify from 'dompurify'
 import { useShowsStore } from '@/stores'
-import type { Show, ApiError } from '@/types'
+import type { Show, ApiError, Episode, CastMember } from '@/types'
 import { getShowImage, formatSchedule } from '@/utils'
 import { useSEO, getShowSEO, generateShowStructuredData } from '@/composables'
+import { tvMazeAPI } from '@/api/tvmaze'
 import RatingBadge from '@/components/RatingBadge.vue'
 import GenreTags from '@/components/GenreTags.vue'
 import ShowCard from '@/components/ShowCard.vue'
@@ -244,6 +293,8 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import WatchlistButton from '@/components/WatchlistButton.vue'
 import AdSense from '@/components/AdSense.vue'
+import SeasonList from '@/components/SeasonList.vue'
+import CastList from '@/components/CastList.vue'
 
 const { t } = useI18n()
 
@@ -255,6 +306,26 @@ const show = ref<Show | null>(null)
 const loading = ref(true)
 const error = ref<ApiError | null>(null)
 
+// Episodes state
+const episodes = ref<Episode[]>([])
+const episodesLoading = ref(false)
+const episodesError = ref<ApiError | null>(null)
+
+// Cast state
+const cast = ref<CastMember[]>([])
+const castLoading = ref(false)
+const castError = ref<ApiError | null>(null)
+
+// Active tab
+const activeTab = ref('overview')
+
+// Tab configuration
+const tabs = [
+  { id: 'overview', label: 'tabs.overview' },
+  { id: 'episodes', label: 'tabs.episodes' },
+  { id: 'cast', label: 'tabs.cast' },
+]
+
 // Sanitize HTML to prevent XSS attacks
 const sanitizedSummary = computed(() => {
   if (!show.value?.summary) return ''
@@ -265,6 +336,38 @@ const relatedShows = computed(() => {
   if (!show.value) return []
   return showsStore.getRelatedShows(show.value, 6)
 })
+
+// Fetch episodes
+async function fetchEpisodes() {
+  if (!show.value) return
+
+  episodesLoading.value = true
+  episodesError.value = null
+
+  try {
+    episodes.value = await tvMazeAPI.fetchEpisodes(show.value.id)
+  } catch (err) {
+    episodesError.value = err as ApiError
+  } finally {
+    episodesLoading.value = false
+  }
+}
+
+// Fetch cast
+async function fetchCast() {
+  if (!show.value) return
+
+  castLoading.value = true
+  castError.value = null
+
+  try {
+    cast.value = await tvMazeAPI.fetchCast(show.value.id)
+  } catch (err) {
+    castError.value = err as ApiError
+  } finally {
+    castLoading.value = false
+  }
+}
 
 // Update SEO when show changes (multilingual)
 watch(
@@ -330,4 +433,13 @@ watch(
     }
   }
 )
+
+// Lazy load episodes and cast when tabs are opened
+watch(activeTab, (newTab) => {
+  if (newTab === 'episodes' && episodes.value.length === 0 && !episodesLoading.value) {
+    fetchEpisodes()
+  } else if (newTab === 'cast' && cast.value.length === 0 && !castLoading.value) {
+    fetchCast()
+  }
+})
 </script>
