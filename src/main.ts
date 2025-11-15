@@ -9,7 +9,7 @@ import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
 import { getCurrentLocale } from './i18n/helpers'
-import { logger } from './utils'
+import { logger, registerServiceWorker, initInstallPrompt } from './utils'
 import './style.css'
 
 const app = createApp(App)
@@ -31,6 +31,10 @@ document.documentElement.setAttribute('lang', getCurrentLocale())
 
 // Mount app
 app.mount('#app')
+
+// Initialize PWA features
+registerServiceWorker()
+initInstallPrompt()
 
 // Log app initialization
 logger.debug('[App] TV Show Dashboard initialized')

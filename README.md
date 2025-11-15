@@ -457,8 +457,9 @@ Potential features for future iterations:
 - [x] Internationalization (i18n) - ✅ **Implemented**
 - [x] SEO optimization with hreflang - ✅ **Implemented**
 - [x] Accessibility improvements - ✅ **Implemented**
-- [x] Pagination support - ✅ **Implemented**
-- [ ] Progressive Web App (PWA) support
+- [x] Infinite scroll for genres - ✅ **Implemented** (better UX than pagination)
+- [x] Watchlist functionality - ✅ **Implemented**
+- [x] Progressive Web App (PWA) support - ✅ **Implemented**
 - [ ] Season and episode details
 - [ ] Cast and crew information
 - [ ] More language options (German, French, Spanish)
