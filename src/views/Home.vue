@@ -15,7 +15,7 @@
           sizes="100vw"
         />
         <img
-          src="/hero-background.png"
+          src="/optimized/hero-background.png"
           alt=""
           class="w-full h-full object-cover"
           aria-hidden="true"
@@ -33,7 +33,7 @@
             sizes="64px"
           />
           <img
-            src="/logo-main.png"
+            src="/optimized/logo-main.png"
             alt="TV Show Dashboard Logo"
             class="h-16 w-16 object-contain"
           />
@@ -146,7 +146,7 @@
             sizes="192px"
           />
           <img
-            src="/empty-state-illustration.png"
+            src="/optimized/empty-state-illustration.png"
             alt=""
             class="mx-auto h-48 w-48 object-contain opacity-50"
             aria-hidden="true"
