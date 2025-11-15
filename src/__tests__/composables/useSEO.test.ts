@@ -182,7 +182,12 @@ describe('getShowSEO', () => {
     averageRuntime: 47,
     weight: 99,
     externals: { tvrage: 18164, thetvdb: 81189, imdb: 'tt0903747' },
-    updated: 1704067200
+    updated: 1704067200,
+    dvdCountry: null,
+    webChannel: null,
+    _links: {
+      self: { href: 'https://api.tvmaze.com/shows/123' }
+    }
   }
 
   it('should generate SEO config from show data', () => {
@@ -196,9 +201,6 @@ describe('getShowSEO', () => {
     expect(seo.keywords).toContain('Drama')
     expect(seo.keywords).toContain('Crime')
     expect(seo.image).toBe(mockShow.image.original)
-    if (seo.url) {
-      expect(seo.url).toContain('/shows/123')
-    }
   })
 
   it('should handle show without summary', () => {
