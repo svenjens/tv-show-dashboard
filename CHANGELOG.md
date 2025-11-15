@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/svenjens/tv-show-dashboard/compare/v1.11.0...v1.12.0) (2025-11-15)
+
+
+### Features
+
+* implement dark mode with system preference detection ([#33](https://github.com/svenjens/tv-show-dashboard/issues/33)) ([cc333ec](https://github.com/svenjens/tv-show-dashboard/commit/cc333ecb965e37caacde3a84760f8e8329bb2d84))
+
 ## [1.11.0](https://github.com/svenjens/tv-show-dashboard/compare/v1.10.0...v1.11.0) (2025-11-15)
 
 
