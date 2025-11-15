@@ -207,6 +207,18 @@
       "aiPotential": "AI Potential",
       "infrastructure": "Infrastructure"
     }
+  },
+  "footer": {
+    "tagline": "Your ultimate platform to discover, track, and binge-watch TV shows",
+    "navigation": "Navigation",
+    "resources": "Resources",
+    "languages": "Languages",
+    "legal": "Legal",
+    "sourceCode": "Source Code",
+    "apiProvider": "API Provider",
+    "rights": "All rights reserved.",
+    "madeWith": "Made with",
+    "and": "and"
   }
 }
 

@@ -1,10 +1,16 @@
 <template>
-  <div>
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
+  <div class="flex flex-col min-h-screen">
+    <!-- Main Content -->
+    <div class="flex-grow">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </div>
+
+    <!-- Footer -->
+    <AppFooter />
 
     <!-- Cache Debug Component (only in dev mode or with ?debug param) -->
     <CacheDebug v-if="showDebug" />
@@ -21,6 +27,7 @@
 import { ref, onMounted, defineAsyncComponent } from 'vue'
 import ToastNotification from '@/components/ToastNotification.vue'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt.vue'
+import AppFooter from '@/components/AppFooter.vue'
 
 // Lazy load debug component (only needed in dev mode)
 const CacheDebug = defineAsyncComponent(() => import('@/components/CacheDebug.vue'))

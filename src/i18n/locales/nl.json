@@ -207,6 +207,18 @@
       "aiPotential": "AI Potentieel",
       "infrastructure": "Infrastructuur"
     }
+  },
+  "footer": {
+    "tagline": "Jouw ultieme platform om tv-series te ontdekken, volgen en binge-watchen",
+    "navigation": "Navigatie",
+    "resources": "Bronnen",
+    "languages": "Talen",
+    "legal": "Juridisch",
+    "sourceCode": "Broncode",
+    "apiProvider": "API Provider",
+    "rights": "Alle rechten voorbehouden.",
+    "madeWith": "Gemaakt met",
+    "and": "en"
   }
 }
 
