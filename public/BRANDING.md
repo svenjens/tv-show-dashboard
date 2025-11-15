@@ -1,21 +1,21 @@
 
 # TV Show Dashboard - Brand Assets
 
-Generated: 2025-11-14T10:25:38.305Z
+Generated: 2025-11-15T11:37:01.861Z
 Model: gpt-image-1
 
 ## Assets Generated
 
-- **logo-main.png** - 1340.79 KB
-- **logo-full.png** - 2034.44 KB
-- **hero-background.png** - 2125.11 KB
-- **og-image.png** - 1458.76 KB
-- **favicon.png** - 1388.17 KB
-- **icon-192.png** - 1436.88 KB
-- **icon-512.png** - 1530.33 KB
-- **apple-touch-icon.png** - 1350.62 KB
-- **loading-animation.png** - 1412.84 KB
-- **empty-state-illustration.png** - 1594.40 KB
+- **logo-main.png** - 1400.90 KB
+- **logo-full.png** - 2108.04 KB
+- **hero-background.png** - 2078.80 KB
+- **og-image.png** - 1483.93 KB
+- **favicon.png** - 1302.33 KB
+- **icon-192.png** - 1420.92 KB
+- **icon-512.png** - 1552.70 KB
+- **apple-touch-icon.png** - 1456.92 KB
+- **loading-animation.png** - 1404.24 KB
+- **empty-state-illustration.png** - 1409.05 KB
 
 ## Usage
 
@@ -47,7 +47,7 @@ Add to manifest.json:
 
 ## Brand Colors
 
-- Primary: #2563eb
-- Primary Light: #3b82f6
-- Primary Dark: #1d4ed8
+- Primary: #dc2626
+- Primary Light: #ef4444
+- Primary Dark: #b91c1c
 - Accent: #f59e0b
