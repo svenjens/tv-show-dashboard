@@ -119,10 +119,6 @@ const limitedShowsDesktop = computed(() => {
   return props.shows.slice(0, desktopLimit)
 })
 
-const hasMoreShows = computed(() => {
-  return props.shows.length > desktopLimit
-})
-
 function scrollLeft() {
   if (scrollContainer.value) {
     scrollContainer.value.scrollBy({ left: -400, behavior: 'smooth' })
