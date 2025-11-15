@@ -8,7 +8,7 @@ Allow: /
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://tv-show-dashboard-henna.vercel.app/sitemap.xml
+Sitemap: https://bingelist.app/sitemap.xml
 
 # AI-specific crawlers
 User-agent: GPTBot

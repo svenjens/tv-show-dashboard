@@ -23,7 +23,7 @@
               />
             </svg>
           </button>
-          <h1 class="text-2xl font-bold text-gray-900">Search TV Shows</h1>
+          <h1 class="text-2xl font-bold text-gray-900">{{ t('search.title') }}</h1>
         </div>
 
         <SearchBar
@@ -39,6 +39,9 @@
 
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Filters -->
+      <FilterBar v-if="searchStore.hasResults" v-model="filters" :shows="searchStore.results" />
+
       <!-- Loading State -->
       <div v-if="searchStore.isSearching" class="flex justify-center py-12">
         <LoadingSpinner text="Searching..." />
@@ -57,22 +60,30 @@
         <!-- Results Header -->
         <div class="mb-6">
           <h2 class="text-xl font-semibold text-gray-900">
-            <span v-if="searchStore.hasResults">
-              Found {{ searchStore.results.length }} result{{
-                searchStore.results.length === 1 ? '' : 's'
+            <span v-if="filteredResults.length > 0">
+              {{
+                t(
+                  'search.resultsFor',
+                  { count: filteredResults.length, query: searchQuery },
+                  filteredResults.length
+                )
               }}
-              for "{{ searchQuery }}"
             </span>
-            <span v-else> No results found for "{{ searchQuery }}" </span>
+            <span v-else-if="searchStore.hasResults && filteredResults.length === 0">
+              {{ t('filters.noResults') }}
+            </span>
+            <span v-else>
+              {{ t('search.noResults', { query: searchQuery }) }}
+            </span>
           </h2>
         </div>
 
         <!-- Results Grid -->
-        <div v-if="searchStore.hasResults">
+        <div v-if="filteredResults.length > 0">
           <div
             class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-fr mb-8"
           >
-            <ShowCard v-for="show in searchStore.results" :key="show.id" :show="show" />
+            <ShowCard v-for="show in filteredResults" :key="show.id" :show="show" />
           </div>
 
           <!-- Advertisement -->
@@ -129,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSearchStore } from '@/stores'
@@ -139,6 +150,7 @@ import ShowCard from '@/components/ShowCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import AdSense from '@/components/AdSense.vue'
+import FilterBar from '@/components/FilterBar.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -147,6 +159,33 @@ const searchStore = useSearchStore()
 
 const searchBarRef = ref<InstanceType<typeof SearchBar> | null>(null)
 const searchQuery = ref('')
+const filters = ref({ status: '', network: '', year: '' })
+
+// Apply filters to search results
+const filteredResults = computed(() => {
+  let results = searchStore.results
+
+  if (filters.value.status) {
+    results = results.filter((show) => show.status === filters.value.status)
+  }
+
+  if (filters.value.network) {
+    results = results.filter((show) => {
+      const networkName = show.network?.name || show.webChannel?.name
+      return networkName === filters.value.network
+    })
+  }
+
+  if (filters.value.year) {
+    results = results.filter((show) => {
+      if (!show.premiered) return false
+      const year = new Date(show.premiered).getFullYear()
+      return year.toString() === filters.value.year
+    })
+  }
+
+  return results
+})
 
 // SEO (multilingual)
 useSEO({

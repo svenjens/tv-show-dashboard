@@ -143,6 +143,22 @@
     "episodes": "Episodes",
     "cast": "Cast"
   },
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Clear all",
+    "status": "Status",
+    "network": "Network",
+    "year": "Year",
+    "allStatuses": "All statuses",
+    "allNetworks": "All networks",
+    "allYears": "All years",
+    "running": "Running",
+    "ended": "Ended",
+    "toBeDetermined": "To Be Determined",
+    "inDevelopment": "In Development",
+    "active": "Active filters",
+    "noResults": "No shows match your filters"
+  },
   "roadmap": {
     "title": "AI Vision & Roadmap",
     "subtitle": "Exploring the future of intelligent TV show discovery and personalization",
