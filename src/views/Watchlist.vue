@@ -128,7 +128,7 @@ const watchlistStore = useWatchlistStore()
 
 // SEO (multilingual)
 useSEO({
-  title: t('watchlist.title') + ' - TV Show Dashboard',
+  title: t('watchlist.title') + ' - BingeList',
   description: t('watchlist.emptyMessage'),
   keywords: ['watchlist', 'tv shows', 'series', 'favorites'],
 })

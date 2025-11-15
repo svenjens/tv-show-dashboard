@@ -34,7 +34,7 @@
           />
           <img
             src="/optimized/logo-main.png"
-            alt="TV Show Dashboard Logo"
+            alt="BingeList Logo"
             class="h-16 w-16 object-contain"
           />
         </picture>

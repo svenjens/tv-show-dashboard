@@ -1,7 +1,7 @@
 {
   "app": {
-    "title": "TV Show Dashboard",
-    "description": "Ontdek en verken duizenden tv-series georganiseerd per genre"
+    "title": "BingeList",
+    "description": "Jouw ultieme platform om duizenden tv-series te ontdekken, volgen en binge-watchen"
   },
   "navigation": {
     "home": "Home",
@@ -9,8 +9,8 @@
     "back": "Terug"
   },
   "home": {
-    "title": "TV Show Dashboard",
-    "subtitle": "Ontdek en verken duizenden tv-series georganiseerd per genre",
+    "title": "BingeList",
+    "subtitle": "Jouw ultieme platform om tv-series te ontdekken, volgen en binge-watchen",
     "searchPlaceholder": "Zoek TV shows...",
     "showsCount": "{count} series weergegeven over {genres} genres",
     "noShows": "Geen tv-series gevonden",
@@ -74,24 +74,24 @@
   },
   "seo": {
     "home": {
-      "title": "TV Show Dashboard - Ontdek duizenden tv-series",
-      "description": "Ontdek en verken duizenden tv-series georganiseerd per genre. Zoek, blader en vind gedetailleerde informatie over je favoriete series.",
-      "keywords": "tv-series, series, entertainment, genres, streaming"
+      "title": "BingeList - Ontdek & Volg Duizenden TV-series",
+      "description": "Jouw ultieme tv-serie ontdekplatform. Verken duizenden series, maak je watchlist en mis nooit meer een binge-waardige serie!",
+      "keywords": "tv-series, binge watch, series, watchlist, entertainment, streaming"
     },
     "search": {
-      "title": "Zoek TV-series - TV Show Dashboard",
-      "description": "Doorzoek onze uitgebreide database van tv-series. Vind je favoriete series en ontdek nieuwe.",
-      "keywords": "zoek tv-series, vind series, tv-serie zoeken"
+      "title": "Zoek TV-series - BingeList",
+      "description": "Doorzoek duizenden tv-series. Vind je volgende favoriete serie en voeg hem toe aan je watchlist.",
+      "keywords": "zoek tv-series, vind series, tv-serie zoeken, binge list"
     },
     "genre": {
-      "title": "{genre} TV-series - TV Show Dashboard",
-      "description": "Bekijk alle {genre} tv-series. Ontdek de beste {genre} series gesorteerd op waardering.",
-      "keywords": "{genre}, tv-series, series, entertainment"
+      "title": "{genre} TV-series - BingeList",
+      "description": "Ontdek de beste {genre} tv-series. Blader door onze collectie en vind je volgende binge-waardige serie.",
+      "keywords": "{genre}, tv-series, series, binge watch, entertainment"
     },
     "show": {
-      "title": "{name} - TV Show Dashboard",
-      "fallbackDescription": "Bekijk {name} en ontdek meer tv-series op TV Show Dashboard",
-      "keywords": "{name}, tv-serie, serie"
+      "title": "{name} - BingeList",
+      "fallbackDescription": "Voeg {name} toe aan je watchlist en ontdek meer geweldige tv-series op BingeList",
+      "keywords": "{name}, tv-serie, serie, binge watch"
     }
   },
   "watchlist": {
@@ -107,8 +107,8 @@
     "confirmClear": "Weet je zeker dat je je hele watchlist wilt wissen?"
   },
   "pwa": {
-    "installTitle": "Installeer TV Show Dashboard",
-    "installDescription": "Installeer onze app voor een betere ervaring. Werkt offline en laadt sneller!",
+    "installTitle": "Installeer BingeList",
+    "installDescription": "Installeer BingeList voor de beste ervaring. Volg series offline en ontdek sneller!",
     "install": "Installeren",
     "notNow": "Niet nu",
     "updateAvailable": "Een nieuwe versie is beschikbaar!",
