@@ -1,6 +1,8 @@
-# TV Show Dashboard
+# BingeList
 
-An Vue 3 application for browsing and searching TV shows using the TVMaze API. Built with modern web technologies and best practices.
+Your ultimate TV show discovery and tracking platform. Built with Vue 3, TypeScript, and modern web technologies.
+
+🌐 **Live:** [bingelist.app](https://bingelist.app)
 
 ![Vue 3](https://img.shields.io/badge/Vue-3.5-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)

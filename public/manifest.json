@@ -1,7 +1,7 @@
 {
-  "name": "TV Show Dashboard",
-  "short_name": "TV Shows",
-  "description": "Discover and explore thousands of TV shows organized by genre",
+  "name": "BingeList - TV Show Discovery",
+  "short_name": "BingeList",
+  "description": "Your ultimate platform to discover, track, and binge-watch thousands of TV shows",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

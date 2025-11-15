@@ -1,7 +1,7 @@
 {
   "app": {
-    "title": "TV Show Dashboard",
-    "description": "Discover and explore thousands of TV shows organized by genre"
+    "title": "BingeList",
+    "description": "Your ultimate platform to discover, track, and binge-watch thousands of TV shows"
   },
   "navigation": {
     "home": "Home",
@@ -9,8 +9,8 @@
     "back": "Back"
   },
   "home": {
-    "title": "TV Show Dashboard",
-    "subtitle": "Discover and explore thousands of TV shows organized by genre",
+    "title": "BingeList",
+    "subtitle": "Your ultimate platform to discover, track, and binge-watch TV shows",
     "searchPlaceholder": "Search TV shows...",
     "showsCount": "Showing {count} shows across {genres} genres",
     "noShows": "No TV shows found",
@@ -74,24 +74,24 @@
   },
   "seo": {
     "home": {
-      "title": "TV Show Dashboard - Discover thousands of TV shows",
-      "description": "Explore and discover thousands of TV shows organized by genre. Search, browse, and find detailed information about your favorite series.",
-      "keywords": "tv shows, series, entertainment, genres, streaming"
+      "title": "BingeList - Discover & Track Thousands of TV Shows",
+      "description": "Your ultimate TV show discovery platform. Explore thousands of shows, create your watchlist, and never miss your next binge-worthy series!",
+      "keywords": "tv shows, binge watch, series, watchlist, entertainment, streaming"
     },
     "search": {
-      "title": "Search TV Shows - TV Show Dashboard",
-      "description": "Search through our extensive database of TV shows. Find your favorite series and discover new ones.",
-      "keywords": "search tv shows, find series, tv show search"
+      "title": "Search TV Shows - BingeList",
+      "description": "Search through thousands of TV shows. Find your next favorite series and add it to your watchlist.",
+      "keywords": "search tv shows, find series, tv show search, binge list"
     },
     "genre": {
-      "title": "{genre} TV Shows - TV Show Dashboard",
-      "description": "Browse all {genre} TV shows. Discover the best {genre} series sorted by rating.",
-      "keywords": "{genre}, tv shows, series, entertainment"
+      "title": "{genre} TV Shows - BingeList",
+      "description": "Discover the best {genre} TV shows. Browse our curated collection and find your next binge-worthy series.",
+      "keywords": "{genre}, tv shows, series, binge watch, entertainment"
     },
     "show": {
-      "title": "{name} - TV Show Dashboard",
-      "fallbackDescription": "Watch {name} and discover more TV shows on TV Show Dashboard",
-      "keywords": "{name}, tv show, series"
+      "title": "{name} - BingeList",
+      "fallbackDescription": "Add {name} to your watchlist and discover more amazing TV shows on BingeList",
+      "keywords": "{name}, tv show, series, binge watch"
     }
   },
   "watchlist": {
@@ -107,8 +107,8 @@
     "confirmClear": "Are you sure you want to clear your entire watchlist?"
   },
   "pwa": {
-    "installTitle": "Install TV Show Dashboard",
-    "installDescription": "Install our app for a better experience. Works offline and loads faster!",
+    "installTitle": "Install BingeList",
+    "installDescription": "Install BingeList for the best experience. Track shows offline and discover faster!",
     "install": "Install",
     "notNow": "Not now",
     "updateAvailable": "A new version is available!",

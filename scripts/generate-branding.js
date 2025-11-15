@@ -1,7 +1,7 @@
 /**
  * Brand Asset Generator using OpenAI gpt-image-1
  * 
- * Generates logo and brand assets for the TV Show Dashboard
+ * Generates logo and brand assets for BingeList
  * Usage: OPENAI_API_KEY=your-key node scripts/generate-branding.js
  * 
  * Requires: OPENAI_API_KEY environment variable
@@ -34,49 +34,50 @@ const BRAND_STYLE = {
 const ASSET_PROMPTS = [
   {
     name: 'logo-main',
-    prompt: `Create a modern, elegant logo icon for a TV show discovery platform. 
-    The design should feature a stylized TV screen or play button combined with film reel elements. 
+    prompt: `Create a modern, elegant logo icon for BingeList, a TV show discovery platform. 
+    Design should feature a stylized play button or binge-watch concept (like stacked screens or a "list" checkmark). 
     Use white and gold gradient colors (white to #f59e0b amber/gold). 
-    Cinema and entertainment aesthetic with clean lines. 
-    Icon only, no text. Centered composition. Professional but fun. 
-    Design should work well on red backgrounds.`,
+    Modern, entertainment-focused aesthetic with clean lines. 
+    Icon only, no text. Centered composition. Professional and memorable. 
+    Design should work perfectly on red backgrounds (#dc2626).`,
     size: '1024x1024',
     quality: 'high',
   },
   {
     name: 'logo-full',
-    prompt: `Create a full horizontal logo with icon and "TV Show Dashboard" text. 
-    Include a modern TV/play icon on the left with clean sans-serif text on the right. 
+    prompt: `Create a full horizontal logo with icon and "BingeList" text. 
+    Include a modern binge-watch/list icon on the left with clean sans-serif "BingeList" text on the right. 
     Use white and gold colors (white text with gold #f59e0b accents). 
-    Entertainment and media aesthetic. Wide format suitable for app headers. 
-    Should look premium on red backgrounds. 
-    Professional yet approachable design for a TV show discovery app.`,
+    Entertainment and streaming aesthetic. Wide format suitable for app headers. 
+    Should look premium on red backgrounds (#dc2626). 
+    Professional, memorable, and modern design for a TV show discovery and tracking platform.`,
     size: '1536x1024',
     quality: 'high',
   },
   {
     name: 'hero-background',
-    prompt: `Create an abstract, cinematic background illustration for a TV show platform. 
-    Show flowing geometric shapes suggesting TV screens, film strips, and entertainment elements. 
-    Use deep red gradients (${BRAND_STYLE.primary}) with white and gold accents. 
+    prompt: `Create an abstract, cinematic background illustration for BingeList, a TV show tracking platform. 
+    Show flowing geometric shapes suggesting streaming, binge-watching, and content discovery. 
+    Use deep red gradients (#dc2626) with white and gold accents. 
     Modern, clean aesthetic with depth and subtle motion blur. 
-    Wide horizontal format suitable for hero section background. Atmospheric and professional.`,
+    Wide horizontal format suitable for hero section background. Atmospheric and professional. 
+    Should evoke the feeling of discovering your next favorite show.`,
     size: '1536x1024',
     quality: 'high',
   },
   {
     name: 'og-image',
-    prompt: `Create a social media share image for a TV show discovery platform. 
-    Show multiple stylized TV screens arranged in a modern grid with gradient overlays. 
-    Include abstract representations of different genres (action, drama, comedy) through colors and shapes. 
-    Use red gradient (${BRAND_STYLE.primary}) with white and gold accents as the dominant colors with entertainment vibe. 
-    Text space in center. Professional social media design. 1200x630 composition.`,
+    prompt: `Create a social media share image for BingeList, the ultimate TV show discovery platform. 
+    Show a modern composition with "BingeList" branding and watchlist/binge-watch concept. 
+    Include abstract representations of different TV genres through dynamic shapes and colors. 
+    Use red gradient (#dc2626) as dominant color with white and gold accents (#f59e0b). 
+    Modern, engaging social media design. Professional yet exciting. 1200x1200 composition.`,
     size: '1024x1024',
     quality: 'high',
   },
   {
     name: 'favicon',
-    prompt: `Create a simple, bold favicon icon for a TV show platform. 
+    prompt: `Create a simple, bold favicon icon for BingeList, a TV show tracking platform. 
     A clean TV screen or play button icon with minimal details. 
     Use white and gold (${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) background. 
     Must be recognizable at tiny sizes (16x16px to 512x512px). 
@@ -86,18 +87,18 @@ const ASSET_PROMPTS = [
   },
   {
     name: 'icon-192',
-    prompt: `Create a PWA app icon for a TV show discovery platform (192x192). 
-    Modern TV/play icon with subtle entertainment elements. 
+    prompt: `Create a PWA app icon for BingeList (192x192). 
+    Modern binge-watch/list icon with entertainment elements. 
     Use white and gold (${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) background with a slight gradient. 
     Clean, recognizable design suitable for mobile home screens. 
-    Rounded square format with padding. Professional and polished.`,
+    Rounded square format with padding. Professional and memorable.`,
     size: '1024x1024',
     quality: 'medium',
   },
   {
     name: 'icon-512',
-    prompt: `Create a high-resolution PWA app icon for a TV show platform (512x512). 
-    Detailed TV screen or film reel icon with entertainment aesthetic. 
+    prompt: `Create a high-resolution PWA app icon for BingeList (512x512). 
+    Detailed binge-watch/watchlist icon with modern entertainment aesthetic. 
     White and gold gradient (white to ${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) background with depth. 
     Polished, professional design with subtle shadows and highlights. 
     Rounded square format. Suitable for app stores and high-res displays.`,
@@ -106,8 +107,8 @@ const ASSET_PROMPTS = [
   },
   {
     name: 'apple-touch-icon',
-    prompt: `Create an Apple touch icon for a TV show discovery app. 
-    Clean TV/entertainment icon with rounded square format. 
+    prompt: `Create an Apple touch icon for BingeList. 
+    Clean binge-watch/list icon with rounded square format. 
     Use white and gold (${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) gradient with iOS-style depth and lighting. 
     Professional, polished design suitable for iOS home screen. 
     High quality with subtle gradients and depth. 180x180 format.`,
@@ -116,8 +117,8 @@ const ASSET_PROMPTS = [
   },
   {
     name: 'loading-animation',
-    prompt: `Create a simple loading spinner icon for a TV show app. 
-    Circular design with TV or film reel elements that suggest motion. 
+    prompt: `Create a simple loading spinner icon for BingeList. 
+    Circular design with binge-watch or list elements that suggest motion. 
     Use white and gold (${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) background. 
     Clean, minimal design suitable for loading states. 
     Centered, simple shapes that work well when animated.`,
@@ -126,11 +127,11 @@ const ASSET_PROMPTS = [
   },
   {
     name: 'empty-state-illustration',
-    prompt: `Create a friendly empty state illustration for when no TV shows are found. 
-    Show a simple TV screen or popcorn bowl with a subtle "nothing here yet" aesthetic. 
+    prompt: `Create a friendly empty state illustration for BingeList when no shows are found. 
+    Show an empty watchlist clipboard or simple TV screen with a subtle "nothing here yet" aesthetic. 
     Use soft white and gold (${BRAND_STYLE.accent}) on gentle red (${BRAND_STYLE.primaryLight}) with light accents. 
     Friendly, approachable, minimal illustration style. 
-    Centered composition suitable for empty search results or loading states.`,
+    Centered composition suitable for empty watchlist or search results.`,
     size: '1024x1024',
     quality: 'medium',
   },
@@ -150,7 +151,6 @@ async function generateImage(config) {
       prompt: config.prompt,
       size: config.size,
       quality: config.quality,
-      background: 'transparent',
       n: 1,
     })
 
