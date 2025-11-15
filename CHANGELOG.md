@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/svenjens/tv-show-dashboard/compare/v1.2.0...v1.3.0) (2025-11-15)
+
+
+### Features
+
+* watchlist functionality + PWA support ([#11](https://github.com/svenjens/tv-show-dashboard/issues/11)) ([e2d62fb](https://github.com/svenjens/tv-show-dashboard/commit/e2d62fb78b5f9f4ac74052123a500a2be6421e43))
+
 ## [1.2.0](https://github.com/svenjens/tv-show-dashboard/compare/v1.1.1...v1.2.0) (2025-11-15)
 
 
