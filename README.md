@@ -470,7 +470,7 @@ npm run build
 Potential features for future iterations:
 
 - [ ] User authentication and favorites
-- [ ] Advanced filtering (by network, year, status)
+- [x] Advanced filtering (by network, year, status) - ✅ **Implemented**
 - [x] Episode tracking - ✅ **Implemented**
 - [x] Season and episode details - ✅ **Implemented**
 - [x] Cast and crew information - ✅ **Implemented**

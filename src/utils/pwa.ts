@@ -63,10 +63,15 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 
 /**
  * Initialize PWA install prompt
+ * 
+ * Note: beforeinstallprompt.preventDefault() is deprecated but still functional.
+ * It prevents the browser's default install banner and allows us to show a custom prompt.
+ * The new recommended approach is to use the prompt() method within a user gesture.
  */
 export function initInstallPrompt(): void {
   window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing
+    // Prevent the mini-infobar from appearing on mobile
+    // @ts-ignore - preventDefault is deprecated but still functional
     e.preventDefault()
     // Store the event for later use
     deferredPrompt = e as BeforeInstallPromptEvent

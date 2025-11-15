@@ -143,6 +143,22 @@
     "episodes": "Afleveringen",
     "cast": "Cast"
   },
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Alles wissen",
+    "status": "Status",
+    "network": "Zender",
+    "year": "Jaar",
+    "allStatuses": "Alle statussen",
+    "allNetworks": "Alle zenders",
+    "allYears": "Alle jaren",
+    "running": "Lopend",
+    "ended": "Beëindigd",
+    "toBeDetermined": "Nog te bepalen",
+    "inDevelopment": "In ontwikkeling",
+    "active": "Actieve filters",
+    "noResults": "Geen series voldoen aan je filters"
+  },
   "roadmap": {
     "title": "AI Visie & Roadmap",
     "subtitle": "De toekomst verkennen van intelligente tv-serie ontdekking en personalisatie",
@@ -219,6 +235,21 @@
     "rights": "Alle rechten voorbehouden.",
     "madeWith": "Gemaakt met",
     "and": "en"
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Alles wissen",
+    "status": "Status",
+    "network": "Zender",
+    "year": "Jaar",
+    "allStatuses": "Alle statussen",
+    "allNetworks": "Alle zenders",
+    "allYears": "Alle jaren",
+    "running": "Lopend",
+    "ended": "Beëindigd",
+    "toBeDetermined": "Nog te bepalen",
+    "inDevelopment": "In ontwikkeling",
+    "active": "Actieve filters",
+    "noResults": "Geen series voldoen aan je filters"
   }
 }
 
