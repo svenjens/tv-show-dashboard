@@ -105,7 +105,7 @@
             sizes="192px"
           />
           <img
-            src="/empty-state-illustration.png"
+            src="/optimized/empty-state-illustration.png"
             alt=""
             class="mx-auto h-48 w-48 object-contain opacity-50"
             aria-hidden="true"

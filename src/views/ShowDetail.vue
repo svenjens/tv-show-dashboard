@@ -150,7 +150,7 @@
                 <a
                   :href="show.officialSite"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener noreferrer external nofollow"
                   class="inline-flex items-center gap-2 btn-primary focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-900"
                   :aria-label="`${t('show.officialWebsite')} - ${t('accessibility.externalLink')}`"
                 >

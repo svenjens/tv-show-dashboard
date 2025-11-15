@@ -72,18 +72,6 @@
     "toggleLanguage": "Taal wisselen",
     "externalLink": "Opent in nieuw venster"
   },
-  "pagination": {
-    "navigation": "Paginanavigatie",
-    "previous": "Vorige",
-    "next": "Volgende",
-    "previousPage": "Vorige pagina",
-    "nextPage": "Volgende pagina",
-    "page": "Pagina {page}",
-    "showing": "Weergave",
-    "to": "tot",
-    "of": "van",
-    "results": "resultaten"
-  },
   "seo": {
     "home": {
       "title": "TV Show Dashboard - Ontdek duizenden tv-series",
@@ -117,6 +105,14 @@
     "showCount": "Geen serie | {count} serie | {count} series",
     "clearAll": "Alles wissen",
     "confirmClear": "Weet je zeker dat je je hele watchlist wilt wissen?"
+  },
+  "pwa": {
+    "installTitle": "Installeer TV Show Dashboard",
+    "installDescription": "Installeer onze app voor een betere ervaring. Werkt offline en laadt sneller!",
+    "install": "Installeren",
+    "notNow": "Niet nu",
+    "updateAvailable": "Een nieuwe versie is beschikbaar!",
+    "update": "Nu updaten"
   }
 }
 

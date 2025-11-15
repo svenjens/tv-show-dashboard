@@ -72,18 +72,6 @@
     "toggleLanguage": "Toggle language",
     "externalLink": "Opens in new window"
   },
-  "pagination": {
-    "navigation": "Pagination navigation",
-    "previous": "Previous",
-    "next": "Next",
-    "previousPage": "Previous page",
-    "nextPage": "Next page",
-    "page": "Page {page}",
-    "showing": "Showing",
-    "to": "to",
-    "of": "of",
-    "results": "results"
-  },
   "seo": {
     "home": {
       "title": "TV Show Dashboard - Discover thousands of TV shows",
@@ -117,6 +105,14 @@
     "showCount": "No show | {count} show | {count} shows",
     "clearAll": "Clear all",
     "confirmClear": "Are you sure you want to clear your entire watchlist?"
+  },
+  "pwa": {
+    "installTitle": "Install TV Show Dashboard",
+    "installDescription": "Install our app for a better experience. Works offline and loads faster!",
+    "install": "Install",
+    "notNow": "Not now",
+    "updateAvailable": "A new version is available!",
+    "update": "Update now"
   }
 }
 
