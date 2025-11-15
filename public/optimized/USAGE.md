@@ -1,6 +1,6 @@
 # Optimized Images Usage Guide
 
-Generated: 2025-11-14T10:58:35.699Z
+Generated: 2025-11-15T11:38:21.779Z
 
 ## Overview
 

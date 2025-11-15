@@ -36,9 +36,10 @@ const ASSET_PROMPTS = [
     name: 'logo-main',
     prompt: `Create a modern, elegant logo icon for a TV show discovery platform. 
     The design should feature a stylized TV screen or play button combined with film reel elements. 
-    Use a vibrant blue gradient (${BRAND_STYLE.primary} to ${BRAND_STYLE.primaryLight}). 
+    Use white and gold gradient colors (white to #f59e0b amber/gold). 
     Cinema and entertainment aesthetic with clean lines. 
-    Icon only, no text. Centered composition. Professional but fun.`,
+    Icon only, no text. Centered composition. Professional but fun. 
+    Design should work well on red backgrounds.`,
     size: '1024x1024',
     quality: 'high',
   },
@@ -46,8 +47,9 @@ const ASSET_PROMPTS = [
     name: 'logo-full',
     prompt: `Create a full horizontal logo with icon and "TV Show Dashboard" text. 
     Include a modern TV/play icon on the left with clean sans-serif text on the right. 
-    Use gradient blue colors (${BRAND_STYLE.primary} to ${BRAND_STYLE.primaryLight}). 
+    Use white and gold colors (white text with gold #f59e0b accents). 
     Entertainment and media aesthetic. Wide format suitable for app headers. 
+    Should look premium on red backgrounds. 
     Professional yet approachable design for a TV show discovery app.`,
     size: '1536x1024',
     quality: 'high',
@@ -56,7 +58,7 @@ const ASSET_PROMPTS = [
     name: 'hero-background',
     prompt: `Create an abstract, cinematic background illustration for a TV show platform. 
     Show flowing geometric shapes suggesting TV screens, film strips, and entertainment elements. 
-    Use deep blue gradients (${BRAND_STYLE.primary}) with subtle purple and amber accents. 
+    Use deep red gradients (${BRAND_STYLE.primary}) with white and gold accents. 
     Modern, clean aesthetic with depth and subtle motion blur. 
     Wide horizontal format suitable for hero section background. Atmospheric and professional.`,
     size: '1536x1024',
@@ -67,7 +69,7 @@ const ASSET_PROMPTS = [
     prompt: `Create a social media share image for a TV show discovery platform. 
     Show multiple stylized TV screens arranged in a modern grid with gradient overlays. 
     Include abstract representations of different genres (action, drama, comedy) through colors and shapes. 
-    Use blue gradient (${BRAND_STYLE.primary}) as the dominant color with entertainment vibe. 
+    Use red gradient (${BRAND_STYLE.primary}) with white and gold accents as the dominant colors with entertainment vibe. 
     Text space in center. Professional social media design. 1200x630 composition.`,
     size: '1024x1024',
     quality: 'high',
@@ -76,7 +78,7 @@ const ASSET_PROMPTS = [
     name: 'favicon',
     prompt: `Create a simple, bold favicon icon for a TV show platform. 
     A clean TV screen or play button icon with minimal details. 
-    Use solid ${BRAND_STYLE.primary} blue color. 
+    Use white and gold (${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) background. 
     Must be recognizable at tiny sizes (16x16px to 512x512px). 
     Bold shapes, high contrast, simple and iconic. Centered composition.`,
     size: '1024x1024',
@@ -86,7 +88,7 @@ const ASSET_PROMPTS = [
     name: 'icon-192',
     prompt: `Create a PWA app icon for a TV show discovery platform (192x192). 
     Modern TV/play icon with subtle entertainment elements. 
-    Use ${BRAND_STYLE.primary} blue with a slight gradient. 
+    Use white and gold (${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) background with a slight gradient. 
     Clean, recognizable design suitable for mobile home screens. 
     Rounded square format with padding. Professional and polished.`,
     size: '1024x1024',
@@ -96,7 +98,7 @@ const ASSET_PROMPTS = [
     name: 'icon-512',
     prompt: `Create a high-resolution PWA app icon for a TV show platform (512x512). 
     Detailed TV screen or film reel icon with entertainment aesthetic. 
-    Blue gradient (${BRAND_STYLE.primary} to ${BRAND_STYLE.primaryLight}) with depth. 
+    White and gold gradient (white to ${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) background with depth. 
     Polished, professional design with subtle shadows and highlights. 
     Rounded square format. Suitable for app stores and high-res displays.`,
     size: '1024x1024',
@@ -106,7 +108,7 @@ const ASSET_PROMPTS = [
     name: 'apple-touch-icon',
     prompt: `Create an Apple touch icon for a TV show discovery app. 
     Clean TV/entertainment icon with rounded square format. 
-    Use ${BRAND_STYLE.primary} blue gradient with iOS-style depth and lighting. 
+    Use white and gold (${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) gradient with iOS-style depth and lighting. 
     Professional, polished design suitable for iOS home screen. 
     High quality with subtle gradients and depth. 180x180 format.`,
     size: '1024x1024',
@@ -116,7 +118,7 @@ const ASSET_PROMPTS = [
     name: 'loading-animation',
     prompt: `Create a simple loading spinner icon for a TV show app. 
     Circular design with TV or film reel elements that suggest motion. 
-    Use ${BRAND_STYLE.primary} blue color. 
+    Use white and gold (${BRAND_STYLE.accent}) on red (${BRAND_STYLE.primary}) background. 
     Clean, minimal design suitable for loading states. 
     Centered, simple shapes that work well when animated.`,
     size: '1024x1024',
@@ -126,7 +128,7 @@ const ASSET_PROMPTS = [
     name: 'empty-state-illustration',
     prompt: `Create a friendly empty state illustration for when no TV shows are found. 
     Show a simple TV screen or popcorn bowl with a subtle "nothing here yet" aesthetic. 
-    Use soft ${BRAND_STYLE.primary} blue with light gray accents. 
+    Use soft white and gold (${BRAND_STYLE.accent}) on gentle red (${BRAND_STYLE.primaryLight}) with light accents. 
     Friendly, approachable, minimal illustration style. 
     Centered composition suitable for empty search results or loading states.`,
     size: '1024x1024',
