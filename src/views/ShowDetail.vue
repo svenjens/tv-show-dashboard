@@ -437,6 +437,7 @@ async function loadShow() {
   episodesError.value = null
   cast.value = []
   castError.value = null
+  streamingAvailability.value = []
 
   try {
     // First try to get from store

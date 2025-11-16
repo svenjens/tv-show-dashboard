@@ -97,7 +97,12 @@ const handleStreamingClick = (
   service: StreamingAvailability['service'],
   link: string
 ) => {
-  // Prevent default navigation
+  // Allow default behavior for modified clicks (cmd/ctrl/middle-click/right-click)
+  if (event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0) {
+    return
+  }
+
+  // Prevent default navigation for normal left clicks only
   event.preventDefault()
 
   const platform = service.name

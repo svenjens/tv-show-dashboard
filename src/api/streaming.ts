@@ -215,7 +215,8 @@ class StreamingService {
    */
   private tmdbProviderToAvailability(
     provider: TMDBWatchProvider,
-    type: 'subscription' | 'buy' | 'rent' | 'free' | 'ads'
+    type: 'subscription' | 'buy' | 'rent' | 'free' | 'ads',
+    country: string
   ): StreamingAvailability | null {
     const platformId = this.mapTMDBProviderToId(provider.provider_id, provider.provider_name)
     
@@ -243,7 +244,7 @@ class StreamingService {
         name: platform.name,
         logo: platform.logo,
         link: platform.homePage,
-        country: 'NL', // This comes from TMDB response
+        country,
         type,
       },
       link,
@@ -281,7 +282,8 @@ class StreamingService {
             for (const provider of countryData.flatrate) {
               const streamingOption = this.tmdbProviderToAvailability(
                 provider,
-                'subscription'
+                'subscription',
+                country
               )
               if (streamingOption && !this.isDuplicate(availability, streamingOption)) {
                 availability.push(streamingOption)
@@ -294,7 +296,8 @@ class StreamingService {
             for (const provider of countryData.ads) {
               const streamingOption = this.tmdbProviderToAvailability(
                 provider,
-                'ads'
+                'ads',
+                country
               )
               if (streamingOption && !this.isDuplicate(availability, streamingOption)) {
                 availability.push(streamingOption)

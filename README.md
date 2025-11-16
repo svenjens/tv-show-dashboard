@@ -536,7 +536,13 @@ If you encounter any issues, ensure you're using compatible versions.
 
 ### Environment Variables
 
-No environment variables are required for this project as it uses the public TVMaze API.
+The core TVMaze features work without any environment variables, but some integrations use optional keys:
+
+- `VITE_TMDB_API_KEY` — enables multi-platform streaming availability via TMDB.
+- `VITE_GOOGLE_ADSENSE_ID` — enables Google AdSense in production builds.
+- `VITE_AMAZON_ASSOCIATE_TAG` — enables Amazon affiliate tagging for Prime Video links.
+
+See the "Configure Environment Variables" section above for setup details.
 
 ### Known Limitations
 
