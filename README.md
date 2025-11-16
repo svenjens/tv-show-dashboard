@@ -188,6 +188,31 @@ npm run test:ui
 npm run test:coverage
 ```
 
+### Testing Streaming Availability
+
+The streaming availability feature shows where shows can be watched online. Currently, it detects streaming platforms from the TVMaze API's `webChannel` property.
+
+**Test Cases:**
+
+| Show | webChannel | Result | Use Case |
+|------|------------|--------|----------|
+| **Stranger Things** | Netflix | ✅ Shows Netflix | Netflix Original |
+| **The Boys** | Amazon Prime Video | ✅ Shows Amazon Prime | Prime Original |
+| **The Mandalorian** | Disney+ | ✅ Shows Disney+ | Disney+ Original |
+| **Game of Thrones** | HBO Max | ✅ Shows HBO Max | HBO Original |
+| **Under the Dome** | CBS | ❌ No streaming | Network TV (no webChannel streaming) |
+| **Breaking Bad** | AMC | ❌ No streaming | Network TV (requires external API) |
+
+**Empty State Testing:**
+- Navigate to shows without a `webChannel` property to test the "not available" message
+- Example shows: "Breaking Bad", "The Office", "Friends"
+
+**Future Enhancement:**
+To show multi-platform availability (e.g., a show on both Netflix and Hulu), we would need to integrate with:
+- Streaming Availability API
+- JustWatch API (deprecated)
+- TMDB (limited streaming data)
+
 ## 🏗️ Architecture
 
 ### Technology Stack
