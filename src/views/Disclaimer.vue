@@ -41,7 +41,7 @@
 
         <section>
           <h2>2. {{ t('legal.contentAccuracy') }}</h2>
-          <p v-html="t('legal.disclaimer.accuracyDesc', { tvmaze: tvmazeLink })"></p>
+          <SafeHtml :content="t('legal.disclaimer.accuracyDesc', { tvmaze: tvmazeLink })" />
         </section>
 
         <section>
@@ -100,6 +100,7 @@ import { useSEO } from '@/composables'
 import SkipToContent from '@/components/SkipToContent.vue'
 import LegalArticle from '@/components/LegalArticle.vue'
 import DarkModeToggle from '@/components/DarkModeToggle.vue'
+import SafeHtml from '@/components/SafeHtml.vue'
 
 const { t, locale } = useI18n()
 const router = useRouter()

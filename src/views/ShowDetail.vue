@@ -210,14 +210,12 @@
               <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 {{ t('show.summary') }}
               </h2>
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <div
+              <SafeHtml
+                :content="show.summary || ''"
                 class="prose dark:prose-invert prose-lg max-w-none text-gray-700 dark:text-gray-300"
                 role="region"
                 :aria-labelledby="'show-title'"
-                v-html="sanitizedSummary"
-              ></div>
-              <!-- Safe: HTML is sanitized with DOMPurify before rendering -->
+              />
             </article>
 
             <!-- Streaming Availability -->
@@ -288,7 +286,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import DOMPurify from 'dompurify'
+import SafeHtml from '@/components/SafeHtml.vue'
 import { useShowsStore } from '@/stores'
 import type { Show, ApiError, Episode, CastMember } from '@/types'
 import { getShowImage, formatSchedule, extractIdFromSlug, createShowSlug } from '@/utils'
@@ -338,11 +336,7 @@ const tabs = [
   { id: 'cast', label: 'tabs.cast' },
 ]
 
-// Sanitize HTML to prevent XSS attacks
-const sanitizedSummary = computed(() => {
-  if (!show.value?.summary) return ''
-  return DOMPurify.sanitize(show.value.summary)
-})
+// SafeHtml component handles sanitization
 
 const relatedShows = computed(() => {
   if (!show.value) return []

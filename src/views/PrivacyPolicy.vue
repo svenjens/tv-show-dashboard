@@ -63,9 +63,21 @@
             <li>
               <strong>{{ t('legal.privacy.cookieThirdParty') }}</strong>
               <ul>
-                <li v-html="t('legal.privacy.cookieTVMaze', { tvmazePolicy: tvmazeLink })"></li>
-                <li v-html="t('legal.privacy.cookieAdSense', { adSettings: adSettingsLink })"></li>
-                <li v-html="t('legal.privacy.cookieVercel', { vercelPolicy: vercelLink })"></li>
+                <li>
+                  <SafeHtml
+                    :content="t('legal.privacy.cookieTVMaze', { tvmazePolicy: tvmazeLink })"
+                  />
+                </li>
+                <li>
+                  <SafeHtml
+                    :content="t('legal.privacy.cookieAdSense', { adSettings: adSettingsLink })"
+                  />
+                </li>
+                <li>
+                  <SafeHtml
+                    :content="t('legal.privacy.cookieVercel', { vercelPolicy: vercelLink })"
+                  />
+                </li>
               </ul>
             </li>
           </ul>
@@ -130,6 +142,7 @@ import { useSEO } from '@/composables'
 import SkipToContent from '@/components/SkipToContent.vue'
 import LegalArticle from '@/components/LegalArticle.vue'
 import DarkModeToggle from '@/components/DarkModeToggle.vue'
+import SafeHtml from '@/components/SafeHtml.vue'
 
 const { t, locale } = useI18n()
 const router = useRouter()
