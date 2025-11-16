@@ -15,68 +15,62 @@
     {
       "name": "logo-main",
       "filename": "logo-main.png",
-      "size_kb": "1391.16",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/logo-main.png"
+      "size_kb": "1384.17",
+      "path": "public/logo-main.png"
     },
     {
       "name": "logo-full",
       "filename": "logo-full.png",
-      "size_kb": "2039.92",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/logo-full.png"
+      "size_kb": "2074.86",
+      "path": "public/logo-full.png"
     },
     {
       "name": "hero-background",
       "filename": "hero-background.png",
-      "size_kb": "2167.83",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/hero-background.png"
+      "size_kb": "2523.90",
+      "path": "public/hero-background.png"
     },
     {
       "name": "og-image",
       "filename": "og-image.png",
-      "size_kb": "1471.20",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/og-image.png"
+      "size_kb": "1795.92",
+      "path": "public/og-image.png"
     },
     {
-      "name": "favicon-light",
-      "filename": "favicon-light.png",
-      "size_kb": "1124.37",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/favicon-light.png"
-    },
-    {
-      "name": "favicon-dark",
-      "filename": "favicon-dark.png",
-      "size_kb": "689.38",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/favicon-dark.png"
+      "name": "favicon",
+      "filename": "favicon.png",
+      "size_kb": "1326.40",
+      "path": "public/favicon.png"
     },
     {
       "name": "icon-192",
       "filename": "icon-192.png",
-      "size_kb": "1434.76",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/icon-192.png"
+      "size_kb": "1445.52",
+      "path": "public/icon-192.png"
     },
     {
       "name": "icon-512",
       "filename": "icon-512.png",
-      "size_kb": "1682.13",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/icon-512.png"
+      "size_kb": "1662.72",
+      "path": "public/icon-512.png"
     },
     {
       "name": "apple-touch-icon",
       "filename": "apple-touch-icon.png",
-      "size_kb": "1414.59",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/apple-touch-icon.png"
+      "size_kb": "1424.71",
+      "path": "public/apple-touch-icon.png"
     },
     {
       "name": "loading-animation",
       "filename": "loading-animation.png",
-      "size_kb": "1085.72",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/loading-animation.png"
+      "size_kb": "1134.81",
+      "path": "public/loading-animation.png"
     },
     {
       "name": "empty-state-illustration",
       "filename": "empty-state-illustration.png",
-      "size_kb": "1226.90",
-      "path": "/Users/svenjens/Projects/tv-show-dashboard/tv-show-dashboard/public/empty-state-illustration.png"
+      "size_kb": "1254.61",
+      "path": "public/empty-state-illustration.png"
     }
   ]
 }
