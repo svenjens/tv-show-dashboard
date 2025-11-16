@@ -99,7 +99,11 @@
     <main id="main-content" class="max-w-7xl mx-auto py-8 overflow-visible" tabindex="-1">
       <!-- Filters -->
       <div class="px-4">
-        <FilterBar v-if="!showsStore.isLoading && showsStore.showsCount > 0" v-model="filters" :shows="showsStore.allShows" />
+        <FilterBar
+          v-if="!showsStore.isLoading && showsStore.showsCount > 0"
+          v-model="filters"
+          :shows="showsStore.allShows"
+        />
       </div>
 
       <!-- Loading State -->
@@ -260,7 +264,7 @@ const filteredShows = computed(() => {
 // Get genres from filtered shows
 const filteredGenres = computed(() => {
   const genreMap = new Map<string, Show[]>()
-  
+
   filteredShows.value.forEach((show: Show) => {
     if (show.genres && show.genres.length > 0) {
       show.genres.forEach((genre: string) => {
@@ -343,9 +347,13 @@ function handleSearchFocus() {
 }
 
 // Reset visible genres count when filters change
-watch(filters, () => {
-  visibleGenresCount.value = genresPerPage
-}, { deep: true })
+watch(
+  filters,
+  () => {
+    visibleGenresCount.value = genresPerPage
+  },
+  { deep: true }
+)
 
 onMounted(async () => {
   await showsStore.fetchAllShows()
