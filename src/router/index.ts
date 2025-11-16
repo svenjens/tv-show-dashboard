@@ -145,10 +145,7 @@ router.beforeEach((to, _from, next) => {
   updateHreflangTags(to.path)
 
   // Track page view
-  trackPageView(
-    (title && typeof title === 'string') ? title : 'BingeList',
-    to.path
-  )
+  trackPageView(title && typeof title === 'string' ? title : 'BingeList', to.path)
 
   next()
 })

@@ -1,6 +1,6 @@
 /**
  * Google Tag Manager / Google Ads Tracking
- * 
+ *
  * Provides methods to initialize and track events with Google Ads
  * Respects user privacy with DNT (Do Not Track) support
  */
@@ -23,16 +23,16 @@ function isTrackingAllowed(): boolean {
   if (typeof window === 'undefined') {
     return false
   }
-  
+
   // Check Do Not Track preference across different browser implementations
-  // @ts-ignore - msDoNotTrack is IE-specific
+  // @ts-expect-error - msDoNotTrack is IE-specific
   const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack
-  
+
   // DNT can be '1', 'yes', or true depending on browser
   if (dnt === '1' || dnt === 'yes' || dnt === true) {
     return false
   }
-  
+
   return true
 }
 
@@ -68,24 +68,24 @@ export function initGoogleAds(adsId: string): void {
   try {
     // Initialize dataLayer
     window.dataLayer = window.dataLayer || []
-    
+
     // Define gtag function
     window.gtag = function gtag(...args: unknown[]) {
       window.dataLayer.push(args)
     }
-    
+
     // Initialize with current date
     window.gtag('js', new Date())
-    
+
     // Configure with Ads ID
     window.gtag('config', adsId)
-    
+
     // Load the gtag.js script with validated/sanitized adsId
     const script = document.createElement('script')
     script.async = true
     script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(adsId)}`
     document.head.appendChild(script)
-    
+
     logger.debug('[GTM] Google Ads initialized', { adsId })
   } catch (error) {
     logger.error('[GTM] Failed to initialize Google Ads', error)
@@ -104,7 +104,7 @@ export function trackEvent(eventName: string, params?: Record<string, unknown>):
   if (typeof window === 'undefined' || !window.gtag) {
     return
   }
-  
+
   try {
     window.gtag('event', eventName, params)
     logger.debug('[GTM] Event tracked', { eventName, params })
@@ -155,7 +155,11 @@ export function trackShowView(showId: number, showName: string): void {
 /**
  * Track watchlist action (custom event)
  */
-export function trackWatchlistAction(action: 'add' | 'remove', showId: number, showName: string): void {
+export function trackWatchlistAction(
+  action: 'add' | 'remove',
+  showId: number,
+  showName: string
+): void {
   trackEvent('watchlist_action', {
     action,
     show_id: showId,
@@ -169,16 +173,16 @@ export function trackWatchlistAction(action: 'add' | 'remove', showId: number, s
  */
 function sanitizeSearchTerm(searchTerm: string): string {
   if (!searchTerm) return ''
-  
+
   // Truncate to max 100 characters to prevent long personal info
   let sanitized = searchTerm.slice(0, 100)
-  
+
   // Remove potential email addresses (basic pattern)
   sanitized = sanitized.replace(/\S+@\S+\.\S+/g, '[email]')
-  
+
   // Remove potential phone numbers (basic patterns)
   sanitized = sanitized.replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[phone]')
-  
+
   return sanitized.trim()
 }
 
@@ -198,7 +202,11 @@ export function trackSearch(searchTerm: string, resultCount: number): void {
  * Note: For external links, tracking may not complete before navigation.
  * Consider using gtag transport: 'beacon' option in production for critical tracking.
  */
-export function trackStreamingClick(platform: string, showName: string, isAffiliate: boolean): void {
+export function trackStreamingClick(
+  platform: string,
+  showName: string,
+  isAffiliate: boolean
+): void {
   trackEvent('streaming_click', {
     platform,
     show_name: showName,

@@ -3,7 +3,10 @@
     <SkipToContent />
 
     <!-- Header -->
-    <div class="bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900 text-white" role="banner">
+    <div
+      class="bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900 text-white"
+      role="banner"
+    >
       <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="flex items-center justify-between mb-4">
           <button
@@ -48,9 +51,15 @@
           <h2>3. {{ t('legal.cookies') }}</h2>
           <p>{{ t('legal.privacy.cookiesIntro') }}</p>
           <ul>
-            <li><strong>{{ t('legal.privacy.cookieTheme') }}</strong></li>
-            <li><strong>{{ t('legal.privacy.cookieWatchlist') }}</strong></li>
-            <li><strong>{{ t('legal.privacy.cookieSearches') }}</strong></li>
+            <li>
+              <strong>{{ t('legal.privacy.cookieTheme') }}</strong>
+            </li>
+            <li>
+              <strong>{{ t('legal.privacy.cookieWatchlist') }}</strong>
+            </li>
+            <li>
+              <strong>{{ t('legal.privacy.cookieSearches') }}</strong>
+            </li>
             <li>
               <strong>{{ t('legal.privacy.cookieThirdParty') }}</strong>
               <ul>
@@ -125,9 +134,12 @@ import DarkModeToggle from '@/components/DarkModeToggle.vue'
 const { t, locale } = useI18n()
 const router = useRouter()
 
-const tvmazeLink = '<a href="https://www.tvmaze.com/privacy" target="_blank" rel="noopener noreferrer external">TVmaze Privacy Policy</a>'
-const adSettingsLink = '<a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer external">Google Ad Settings</a>'
-const vercelLink = '<a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer external">Vercel Privacy Policy</a>'
+const tvmazeLink =
+  '<a href="https://www.tvmaze.com/privacy" target="_blank" rel="noopener noreferrer external">TVmaze Privacy Policy</a>'
+const adSettingsLink =
+  '<a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer external">Google Ad Settings</a>'
+const vercelLink =
+  '<a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer external">Vercel Privacy Policy</a>'
 
 const lastUpdated = computed(() => {
   return new Date().toLocaleDateString(locale.value === 'nl' ? 'nl-NL' : 'en-US', {

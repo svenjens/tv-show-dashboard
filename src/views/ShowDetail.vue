@@ -207,7 +207,9 @@
           <!-- Overview Tab -->
           <div v-if="activeTab === 'overview'">
             <article v-if="show.summary" class="mb-12">
-              <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">{{ t('show.summary') }}</h2>
+              <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                {{ t('show.summary') }}
+              </h2>
               <!-- eslint-disable-next-line vue/no-v-html -->
               <div
                 class="prose dark:prose-invert prose-lg max-w-none text-gray-700 dark:text-gray-300"
@@ -413,7 +415,7 @@ async function loadShow() {
   // Extract ID from slug (format: show-name-123)
   const slug = route.params.slug as string
   const id = extractIdFromSlug(slug)
-  
+
   if (!id) {
     error.value = { message: 'Invalid show URL' }
     loading.value = false
