@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/svenjens/tv-show-dashboard/compare/v1.13.0...v1.13.1) (2025-11-16)
+
+
+### Bug Fixes
+
+* improve ShowCard layout consistency and alignment ([#38](https://github.com/svenjens/tv-show-dashboard/issues/38)) ([5eb4c2d](https://github.com/svenjens/tv-show-dashboard/commit/5eb4c2d499296e16999b8e836c2cfdbc1b4974f4))
+
 ## [1.13.0](https://github.com/svenjens/tv-show-dashboard/compare/v1.12.0...v1.13.0) (2025-11-16)
 
 
