@@ -14,7 +14,7 @@
         rel="noopener noreferrer"
         class="streaming-card group"
         :aria-label="`${t('streaming.watch_on')} ${option.service.name}`"
-        @click="handleStreamingClick(option.service)"
+        @click="handleStreamingClick($event, option.service, option.link)"
       >
         <div class="flex items-center gap-4">
           <!-- Service Logo/Icon -->
@@ -76,13 +76,24 @@ const { t } = useI18n()
 
 /**
  * Handle streaming link click and track event
+ * Prevents default navigation to ensure tracking completes
  */
-const handleStreamingClick = (service: StreamingAvailability['service']) => {
-  trackStreamingClick(
-    service.name,
-    props.showName || 'Unknown',
-    hasAffiliate(service.id)
-  )
+const handleStreamingClick = (event: MouseEvent, service: StreamingAvailability['service'], link: string) => {
+  // Prevent default navigation
+  event.preventDefault()
+  
+  const platform = service.name
+  const showName = props.showName || 'Unknown'
+  const isAffiliate = hasAffiliate(service.id)
+  
+  // Track the event
+  trackStreamingClick(platform, showName, isAffiliate)
+  
+  // Use small delay to ensure tracking completes before navigation
+  // This is more reliable than trying to await gtag which is fire-and-forget
+  setTimeout(() => {
+    window.open(link, '_blank', 'noopener,noreferrer')
+  }, 100)
 }
 
 /**
