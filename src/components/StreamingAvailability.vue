@@ -185,7 +185,7 @@ const formatPrice = (price: number, currency?: string): string => {
 
 .streaming-card {
   @apply flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 
-         hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md hover:scale-105 transition-all duration-200
+         hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg hover:-translate-y-1 transition-all duration-200
          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
          flex-shrink-0 w-32;
 }
