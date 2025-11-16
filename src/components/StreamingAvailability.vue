@@ -91,8 +91,12 @@ const hasAffiliate = (serviceId: string): boolean => {
  * Format price with currency
  */
 const formatPrice = (price: number, currency?: string): string => {
+  if (typeof price !== 'number' || isNaN(price)) {
+    return '-'
+  }
   const curr = currency || 'USD'
-  return new Intl.NumberFormat('en-US', {
+  const { locale } = useI18n()
+  return new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: curr,
   }).format(price)
