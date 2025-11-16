@@ -27,6 +27,7 @@ export interface StreamingPlatform {
   name: string
   logo: string
   homePage: string
+  searchUrl?: string // URL template for searching shows (use {query} placeholder)
   themeColorCode: string
   hasAffiliateProgram: boolean
 }
@@ -38,6 +39,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'Netflix',
     logo: '🎬',
     homePage: 'https://www.netflix.com',
+    searchUrl: 'https://www.netflix.com/search?q={query}',
     themeColorCode: '#E50914',
     hasAffiliateProgram: false,
   },
@@ -46,6 +48,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'Amazon Prime Video',
     logo: '📺',
     homePage: 'https://www.primevideo.com',
+    searchUrl: 'https://www.primevideo.com/search?phrase={query}',
     themeColorCode: '#00A8E1',
     hasAffiliateProgram: true,
   },
@@ -54,6 +57,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'Disney+',
     logo: '🏰',
     homePage: 'https://www.disneyplus.com',
+    searchUrl: 'https://www.disneyplus.com/search?q={query}',
     themeColorCode: '#113CCF',
     hasAffiliateProgram: false,
   },
@@ -62,6 +66,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'HBO Max',
     logo: '🎭',
     homePage: 'https://www.max.com',
+    searchUrl: 'https://www.max.com/search?q={query}',
     themeColorCode: '#002BE7',
     hasAffiliateProgram: false,
   },
@@ -70,6 +75,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'Hulu',
     logo: '📱',
     homePage: 'https://www.hulu.com',
+    searchUrl: 'https://www.hulu.com/search?q={query}',
     themeColorCode: '#1CE783',
     hasAffiliateProgram: false,
   },
@@ -78,6 +84,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'Apple TV+',
     logo: '🍎',
     homePage: 'https://tv.apple.com',
+    searchUrl: 'https://tv.apple.com/search?q={query}',
     themeColorCode: '#000000',
     hasAffiliateProgram: false,
   },
@@ -86,6 +93,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'Paramount+',
     logo: '⛰️',
     homePage: 'https://www.paramountplus.com',
+    searchUrl: 'https://www.paramountplus.com/search?query={query}',
     themeColorCode: '#0064FF',
     hasAffiliateProgram: false,
   },
@@ -94,6 +102,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'Peacock',
     logo: '🦚',
     homePage: 'https://www.peacocktv.com',
+    searchUrl: 'https://www.peacocktv.com/search?q={query}',
     themeColorCode: '#000000',
     hasAffiliateProgram: false,
   },
@@ -102,6 +111,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'SkyShowtime',
     logo: '🌟',
     homePage: 'https://www.skyshowtime.com',
+    searchUrl: 'https://www.skyshowtime.com/search?q={query}',
     themeColorCode: '#5433FF',
     hasAffiliateProgram: false,
   },
@@ -110,6 +120,7 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     name: 'Videoland',
     logo: '📹',
     homePage: 'https://www.videoland.com',
+    searchUrl: 'https://www.videoland.com/zoeken?q={query}',
     themeColorCode: '#FF0000',
     hasAffiliateProgram: false,
   },

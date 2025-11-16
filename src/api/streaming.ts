@@ -36,7 +36,7 @@ class StreamingService {
   /**
    * Get streaming availability from TVMaze web channel data
    */
-  getStreamingFromWebChannel(webChannel: WebChannel | null): StreamingAvailability[] {
+  getStreamingFromWebChannel(webChannel: WebChannel | null, showName?: string): StreamingAvailability[] {
     if (!webChannel) {
       return []
     }
@@ -101,7 +101,11 @@ class StreamingService {
 
     const channelInfo = channelMap[webChannel.name]
     if (channelInfo) {
-      let link = webChannel.officialSite || channelInfo.baseUrl
+      // Use search URL with show name for direct deep linking
+      // Falls back to official site or homepage if no show name
+      let link = showName 
+        ? this.getSearchUrl(channelInfo.id, showName)
+        : (webChannel.officialSite || channelInfo.baseUrl)
 
       // Add affiliate tag for Amazon Prime Video
       if (channelInfo.id === 'prime' && this.affiliateConfig.amazonAssociateTag) {
@@ -109,7 +113,7 @@ class StreamingService {
       }
 
       // Add UTM tracking parameters for analytics
-      link = this.addUTMParameters(link, channelInfo.name)
+      link = this.addUTMParameters(link, channelInfo.name, showName)
 
       availability.push({
         service: {
@@ -172,6 +176,26 @@ class StreamingService {
       // If URL parsing fails, return original URL
       return url
     }
+  }
+
+  /**
+   * Generate search URL for a platform with show name
+   * Falls back to homepage if no search URL available
+   */
+  getSearchUrl(platformId: string, showName: string): string {
+    const platform = STREAMING_PLATFORMS[platformId]
+    if (!platform) {
+      return ''
+    }
+
+    // Use search URL if available
+    if (platform.searchUrl && showName) {
+      const query = encodeURIComponent(showName.trim())
+      return platform.searchUrl.replace('{query}', query)
+    }
+
+    // Fallback to homepage
+    return platform.homePage
   }
 
   /**
@@ -262,7 +286,8 @@ class StreamingService {
   private tmdbProviderToAvailability(
     provider: TMDBWatchProvider,
     type: 'subscription' | 'buy' | 'rent' | 'free' | 'ads',
-    country: string
+    country: string,
+    showName?: string
   ): StreamingAvailability | null {
     const platformId = this.mapTMDBProviderToId(provider.provider_id, provider.provider_name)
     
@@ -276,8 +301,9 @@ class StreamingService {
       return null
     }
 
-    // Use platform homepage instead of TMDB link
-    let link = platform.homePage
+    // Use search URL with show name for direct deep linking
+    // Falls back to homepage if no search URL or show name available
+    let link = showName ? this.getSearchUrl(platformId, showName) : platform.homePage
 
     // Add affiliate tag for Amazon Prime Video
     if (platformId === 'prime' && this.affiliateConfig.amazonAssociateTag) {
@@ -285,7 +311,7 @@ class StreamingService {
     }
 
     // Add UTM tracking parameters for analytics
-    link = this.addUTMParameters(link, platform.name)
+    link = this.addUTMParameters(link, platform.name, showName)
 
     return {
       service: {
@@ -311,7 +337,7 @@ class StreamingService {
     const availability: StreamingAvailability[] = []
 
     // First, add webChannel data (for originals like Netflix Originals)
-    const webChannelData = this.getStreamingFromWebChannel(show.webChannel || null)
+    const webChannelData = this.getStreamingFromWebChannel(show.webChannel || null, show.name)
     availability.push(...webChannelData)
 
     // Then, fetch TMDB data for multi-platform availability
@@ -332,7 +358,8 @@ class StreamingService {
               const streamingOption = this.tmdbProviderToAvailability(
                 provider,
                 'subscription',
-                country
+                country,
+                show.name
               )
               if (streamingOption && !this.isDuplicate(availability, streamingOption)) {
                 availability.push(streamingOption)
@@ -346,7 +373,8 @@ class StreamingService {
               const streamingOption = this.tmdbProviderToAvailability(
                 provider,
                 'ads',
-                country
+                country,
+                show.name
               )
               if (streamingOption && !this.isDuplicate(availability, streamingOption)) {
                 availability.push(streamingOption)
