@@ -2,6 +2,7 @@
  * Google Tag Manager / Google Ads Tracking
  * 
  * Provides methods to initialize and track events with Google Ads
+ * Respects user privacy with DNT (Do Not Track) support
  */
 
 import { logger } from './logger'
@@ -15,11 +16,47 @@ declare global {
 }
 
 /**
+ * Check if tracking is allowed (respects Do Not Track)
+ */
+function isTrackingAllowed(): boolean {
+  if (typeof window === 'undefined') {
+    return false
+  }
+  
+  // Respect Do Not Track preference
+  if (navigator.doNotTrack === '1') {
+    return false
+  }
+  
+  return true
+}
+
+/**
+ * Validate Google Ads ID format (AW-XXXXXXXXXX)
+ */
+function validateAdsId(adsId: string): boolean {
+  const adsIdPattern = /^AW-\d+$/
+  return adsIdPattern.test(adsId)
+}
+
+/**
  * Initialize Google Tag Manager / Google Ads
  */
 export function initGoogleAds(adsId: string): void {
   if (!adsId || typeof window === 'undefined') {
     logger.debug('[GTM] Google Ads ID not provided or not in browser environment')
+    return
+  }
+
+  // Validate Google Ads ID format
+  if (!validateAdsId(adsId)) {
+    logger.error('[GTM] Invalid or missing Google Ads ID')
+    return
+  }
+
+  // Check if tracking is allowed
+  if (!isTrackingAllowed()) {
+    logger.debug('[GTM] Tracking disabled due to Do Not Track preference')
     return
   }
 
@@ -38,10 +75,10 @@ export function initGoogleAds(adsId: string): void {
     // Configure with Ads ID
     window.gtag('config', adsId)
     
-    // Load the gtag.js script
+    // Load the gtag.js script with validated/sanitized adsId
     const script = document.createElement('script')
     script.async = true
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${adsId}`
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(adsId)}`
     document.head.appendChild(script)
     
     logger.debug('[GTM] Google Ads initialized', { adsId })
@@ -54,6 +91,11 @@ export function initGoogleAds(adsId: string): void {
  * Track a custom event
  */
 export function trackEvent(eventName: string, params?: Record<string, unknown>): void {
+  // Respect Do Not Track preference
+  if (!isTrackingAllowed()) {
+    return
+  }
+
   if (typeof window === 'undefined' || !window.gtag) {
     return
   }
@@ -70,6 +112,11 @@ export function trackEvent(eventName: string, params?: Record<string, unknown>):
  * Track page view
  */
 export function trackPageView(pageTitle: string, pagePath: string): void {
+  // Respect Do Not Track preference
+  if (!isTrackingAllowed()) {
+    return
+  }
+
   trackEvent('page_view', {
     page_title: pageTitle,
     page_path: pagePath,
@@ -80,18 +127,14 @@ export function trackPageView(pageTitle: string, pagePath: string): void {
  * Track conversion
  */
 export function trackConversion(conversionId: string, conversionLabel?: string): void {
-  if (typeof window === 'undefined' || !window.gtag) {
+  // Respect Do Not Track preference
+  if (!isTrackingAllowed()) {
     return
   }
-  
-  try {
-    window.gtag('event', 'conversion', {
-      send_to: conversionLabel ? `${conversionId}/${conversionLabel}` : conversionId,
-    })
-    logger.debug('[GTM] Conversion tracked', { conversionId, conversionLabel })
-  } catch (error) {
-    logger.error('[GTM] Failed to track conversion', error)
-  }
+
+  trackEvent('conversion', {
+    send_to: conversionLabel ? `${conversionId}/${conversionLabel}` : conversionId,
+  })
 }
 
 /**
@@ -127,6 +170,8 @@ export function trackSearch(searchTerm: string, resultCount: number): void {
 
 /**
  * Track streaming link click (for affiliate tracking)
+ * Note: For external links, tracking may not complete before navigation.
+ * Consider using gtag transport: 'beacon' option in production for critical tracking.
  */
 export function trackStreamingClick(platform: string, showName: string, isAffiliate: boolean): void {
   trackEvent('streaming_click', {
@@ -135,4 +180,3 @@ export function trackStreamingClick(platform: string, showName: string, isAffili
     is_affiliate: isAffiliate,
   })
 }
-
