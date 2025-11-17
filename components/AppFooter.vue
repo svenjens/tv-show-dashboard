@@ -148,6 +148,14 @@
                 🇳🇱 Nederlands
               </button>
             </li>
+            <li>
+              <button
+                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm text-left"
+                @click="switchLocale('es')"
+              >
+                🇪🇸 Español
+              </button>
+            </li>
           </ul>
 
           <h3 class="text-gray-900 dark:text-white font-semibold mb-4">{{ t('footer.legal') }}</h3>

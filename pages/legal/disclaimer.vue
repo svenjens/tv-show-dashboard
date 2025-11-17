@@ -25,7 +25,7 @@
           </button>
           <DarkModeToggle variant="header" />
         </div>
-        <h1 class="text-3xl md:text-4xl font-bold">{{ t('legal.disclaimer') }}</h1>
+        <h1 class="text-3xl md:text-4xl font-bold">{{ t('legal.disclaimerTitle') }}</h1>
         <p class="text-primary-100 mt-2">{{ t('legal.lastUpdated') }}: {{ lastUpdated }}</p>
       </div>
     </header>
@@ -115,7 +115,7 @@ const lastUpdated = computed(() => {
 
 onMounted(() => {
   useSEO({
-    title: t('legal.disclaimer'),
+    title: t('legal.disclaimerTitle'),
     description:
       'Disclaimer for BingeList - Information about service limitations and liabilities.',
   })
