@@ -8,7 +8,7 @@
  * 3. These are the shows users see first and click most often
  */
 
-export default defineNitroPlugin(async (nitroApp) => {
+export default defineNitroPlugin(async (_nitroApp) => {
   // Only warm cache in production builds
   if (import.meta.dev) {
     console.log('[Cache Warming] Skipped in development mode')
@@ -19,17 +19,25 @@ export default defineNitroPlugin(async (nitroApp) => {
 
   try {
     // Pre-fetch all shows list (homepage needs this)
-    const allShows = await $fetch('/api/shows').catch((err) => {
+    const response = await $fetch<{ shows: any[]; showsByGenre: Record<string, any[]> }>('/api/shows').catch((err) => {
       console.warn('[Cache Warming] Failed to warm shows list:', err.message)
-      return []
+      return null
     })
 
-    if (!allShows || allShows.length === 0) {
+    if (!response || !response.shows || response.shows.length === 0) {
       console.warn('[Cache Warming] No shows data available')
       return
     }
 
-    // Group shows by genre and sort genres by show count
+    const allShows = response.shows
+    const showsByGenre = response.showsByGenre
+
+    // Use pre-sorted genres from server
+    const sortedGenres = Object.entries(showsByGenre)
+      .sort((a, b) => b[1].length - a[1].length)
+
+    // Since we already have genres grouped, we can skip the manual grouping
+    // Group shows by genre and sort genres by show count (keeping for backwards compat if needed)
     const genreMap = new Map()
     allShows.forEach((show: any) => {
       if (show.genres && show.genres.length > 0) {

@@ -45,7 +45,7 @@ function groupShowsByGenreAndSort(shows: Show[]): ShowsByGenre {
 }
 
 export default cachedEventHandler(
-  async (event) => {
+  async (_event) => {
     try {
       const shows = await $fetch<Show[]>('https://api.tvmaze.com/shows', {
         headers: {
