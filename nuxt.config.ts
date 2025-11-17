@@ -137,6 +137,7 @@ export default defineNuxtConfig({
       xl: 1280,
       xxl: 1536,
     },
+    domains: ['static.tvmaze.com', 'image.tmdb.org'],
   },
 
   // Scripts configuration for third-party services
@@ -151,8 +152,8 @@ export default defineNuxtConfig({
   // Security configuration
   security: {
     headers: {
-      crossOriginEmbedderPolicy:
-        process.env.NODE_ENV === 'development' ? 'unsafe-none' : 'require-corp',
+      // Set to unsafe-none to allow external images from TVMaze and TMDB
+      crossOriginEmbedderPolicy: 'unsafe-none',
       contentSecurityPolicy: {
         'base-uri': ["'self'"],
         'font-src': ["'self'", 'https:', 'data:'],
