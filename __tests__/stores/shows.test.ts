@@ -53,7 +53,14 @@ describe('Shows Store', () => {
   describe('fetchAllShows', () => {
     it('should fetch and store shows', async () => {
       const mockShows = [mockShow]
-      mockFetch.mockResolvedValue(mockShows)
+      const mockResponse = {
+        shows: mockShows,
+        showsByGenre: {
+          Drama: [mockShow],
+          Action: [mockShow]
+        }
+      }
+      mockFetch.mockResolvedValue(mockResponse)
 
       const store = useShowsStore()
       await store.fetchAllShows()

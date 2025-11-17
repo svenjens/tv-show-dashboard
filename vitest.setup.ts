@@ -34,7 +34,32 @@ global.IntersectionObserver = class IntersectionObserver {
     return []
   }
   unobserve() {}
+  root = null
+  rootMargin = ''
+  thresholds = []
 }
+
+// Mock color mode to prevent plugin errors
+vi.mock('#app', async () => {
+  const actual = await vi.importActual('#app')
+  return {
+    ...actual,
+    useColorMode: () => ({
+      preference: 'system',
+      value: 'light',
+      unknown: false,
+      forced: false,
+    }),
+    defineNuxtRouteMiddleware: (fn: any) => fn,
+  }
+})
+
+// Mock import.meta for tests
+Object.defineProperty(import.meta, 'server', {
+  value: false,
+  writable: true,
+  configurable: true,
+})
 
 
 
