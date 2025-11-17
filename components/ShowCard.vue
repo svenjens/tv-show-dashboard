@@ -49,11 +49,9 @@
       <!-- Match Reason Badge (for Smart Search) -->
       <div
         v-if="matchReason"
-        class="absolute bottom-2 left-2 right-2 bg-gradient-to-r from-blue-500/90 to-purple-500/90 backdrop-blur-sm px-2 py-1 rounded-md shadow-lg"
+        class="absolute bottom-2 left-2 right-2 bg-blue-600 dark:bg-blue-700 px-3 py-2 rounded-md shadow-lg border border-blue-500 dark:border-blue-600"
       >
-        <p class="text-xs text-white font-medium truncate">
-          🎯 {{ $t('search.matchedBy') }}: {{ matchReason }}
-        </p>
+        <p class="text-sm text-white font-semibold">🎯 {{ matchReason }}</p>
       </div>
     </div>
 
