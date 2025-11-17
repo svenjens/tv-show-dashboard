@@ -27,7 +27,7 @@ export default defineVitestConfig({
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
+      reporter: ['text', 'json', 'lcov'],
       exclude: [
         'node_modules/',
         '__tests__/',
@@ -37,6 +37,8 @@ export default defineVitestConfig({
         'dist/',
         '.output/',
         'coverage/',
+        '**/virtual:**', // Exclude virtual modules from coverage
+        '**/.nuxt/**', // Exclude Nuxt build artifacts
       ],
     },
   },
