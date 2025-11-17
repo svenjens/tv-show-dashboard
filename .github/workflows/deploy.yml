@@ -36,7 +36,7 @@ jobs:
         run: npm run lint
 
       - name: Run TypeScript type check
-        run: npx vue-tsc --noEmit
+        run: npx nuxi typecheck
 
       - name: Check for console statements
         run: |
@@ -135,22 +135,15 @@ jobs:
       - name: Check bundle size
         run: |
           echo "📦 Checking bundle sizes..."
-          du -sh dist/
-          find dist/assets -name "*.js" -exec ls -lh {} \; | awk '{print $5 "\t" $9}'
-          
-          # Check if main bundle is too large (> 500KB)
-          MAIN_SIZE=$(find dist/assets -name "index-*.js" -exec du -k {} \; | cut -f1)
-          if [ "$MAIN_SIZE" -gt 500 ]; then
-            echo "⚠️  Warning: Main bundle is larger than 500KB"
-          else
-            echo "✅ Bundle size is acceptable"
-          fi
+          du -sh .output/
+          find .output/public/_nuxt -name "*.js" -exec ls -lh {} \; | awk '{print $5 "\t" $9}' || true
+          echo "✅ Build completed successfully"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: .output/
           retention-days: 7
 
   # Job 4: Accessibility Tests
@@ -178,17 +171,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: .output/
 
       - name: Start preview server
         run: |
-          npx vite preview --port 4173 &
-          npx wait-on http://localhost:4173
+          npm run preview &
+          npx wait-on http://localhost:3000
 
       - name: Run Pa11y accessibility tests
         run: |
           echo "Running accessibility tests..."
-          npx pa11y-ci http://localhost:4173 \
+          npx pa11y-ci http://localhost:3000 \
             --threshold 5 \
             --reporter cli \
             --standard WCAG2AA
@@ -220,15 +213,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: .output/
 
       - name: Run Lighthouse CI
         env:
           LHCI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install -g @lhci/cli wait-on
-          npx vite preview --port 4173 &
-          npx wait-on http://localhost:4173
+          npm run preview &
+          npx wait-on http://localhost:3000
           lhci autorun --config=./lighthouserc.json
 
   # Job 6: Security Audit
@@ -280,7 +273,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: .output/
 
       - name: Deploy to Vercel Production
         id: deploy
@@ -325,7 +318,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: .output/
 
       - name: Deploy to Vercel Preview
         id: deploy

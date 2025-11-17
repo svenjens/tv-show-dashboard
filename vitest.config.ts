@@ -1,29 +1,45 @@
-import { defineConfig } from 'vitest/config'
-import vue from '@vitejs/plugin-vue'
-import { fileURLToPath, URL } from 'node:url'
+import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { fileURLToPath } from 'node:url'
 
-export default defineConfig({
-  plugins: [vue()],
+export default defineVitestConfig({
   test: {
+    environment: 'nuxt',
+    environmentOptions: {
+      nuxt: {
+        rootDir: fileURLToPath(new URL('.', import.meta.url)),
+        mock: {
+          intersectionObserver: true,
+          indexedDb: true,
+        },
+        overrides: {
+          // Disable i18n lazy loading for tests
+          i18n: {
+            lazy: false,
+            langDir: null,
+            locales: [
+              { code: 'en', iso: 'en-US', name: 'English' },
+              { code: 'nl', iso: 'nl-NL', name: 'Nederlands' }
+            ],
+          },
+        },
+      },
+    },
     globals: true,
-    environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
         'node_modules/',
-        'src/main.ts',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/mockData',
+        '__tests__/',
+        '*.config.ts',
+        '*.config.js',
+        '.nuxt/',
         'dist/',
+        '.output/',
+        'coverage/',
       ],
     },
-  },
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
   },
 })
 

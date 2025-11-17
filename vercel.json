@@ -1,18 +1,11 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
-  "framework": "vite",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
+  "framework": "nuxtjs",
   "headers": [
     {
-      "source": "/assets/(.*)",
+      "source": "/_nuxt/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
