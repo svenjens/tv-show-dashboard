@@ -22,6 +22,12 @@ export default defineVitestConfig({
               { code: 'es', iso: 'es-ES', name: 'Español' }
             ],
           },
+          // Configure color-mode for tests
+          colorMode: {
+            preference: 'system',
+            fallback: 'light',
+            classSuffix: ''
+          },
         },
       },
     },
