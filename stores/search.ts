@@ -1,10 +1,10 @@
 /**
  * Pinia store for managing search state
+ * Note: Search page should use direct API calls for better SSR
  */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { tvMazeAPI } from '@/api'
 import { logger } from '@/utils'
 import { useToast } from '@/composables'
 import type { Show, SearchResult, ApiError } from '@/types'
@@ -31,7 +31,7 @@ export const useSearchStore = defineStore('search', () => {
 
   // Actions
   /**
-   * Perform a search for TV shows
+   * Perform a search for TV shows using server API
    */
   async function search(query: string): Promise<void> {
     searchQuery.value = query
@@ -45,7 +45,7 @@ export const useSearchStore = defineStore('search', () => {
     error.value = null
 
     try {
-      const results = await tvMazeAPI.searchShows(query)
+      const results = await $fetch<SearchResult[]>(`/api/search?q=${encodeURIComponent(query)}`)
       searchResults.value = results
 
       // Add to recent searches (avoid duplicates)

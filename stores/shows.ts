@@ -1,10 +1,11 @@
 /**
  * Pinia store for managing TV shows state
+ * Note: Prefer using server API routes directly with useAsyncData for SSR
+ * This store is mainly for client-side state management and caching
  */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { tvMazeAPI } from '@/api'
 import { groupShowsByGenre, getSortedGenres, logger } from '@/utils'
 import { useToast } from '@/composables'
 import type { Show, ShowsByGenre, ApiError } from '@/types'
@@ -63,8 +64,8 @@ export const useShowsStore = defineStore('shows', () => {
   }
 
   /**
-   * Fetch all shows from the API and group them by genre
-   * Note: Prefer using server-side fetching with setShows() instead
+   * Fetch all shows from server API
+   * Note: Prefer using useAsyncData directly in pages for better SSR
    */
   async function fetchAllShows(): Promise<void> {
     // Don't fetch if we already have data
@@ -76,7 +77,7 @@ export const useShowsStore = defineStore('shows', () => {
     error.value = null
 
     try {
-      const shows = await tvMazeAPI.fetchAllShows()
+      const shows = await $fetch<Show[]>('/api/shows')
       setShows(shows)
     } catch (err) {
       error.value = err as ApiError
@@ -89,14 +90,15 @@ export const useShowsStore = defineStore('shows', () => {
   }
 
   /**
-   * Fetch a single show by ID
+   * Fetch a single show by ID from server API
+   * Note: Prefer using useAsyncData directly in pages for better SSR
    */
-  async function fetchShowById(id: number, embed?: string[]): Promise<Show | null> {
+  async function fetchShowById(id: number): Promise<Show | null> {
     loading.value = true
     error.value = null
 
     try {
-      const show = await tvMazeAPI.fetchShowById(id, embed)
+      const show = await $fetch<Show>(`/api/shows/${id}`)
       currentShow.value = show
       return show
     } catch (err) {
