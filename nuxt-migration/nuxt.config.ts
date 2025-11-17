@@ -1,0 +1,70 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  compatibilityDate: '2025-07-15',
+  
+  devtools: { enabled: true },
+  
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/i18n',
+    '@pinia/nuxt',
+    '@vueuse/nuxt'
+  ],
+  
+  // Runtime config for env variables
+  runtimeConfig: {
+    public: {
+      tmdbApiKey: process.env.VITE_TMDB_API_KEY || '',
+      googleAdsenseId: process.env.VITE_GOOGLE_ADSENSE_ID || '',
+      amazonAssociateTag: process.env.VITE_AMAZON_ASSOCIATE_TAG || '',
+      googleAdsId: process.env.VITE_GOOGLE_ADS_ID || ''
+    }
+  },
+  
+  // i18n configuration (migrate from src/i18n/)
+  i18n: {
+    locales: [
+      { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
+      { code: 'nl', iso: 'nl-NL', file: 'nl.json', name: 'Nederlands' }
+    ],
+    defaultLocale: 'nl',
+    strategy: 'prefix_except_default',
+    langDir: 'locales',
+    lazy: true,
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root'
+    }
+  },
+  
+  // Auto-imports (migrate composables)
+  imports: {
+    dirs: ['composables/**', 'stores/**', 'utils/**']
+  },
+  
+  // Tailwind CSS configuration
+  tailwindcss: {
+    configPath: '~/tailwind.config.js',
+    cssPath: '~/assets/css/main.css',
+    exposeConfig: false
+  },
+  
+  // App configuration
+  app: {
+    head: {
+      title: 'BingeList - Your Ultimate TV Show Discovery Platform',
+      htmlAttrs: {
+        lang: 'nl'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Discover your next favorite TV show with BingeList' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' }
+      ]
+    }
+  }
+})
