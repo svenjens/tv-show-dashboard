@@ -5,10 +5,11 @@
  * Sanitizes HTML content server-side before sending to client
  */
 
+import type { H3Event } from 'h3'
 import { sanitizeShowSummary } from '~/server/utils/sanitize'
 
 export default cachedEventHandler(
-  async (event) => {
+  async (event: H3Event) => {
     const id = getRouterParam(event, 'id')
     const query = getQuery(event)
     const country = (query.country as string) || 'US'
@@ -22,7 +23,7 @@ export default cachedEventHandler(
   
   try {
     // Fetch show data from TVMaze
-    const show = await $fetch<any>(`https://api.tvmaze.com/shows/${id}`, {
+    const show: any = await $fetch<any>(`https://api.tvmaze.com/shows/${id}`, {
       headers: {
         'User-Agent': 'BingeList/1.0'
       }
@@ -37,7 +38,7 @@ export default cachedEventHandler(
     const tmdbApiKey = config.public.tmdbApiKey
     
     // Initialize combined response
-    const combinedData = {
+    const combinedData: any = {
       ...show,
       tmdb: null as any,
       streamingAvailability: [] as any[]

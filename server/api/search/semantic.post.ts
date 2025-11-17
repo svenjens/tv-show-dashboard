@@ -94,7 +94,7 @@ Always return valid JSON. Be creative with search terms to maximize results.`
     // Search with each term
     for (const term of searchTerms.slice(0, 5)) { // Limit to 5 terms to avoid too many API calls
       try {
-        const shows = await $fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(term)}`, {
+        const shows = await $fetch<Array<{ show: any; score: number }>>(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(term)}`, {
           headers: {
             'User-Agent': 'BingeList/1.0'
           }
@@ -134,7 +134,7 @@ Always return valid JSON. Be creative with search terms to maximize results.`
     
     // Fallback to regular search if GPT fails
     try {
-      const fallbackResults = await $fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`, {
+      const fallbackResults = await $fetch<Array<{ show: any; score: number }>>(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`, {
         headers: {
           'User-Agent': 'BingeList/1.0'
         }

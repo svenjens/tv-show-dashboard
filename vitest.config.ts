@@ -26,8 +26,22 @@ export default defineVitestConfig({
           colorMode: {
             preference: 'system',
             fallback: 'light',
-            classSuffix: ''
+            classSuffix: '',
+            dataValue: 'theme',
+            storageKey: 'nuxt-color-mode'
           },
+          // Add runtime config for color mode
+          runtimeConfig: {
+            public: {
+              colorMode: {
+                preference: 'system',
+                fallback: 'light',
+                classSuffix: '',
+                dataValue: 'theme',
+                storageKey: 'nuxt-color-mode'
+              }
+            }
+          }
         },
       },
     },

@@ -1,16 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useShowsStore } from '@/stores/shows'
-import { tvMazeAPI } from '@/api'
 import type { Show } from '@/types'
 
-// Mock the API
-vi.mock('@/api', () => ({
-  tvMazeAPI: {
-    fetchAllShows: vi.fn(),
-    fetchShowById: vi.fn(),
-  },
-}))
+// Mock $fetch globally
+const mockFetch = vi.fn()
+global.$fetch = mockFetch as any
 
 const mockShow: Show = {
   id: 1,
@@ -58,7 +53,7 @@ describe('Shows Store', () => {
   describe('fetchAllShows', () => {
     it('should fetch and store shows', async () => {
       const mockShows = [mockShow]
-      vi.mocked(tvMazeAPI.fetchAllShows).mockResolvedValue(mockShows)
+      mockFetch.mockResolvedValue(mockShows)
 
       const store = useShowsStore()
       await store.fetchAllShows()
@@ -71,7 +66,7 @@ describe('Shows Store', () => {
 
     it('should handle API errors', async () => {
       const error = { message: 'API Error' }
-      vi.mocked(tvMazeAPI.fetchAllShows).mockRejectedValue(error)
+      mockFetch.mockRejectedValue(error)
 
       const store = useShowsStore()
       await store.fetchAllShows()
@@ -86,13 +81,13 @@ describe('Shows Store', () => {
 
       await store.fetchAllShows()
 
-      expect(tvMazeAPI.fetchAllShows).not.toHaveBeenCalled()
+      expect(mockFetch).not.toHaveBeenCalled()
     })
   })
 
   describe('fetchShowById', () => {
     it('should fetch show by ID', async () => {
-      vi.mocked(tvMazeAPI.fetchShowById).mockResolvedValue(mockShow)
+      mockFetch.mockResolvedValue(mockShow)
 
       const store = useShowsStore()
       const show = await store.fetchShowById(1)
@@ -103,7 +98,7 @@ describe('Shows Store', () => {
 
     it('should handle API errors', async () => {
       const error = { message: 'Show not found' }
-      vi.mocked(tvMazeAPI.fetchShowById).mockRejectedValue(error)
+      mockFetch.mockRejectedValue(error)
 
       const store = useShowsStore()
       const show = await store.fetchShowById(999)

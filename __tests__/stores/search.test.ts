@@ -1,15 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useSearchStore } from '@/stores/search'
-import { tvMazeAPI } from '@/api'
 import type { SearchResult } from '@/types'
 
-// Mock the API
-vi.mock('@/api', () => ({
-  tvMazeAPI: {
-    searchShows: vi.fn(),
-  },
-}))
+// Mock $fetch globally
+const mockFetch = vi.fn()
+global.$fetch = mockFetch as any
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -82,7 +78,7 @@ describe('Search Store', () => {
 
   describe('search', () => {
     it('should search for shows', async () => {
-      vi.mocked(tvMazeAPI.searchShows).mockResolvedValue([mockSearchResult])
+      mockFetch.mockResolvedValue([mockSearchResult])
 
       const store = useSearchStore()
       await store.search('test')
@@ -97,12 +93,12 @@ describe('Search Store', () => {
       await store.search('')
 
       expect(store.searchResults).toEqual([])
-      expect(tvMazeAPI.searchShows).not.toHaveBeenCalled()
+      expect(mockFetch).not.toHaveBeenCalled()
     })
 
     it('should handle API errors', async () => {
       const error = { message: 'Search failed' }
-      vi.mocked(tvMazeAPI.searchShows).mockRejectedValue(error)
+      mockFetch.mockRejectedValue(error)
 
       const store = useSearchStore()
       await store.search('test')
@@ -112,7 +108,7 @@ describe('Search Store', () => {
     })
 
     it('should save search to recent searches', async () => {
-      vi.mocked(tvMazeAPI.searchShows).mockResolvedValue([mockSearchResult])
+      mockFetch.mockResolvedValue([mockSearchResult])
 
       const store = useSearchStore()
       await store.search('test')
@@ -121,7 +117,7 @@ describe('Search Store', () => {
     })
 
     it('should not duplicate recent searches', async () => {
-      vi.mocked(tvMazeAPI.searchShows).mockResolvedValue([mockSearchResult])
+      mockFetch.mockResolvedValue([mockSearchResult])
 
       const store = useSearchStore()
       await store.search('test')
@@ -131,7 +127,7 @@ describe('Search Store', () => {
     })
 
     it('should limit recent searches to 5', async () => {
-      vi.mocked(tvMazeAPI.searchShows).mockResolvedValue([mockSearchResult])
+      mockFetch.mockResolvedValue([mockSearchResult])
 
       const store = useSearchStore()
       await store.search('test1')
@@ -148,7 +144,7 @@ describe('Search Store', () => {
 
   describe('clearSearch', () => {
     it('should clear search results and query', async () => {
-      vi.mocked(tvMazeAPI.searchShows).mockResolvedValue([mockSearchResult])
+      mockFetch.mockResolvedValue([mockSearchResult])
 
       const store = useSearchStore()
       await store.search('test')
@@ -161,7 +157,7 @@ describe('Search Store', () => {
 
   describe('clearRecentSearches', () => {
     it('should clear recent searches', async () => {
-      vi.mocked(tvMazeAPI.searchShows).mockResolvedValue([mockSearchResult])
+      mockFetch.mockResolvedValue([mockSearchResult])
 
       const store = useSearchStore()
       await store.search('test')
@@ -173,7 +169,7 @@ describe('Search Store', () => {
 
   describe('getters', () => {
     it('should return results as show array', async () => {
-      vi.mocked(tvMazeAPI.searchShows).mockResolvedValue([mockSearchResult])
+      mockFetch.mockResolvedValue([mockSearchResult])
 
       const store = useSearchStore()
       await store.search('test')
@@ -182,7 +178,7 @@ describe('Search Store', () => {
     })
 
     it('should indicate if has results', async () => {
-      vi.mocked(tvMazeAPI.searchShows).mockResolvedValue([mockSearchResult])
+      mockFetch.mockResolvedValue([mockSearchResult])
 
       const store = useSearchStore()
       expect(store.hasResults).toBe(false)
