@@ -138,12 +138,19 @@ export const useSearchStore = defineStore('search', () => {
   }
 
   /**
+   * Type predicate to check if an item is a SearchResult
+   */
+  function isSearchResult(item: Show | SearchResult): item is SearchResult {
+    return 'show' in item && 'score' in item
+  }
+
+  /**
    * Set search results directly (used for semantic search)
    */
   function setResults(results: Show[] | SearchResult[]): void {
     // Support both Show[] (legacy) and SearchResult[] (with matchedTerm)
     searchResults.value = results.map((item) => {
-      if ('show' in item) {
+      if (isSearchResult(item)) {
         // Already a SearchResult
         return item
       }
