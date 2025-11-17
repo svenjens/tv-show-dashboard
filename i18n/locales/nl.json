@@ -35,7 +35,8 @@
     "tryAsking": "Probeer te vragen:",
     "searchingFor": "Zoeken naar:",
     "similarTo": "Vergelijkbaar met {show}",
-    "aiSearching": "Je zoekopdracht begrijpen..."
+    "aiSearching": "Je zoekopdracht begrijpen...",
+    "matchedBy": "Gematcht door"
   },
   "show": {
     "rating": "Waardering",

@@ -35,7 +35,8 @@
     "tryAsking": "Try asking:",
     "searchingFor": "Searching for:",
     "similarTo": "Similar to {show}",
-    "aiSearching": "Understanding your query..."
+    "aiSearching": "Understanding your query...",
+    "matchedBy": "Matched by"
   },
   "show": {
     "rating": "Rating",

@@ -69,6 +69,7 @@
           v-model="searchQuery"
           :placeholder="isSemanticMode ? t('search.semanticPlaceholder') : t('search.searchByName')"
           :recent-searches="searchStore.recentSearches"
+          :disable-type-ahead="isSemanticMode"
           @search="handleSearch"
           @clear-recent="searchStore.clearRecentSearches()"
         />
@@ -194,7 +195,12 @@
           <div
             class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-fr mb-8"
           >
-            <ShowCard v-for="show in filteredResults" :key="show.id" :show="show" />
+            <ShowCard
+              v-for="result in filteredResults"
+              :key="result.show.id"
+              :show="result.show"
+              :match-reason="isSemanticMode ? result.matchedTerm : undefined"
+            />
           </div>
 
           <!-- Advertisement -->
@@ -277,23 +283,23 @@ const exampleQueries = [
 
 // Apply filters to search results
 const filteredResults = computed(() => {
-  let results = searchStore.results
+  let results = searchStore.fullResults
 
   if (filters.value.status) {
-    results = results.filter((show) => show.status === filters.value.status)
+    results = results.filter((result) => result.show.status === filters.value.status)
   }
 
   if (filters.value.network) {
-    results = results.filter((show) => {
-      const networkName = show.network?.name || show.webChannel?.name
+    results = results.filter((result) => {
+      const networkName = result.show.network?.name || result.show.webChannel?.name
       return networkName === filters.value.network
     })
   }
 
   if (filters.value.year) {
-    results = results.filter((show) => {
-      if (!show.premiered) return false
-      const year = new Date(show.premiered).getFullYear()
+    results = results.filter((result) => {
+      if (!result.show.premiered) return false
+      const year = new Date(result.show.premiered).getFullYear()
       return year.toString() === filters.value.year
     })
   }
@@ -348,9 +354,13 @@ async function handleSemanticSearch(query: string) {
     // Store intent for display
     semanticIntent.value = response.intent
 
-    // Update search store with results
-    const shows = response.results.map((r: any) => r.show)
-    searchStore.setResults(shows)
+    // Update search store with results (including matchedTerm for each result)
+    const searchResults = response.results.map((r: any) => ({
+      show: r.show,
+      score: r.score,
+      matchedTerm: r.matchedTerm,
+    }))
+    searchStore.setResults(searchResults)
   } catch (error) {
     console.error('Semantic search failed:', error)
     // Fallback to regular search
