@@ -311,6 +311,11 @@ useSEO({
 async function handleSearch(query: string) {
   searchQuery.value = query
 
+  // Validate minimum query length (at least 2 characters)
+  if (!query || query.trim().length < 2) {
+    return // Don't search with queries shorter than 2 characters
+  }
+
   // Update URL query parameter
   if (query) {
     navigateTo(
