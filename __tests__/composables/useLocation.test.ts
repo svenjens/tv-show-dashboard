@@ -242,7 +242,7 @@ describe('useLocation', () => {
     })
 
     it('should be reactive to location changes', async () => {
-      const { resetLocation, fetchLocation, country, location } = useLocation()
+      const { resetLocation, fetchLocation, country } = useLocation()
       
       expect(country.value).toBe('NL')
       

@@ -47,6 +47,7 @@ function sanitizeUrl(url: string): string {
     .replace(/&amp;/gi, '&')
   
   // Strip whitespace and control characters that could be used for obfuscation
+  // eslint-disable-next-line no-control-regex -- Intentionally removing control chars for security
   decoded = decoded.trim().replace(/[\x00-\x1f\x7f-\x9f]/g, '')
   
   // Check if it's a relative URL (safe)
