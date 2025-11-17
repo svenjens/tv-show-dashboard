@@ -50,6 +50,14 @@ export default defineNuxtConfig({
     exposeConfig: false
   },
   
+  // PostCSS configuration (instead of postcss.config.js)
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+  
   // App configuration
   app: {
     head: {
