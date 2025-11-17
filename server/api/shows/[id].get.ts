@@ -75,28 +75,32 @@ export default cachedEventHandler(
           if (countryData) {
             const providers = []
             
+            // Helper function to transform TMDB provider to our StreamingAvailability format
+            const transformProvider = (p: any, type: string) => ({
+              service: {
+                id: String(p.provider_id),
+                name: p.provider_name,
+                logo: p.logo_path ? `https://image.tmdb.org/t/p/original${p.logo_path}` : '',
+                type
+              },
+              link: countryData.link || `https://www.themoviedb.org/tv/${tmdbId}`,
+              availableFrom: undefined,
+              availableUntil: undefined
+            })
+            
             // Flatrate (subscription services like Netflix, Disney+)
             if (countryData.flatrate) {
-              providers.push(...countryData.flatrate.map((p: any) => ({
-                ...p,
-                type: 'subscription'
-              })))
+              providers.push(...countryData.flatrate.map((p: any) => transformProvider(p, 'subscription')))
             }
             
             // Buy options
             if (countryData.buy) {
-              providers.push(...countryData.buy.map((p: any) => ({
-                ...p,
-                type: 'buy'
-              })))
+              providers.push(...countryData.buy.map((p: any) => transformProvider(p, 'buy')))
             }
             
             // Rent options
             if (countryData.rent) {
-              providers.push(...countryData.rent.map((p: any) => ({
-                ...p,
-                type: 'rent'
-              })))
+              providers.push(...countryData.rent.map((p: any) => transformProvider(p, 'rent')))
             }
             
             combinedData.streamingAvailability = providers
