@@ -1,5 +1,42 @@
 # Changelog
 
+## [2.0.0](https://github.com/svenjens/tv-show-dashboard/compare/v1.17.0...v2.0.0) (2025-11-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove client-side API layer (api/*)
+
+### Features
+
+* **i18n:** add Spanish language support and enable browser language detection ([a5bf71c](https://github.com/svenjens/tv-show-dashboard/commit/a5bf71c55c1f89d3883e9b617b046fd65b68eb60))
+* implement AI semantic search with GPT-3.5 ([04832c8](https://github.com/svenjens/tv-show-dashboard/commit/04832c8d595c962781b5bc8b6d5e7b8e60d5ff72))
+* improve caching with Nitro cachedEventHandler and smart cache warming ([b931944](https://github.com/svenjens/tv-show-dashboard/commit/b931944eaa24d25dc0836f58b148e2161c1329c9))
+* migrate to Nuxt 3 with SSR and enhanced SEO ([a6cf3fd](https://github.com/svenjens/tv-show-dashboard/commit/a6cf3fd2f3dd4f53ba215dd59725ad505dd3d632))
+* migrate to server-side API architecture with SSR/SWR caching ([84f3972](https://github.com/svenjens/tv-show-dashboard/commit/84f397272d417d7cd7e7abeee5d5cfc64d6b7f67))
+* **modules:** add official Nuxt modules for improved functionality ([2f6286a](https://github.com/svenjens/tv-show-dashboard/commit/2f6286a18d51cd4653b8cd418b20ff4d14f6b88f))
+* **nuxt:** complete Nuxt 3 migration with SSR and location detection ([695b27a](https://github.com/svenjens/tv-show-dashboard/commit/695b27a1c721420ae005a7a546c6bd79a087fa20))
+* **streaming:** add deep linking to show search on platforms ([6da5e00](https://github.com/svenjens/tv-show-dashboard/commit/6da5e0025e81f652c09a795b4188422c2e9e9eac))
+* **streaming:** use detected country and branded cards for streaming platforms ([51542e6](https://github.com/svenjens/tv-show-dashboard/commit/51542e62b234f14ed7fff79044ef29381682423e))
+
+
+### Bug Fixes
+
+* add type annotations and update tests for server API migration ([c75fefb](https://github.com/svenjens/tv-show-dashboard/commit/c75fefbd3569a1a5ba7f704b615cec8141a1daca))
+* **nuxt:** resolve PostCSS configuration warning ([b658525](https://github.com/svenjens/tv-show-dashboard/commit/b65852548be1b1cf01cd1e9e32ea6aec1e104dfc))
+* **nuxt:** resolve SSR and routing issues ([65d70e4](https://github.com/svenjens/tv-show-dashboard/commit/65d70e4acd89948909d7969933c2a0e8211a052a))
+* replace dompurify with isomorphic-dompurify for SSR compatibility ([66d00d5](https://github.com/svenjens/tv-show-dashboard/commit/66d00d5d419da1881a5d31ae0b35b8d9791dcfab))
+
+
+### Performance Improvements
+
+* move HTML sanitization to server-side for better performance ([0063907](https://github.com/svenjens/tv-show-dashboard/commit/00639072488e85897e43443b28fddb11e85bef34))
+
+
+### Code Refactoring
+
+* remove duplicate API layer, use server routes exclusively ([b9edf3a](https://github.com/svenjens/tv-show-dashboard/commit/b9edf3a92d71f387ad9d924d9f532d73af968b63))
+
 ## [1.17.0](https://github.com/svenjens/tv-show-dashboard/compare/v1.16.0...v1.17.0) (2025-11-16)
 
 
