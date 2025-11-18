@@ -488,5 +488,10 @@ onMounted(() => {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
+  
+  /* Ensure SearchBar takes full width */
+  .search-input-wrapper :deep(.relative) {
+    max-width: none;
+  }
 }
 </style>
