@@ -80,7 +80,9 @@ export const useSearchStore = defineStore('search', () => {
   async function enrichWithStreamingData(): Promise<void> {
     if (searchResults.value.length === 0) return
 
-    logger.info(`[Search Store] Enriching ${searchResults.value.length} search results with streaming data`)
+    logger.info(
+      `[Search Store] Enriching ${searchResults.value.length} search results with streaming data`
+    )
     loadingStreamingData.value = true
 
     try {
