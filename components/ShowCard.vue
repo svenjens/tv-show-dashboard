@@ -64,13 +64,13 @@
       </h3>
 
       <div class="space-y-3">
-        <div class="min-h-[2rem]">
-          <GenreTags
-            v-if="show.genres && show.genres.length > 0"
-            :genres="show.genres"
-            :max-display="10"
-          />
-        </div>
+          <div class="min-h-[2rem]">
+            <GenreTags
+              v-if="show.genres && show.genres.length > 0"
+              :genres="show.genres"
+              :max-display="4"
+            />
+          </div>
 
         <!-- Streaming Availability Badges -->
         <div v-if="streamingLogos.length > 0" class="flex gap-1.5 flex-wrap">
@@ -108,6 +108,7 @@
 import { ref, computed, onMounted } from 'vue'
 import type { Show } from '@/types'
 import { getShowImage, createShowSlug } from '@/utils'
+import { getServiceGradient } from '@/utils/streaming'
 import { STREAMING_PLATFORMS } from '@/types/streaming'
 import RatingBadge from './RatingBadge.vue'
 import GenreTags from './GenreTags.vue'
@@ -155,33 +156,13 @@ const streamingLogos = computed(() => {
         id: serviceId,
         name: platform.name,
         path: platform.logo,
-        gradient: `linear-gradient(135deg, ${platform.themeColorCode} 0%, ${adjustColorBrightness(platform.themeColorCode, -20)} 100%)`,
+        gradient: getServiceGradient(serviceId, platform.themeColorCode),
       })
     }
   })
 
   return Array.from(uniqueServices.values())
 })
-
-// Helper function to adjust color brightness
-function adjustColorBrightness(hex: string, percent: number): string {
-  const num = parseInt(hex.replace('#', ''), 16)
-  const amt = Math.round(2.55 * percent)
-  const R = (num >> 16) + amt
-  const G = ((num >> 8) & 0x00ff) + amt
-  const B = (num & 0x0000ff) + amt
-  return (
-    '#' +
-    (
-      0x1000000 +
-      (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
-      (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
-      (B < 255 ? (B < 1 ? 0 : B) : 255)
-    )
-      .toString(16)
-      .slice(1)
-  )
-}
 
 function navigateToShow() {
   const slug = createShowSlug(props.show.name, props.show.id)

@@ -85,6 +85,7 @@
 import type { StreamingAvailability } from '@/types'
 import { STREAMING_PLATFORMS } from '@/types'
 import { trackStreamingClick } from '@/utils'
+import { getServiceGradient } from '@/utils/streaming'
 
 interface Props {
   availability: StreamingAvailability[]
@@ -126,14 +127,6 @@ const handleStreamingClick = (
 }
 
 /**
- * Get the theme color for a streaming service
- */
-const getServiceColor = (serviceId: string): string => {
-  const platform = STREAMING_PLATFORMS[serviceId]
-  return platform?.themeColorCode || '#6B7280'
-}
-
-/**
  * Get logo path for a streaming service
  */
 const getServiceLogo = (serviceId: string): string => {
@@ -141,28 +134,6 @@ const getServiceLogo = (serviceId: string): string => {
   return platform?.logo || ''
 }
 
-/**
- * Get gradient background for a streaming service
- */
-const getServiceGradient = (serviceId: string): string => {
-  const color = getServiceColor(serviceId)
-
-  // Create a lighter and darker shade for gradient
-  const gradients: Record<string, string> = {
-    netflix: 'linear-gradient(135deg, #E50914 0%, #B20710 100%)',
-    prime: 'linear-gradient(135deg, #00A8E1 0%, #0779ff 100%)',
-    disney: 'linear-gradient(135deg, #113CCF 0%, #0A2A8F 100%)',
-    hbo: 'linear-gradient(135deg, #002BE7 0%, #001BA0 100%)',
-    hulu: 'linear-gradient(135deg, #1CE783 0%, #16B864 100%)',
-    apple: 'linear-gradient(135deg, #1d1d1f 0%, #000000 100%)',
-    paramount: 'linear-gradient(135deg, #0064FF 0%, #0050CC 100%)',
-    peacock: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-    skyshowtime: 'linear-gradient(135deg, #5433FF 0%, #3D20CC 100%)',
-    videoland: 'linear-gradient(135deg, #FF0000 0%, #CC0000 100%)',
-  }
-
-  return gradients[serviceId] || `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)`
-}
 
 /**
  * Get brand name to display for a streaming service
