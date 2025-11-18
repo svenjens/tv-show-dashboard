@@ -89,7 +89,7 @@
       </div>
 
       <!-- Streaming Service Filter (Multi-select) -->
-      <div class="relative">
+      <div ref="streamingDropdownRef" class="relative">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {{ t('filters.streaming') }}
         </label>
@@ -234,6 +234,7 @@ const { t } = useI18n()
 const localFilters = ref<Filters>({ ...props.modelValue })
 const isExpanded = ref(false)
 const showStreamingDropdown = ref(false)
+const streamingDropdownRef = ref<HTMLElement | null>(null)
 
 // Check if desktop on mount and set expanded state accordingly
 const checkIsDesktop = () => {
@@ -261,6 +262,9 @@ function toggleFilters() {
 // Extract unique networks from shows
 const availableNetworks = computed(() => {
   const networks = new Set<string>()
+  if (!props.shows || props.shows.length === 0) {
+    return []
+  }
   props.shows.forEach((show) => {
     if (show.network?.name) {
       networks.add(show.network.name)
@@ -275,6 +279,9 @@ const availableNetworks = computed(() => {
 // Extract unique years from shows
 const availableYears = computed(() => {
   const years = new Set<number>()
+  if (!props.shows || props.shows.length === 0) {
+    return []
+  }
   props.shows.forEach((show) => {
     if (show.premiered) {
       const year = new Date(show.premiered).getFullYear()
@@ -289,6 +296,9 @@ const availableYears = computed(() => {
 // Extract unique streaming services from shows
 const availableStreamingServices = computed(() => {
   const services = new Set<string>()
+  if (!props.shows || props.shows.length === 0) {
+    return []
+  }
   props.shows.forEach((show) => {
     if (show.streamingAvailability) {
       show.streamingAvailability.forEach((option) => {
@@ -366,7 +376,7 @@ function removeStreamingService(service: string) {
 // Close dropdown when clicking outside
 function handleClickOutside(event: MouseEvent) {
   const target = event.target as HTMLElement
-  if (!target.closest('.relative')) {
+  if (streamingDropdownRef.value && !streamingDropdownRef.value.contains(target)) {
     showStreamingDropdown.value = false
   }
 }
