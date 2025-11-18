@@ -46,7 +46,10 @@
       </div>
 
       <!-- Watchlist Button Overlay -->
-      <div class="absolute top-2 left-2 opacity-0 group-hover/card:opacity-100 transition-opacity">
+      <div
+        class="absolute top-2 left-2 opacity-0 group-hover/card:opacity-100 transition-opacity"
+        data-e2e-visible="watchlist-button"
+      >
         <WatchlistButton :show="show" variant="icon" size="md" @click.stop />
       </div>
 

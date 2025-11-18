@@ -1,6 +1,20 @@
 import type { Page } from '@playwright/test'
 
 /**
+ * Inject CSS to make elements with data-e2e-visible always visible during tests
+ * This fixes hover-based interactions that are flaky in automated tests
+ */
+export async function makeTestElementsVisible(page: Page) {
+  await page.addStyleTag({
+    content: `
+      [data-e2e-visible] {
+        opacity: 1 !important;
+      }
+    `,
+  })
+}
+
+/**
  * Wait for Nuxt app to be fully hydrated and interactive
  * This is crucial for SPAs where client-side routing needs to be ready
  */
@@ -13,6 +27,9 @@ export async function waitForHydration(page: Page) {
 
   // Small buffer to ensure Vue Router and Pinia stores are ready
   await page.waitForTimeout(1000)
+
+  // Make test elements always visible
+  await makeTestElementsVisible(page)
 }
 
 /**

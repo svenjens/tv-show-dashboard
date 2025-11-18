@@ -15,10 +15,7 @@ test.describe('Watchlist Functionality', () => {
     const showId = await firstCard.getAttribute('data-testid')
     const id = showId?.replace('show-card-', '')
 
-    // Hover over the card to reveal watchlist button
-    await firstCard.hover()
-
-    // Wait for button to be visible after hover
+    // Button should be visible (no hover needed in tests thanks to data-e2e-visible)
     const watchlistButton = page.locator(`[data-testid="watchlist-button-${id}"]`).first()
     await expect(watchlistButton).toBeVisible({ timeout: 5000 })
 
@@ -38,7 +35,6 @@ test.describe('Watchlist Functionality', () => {
     const showId = await firstCard.getAttribute('data-testid')
     const id = showId?.replace('show-card-', '')
 
-    await firstCard.hover()
     const watchlistButton = page.locator(`[data-testid="watchlist-button-${id}"]`).first()
     await watchlistButton.click()
     await page.waitForTimeout(2000)
@@ -67,7 +63,6 @@ test.describe('Watchlist Functionality', () => {
     const showId = await firstCard.getAttribute('data-testid')
     const id = showId?.replace('show-card-', '')
 
-    await firstCard.hover()
     const watchlistButton = page.locator(`[data-testid="watchlist-button-${id}"]`).first()
     await watchlistButton.click()
 
@@ -75,7 +70,6 @@ test.describe('Watchlist Functionality', () => {
     await page.waitForTimeout(500)
 
     // Remove it
-    await firstCard.hover()
     await watchlistButton.click()
 
     // Watchlist count should not be visible (empty)
@@ -89,7 +83,6 @@ test.describe('Watchlist Functionality', () => {
     const showId = await firstCard.getAttribute('data-testid')
     const id = showId?.replace('show-card-', '')
 
-    await firstCard.hover()
     const watchlistButton = page.locator(`[data-testid="watchlist-button-${id}"]`).first()
     await watchlistButton.click()
     await page.waitForTimeout(2000)
