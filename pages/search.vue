@@ -341,9 +341,12 @@ const exampleQueries = [
   'feel-good family shows',
 ]
 
-// Check if any search results have streaming data
+// Check if any search results have streaming data or if we're loading it
 const hasStreamingData = computed(() => {
-  return searchStore.fullResults.some((result) => result.show.streamingAvailability)
+  return (
+    searchStore.loadingStreamingData ||
+    searchStore.fullResults.some((result) => result.show.streamingAvailability)
+  )
 })
 
 // Apply filters to search results
@@ -414,6 +417,11 @@ async function handleSearch(query: string) {
     semanticIntent.value = null
     await searchStore.search(query)
   }
+
+  // Enrich results with streaming data (runs in background)
+  if (searchStore.hasResults) {
+    searchStore.enrichWithStreamingData()
+  }
 }
 
 async function handleSemanticSearch(query: string) {
@@ -436,11 +444,21 @@ async function handleSemanticSearch(query: string) {
       matchedTerm: r.matchedTerm,
     }))
     searchStore.setResults(searchResults)
+
+    // Enrich results with streaming data (runs in background)
+    if (searchStore.hasResults) {
+      searchStore.enrichWithStreamingData()
+    }
   } catch (error) {
     console.error('Semantic search failed:', error)
     // Fallback to regular search
     semanticIntent.value = null
     await searchStore.search(query)
+
+    // Enrich fallback results with streaming data
+    if (searchStore.hasResults) {
+      searchStore.enrichWithStreamingData()
+    }
   } finally {
     isSemanticLoading.value = false
   }

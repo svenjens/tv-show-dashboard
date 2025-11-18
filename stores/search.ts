@@ -19,6 +19,7 @@ export const useSearchStore = defineStore('search', () => {
   const loading = ref<boolean>(false)
   const error = ref<ApiError | null>(null)
   const recentSearches = ref<string[]>([])
+  const loadingStreamingData = ref<boolean>(false)
 
   // Getters
   const results = computed(() => searchResults.value.map((result) => result.show))
@@ -70,6 +71,57 @@ export const useSearchStore = defineStore('search', () => {
       logger.error('[Search Store] Search failed:', err)
     } finally {
       loading.value = false
+    }
+  }
+
+  /**
+   * Enrich search results with streaming data from TMDB
+   */
+  async function enrichWithStreamingData(): Promise<void> {
+    if (searchResults.value.length === 0) return
+
+    loadingStreamingData.value = true
+
+    try {
+      // Process results in small batches to respect rate limits
+      const batchSize = 5
+      const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+      for (let i = 0; i < searchResults.value.length; i += batchSize) {
+        const batch = searchResults.value.slice(i, i + batchSize)
+
+        // Process batch concurrently
+        await Promise.all(
+          batch.map(async (result) => {
+            try {
+              // Fetch show details which includes streaming availability
+              const showDetails = await $fetch<Show>(`/api/shows/${result.show.id}`)
+              
+              // Update the show with streaming data
+              if (showDetails.streamingAvailability) {
+                result.show.streamingAvailability = showDetails.streamingAvailability
+              }
+            } catch (err) {
+              logger.warn(
+                `[Search Store] Failed to fetch streaming data for show ${result.show.id}:`,
+                err
+              )
+              // Continue with other shows even if one fails
+            }
+          })
+        )
+
+        // Add delay between batches to respect rate limits
+        if (i + batchSize < searchResults.value.length) {
+          await delay(300) // 300ms delay between batches
+        }
+      }
+
+      logger.debug('[Search Store] Enriched search results with streaming data')
+    } catch (err) {
+      logger.error('[Search Store] Failed to enrich with streaming data:', err)
+    } finally {
+      loadingStreamingData.value = false
     }
   }
 
@@ -184,6 +236,7 @@ export const useSearchStore = defineStore('search', () => {
     loading,
     error,
     recentSearches,
+    loadingStreamingData,
 
     // Getters
     results,
@@ -194,6 +247,7 @@ export const useSearchStore = defineStore('search', () => {
 
     // Actions
     search,
+    enrichWithStreamingData,
     setResults,
     clearSearch,
     clearError,
