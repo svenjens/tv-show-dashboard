@@ -39,7 +39,7 @@ global.IntersectionObserver = class IntersectionObserver {
   thresholds = []
 }
 
-// Mock color mode to prevent plugin errors
+// Mock color mode composable to prevent plugin errors
 vi.mock('#app', async () => {
   const actual = await vi.importActual('#app')
   return {
@@ -59,4 +59,28 @@ Object.defineProperty(import.meta, 'server', {
   value: false,
   writable: true,
   configurable: true,
+})
+
+// Mock Nuxt runtime config and essential Nuxt composables
+vi.mock('#app/nuxt', async () => {
+  const actual = await vi.importActual('#app/nuxt')
+  return {
+    ...actual,
+    useRuntimeConfig: () => ({
+      app: {
+        baseURL: '/',
+        buildAssetsDir: '/_nuxt/',
+        cdnURL: '',
+      },
+      public: {
+        tmdbApiKey: 'test-api-key',
+        googleAdsenseId: '',
+        amazonAssociateTag: '',
+        googleAdsId: '',
+      },
+    }),
+    definePayloadPlugin: vi.fn((fn) => fn),
+    definePayloadReducer: vi.fn(),
+    definePayloadReviver: vi.fn(),
+  }
 })

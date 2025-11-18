@@ -66,3 +66,5 @@ export function getServiceGradient(serviceId: string, themeColor?: string): stri
   // Fallback to simple semi-transparent gradient
   return 'linear-gradient(135deg, #666 0%, #444 100%)'
 }
+
+
