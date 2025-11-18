@@ -23,7 +23,7 @@
       </button>
     </div>
 
-    <div v-show="isExpanded" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div v-show="isExpanded" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Status Filter -->
       <div>
         <label
@@ -87,6 +87,27 @@
           </option>
         </select>
       </div>
+
+      <!-- Streaming Service Filter -->
+      <div>
+        <label
+          for="filter-streaming"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
+          {{ t('filters.streaming') }}
+        </label>
+        <select
+          id="filter-streaming"
+          v-model="localFilters.streaming"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-primary-600 dark:focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-600 dark:focus:ring-primary-500"
+          @change="emitFilters"
+        >
+          <option value="">{{ t('filters.allStreaming') }}</option>
+          <option v-for="service in availableStreamingServices" :key="service" :value="service">
+            {{ service }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <!-- Active Filters Summary -->
@@ -141,6 +162,21 @@
           </svg>
         </button>
       </span>
+      <span
+        v-if="localFilters.streaming"
+        class="inline-flex items-center gap-1 px-2 py-1 bg-primary-100 text-primary-700 rounded text-xs"
+      >
+        {{ t('filters.streaming') }}: {{ localFilters.streaming }}
+        <button @click="clearStreaming">
+          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </span>
     </div>
   </div>
 </template>
@@ -148,11 +184,13 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import type { Show } from '@/types'
+import { STREAMING_PLATFORMS } from '@/types/streaming'
 
 interface Filters {
   status: string
   network: string
   year: string
+  streaming: string
 }
 
 interface Props {
@@ -161,7 +199,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: () => ({ status: '', network: '', year: '' }),
+  modelValue: () => ({ status: '', network: '', year: '', streaming: '' }),
 })
 
 const emit = defineEmits<{
@@ -222,14 +260,35 @@ const availableYears = computed(() => {
   return Array.from(years).sort((a, b) => b - a) // Newest first
 })
 
+// Extract unique streaming services from shows
+const availableStreamingServices = computed(() => {
+  const services = new Set<string>()
+  props.shows.forEach((show) => {
+    if (show.streamingAvailability) {
+      show.streamingAvailability.forEach((option) => {
+        const platform = STREAMING_PLATFORMS[option.service.id]
+        if (platform) {
+          services.add(platform.name)
+        }
+      })
+    }
+  })
+  return Array.from(services).sort()
+})
+
 // Check if any filters are active
 const hasActiveFilters = computed(() => {
-  return !!(localFilters.value.status || localFilters.value.network || localFilters.value.year)
+  return !!(
+    localFilters.value.status ||
+    localFilters.value.network ||
+    localFilters.value.year ||
+    localFilters.value.streaming
+  )
 })
 
 // Clear all filters
 function clearFilters() {
-  localFilters.value = { status: '', network: '', year: '' }
+  localFilters.value = { status: '', network: '', year: '', streaming: '' }
   emitFilters()
 }
 
@@ -251,6 +310,11 @@ function clearNetwork() {
 
 function clearYear() {
   localFilters.value.year = ''
+  emitFilters()
+}
+
+function clearStreaming() {
+  localFilters.value.streaming = ''
   emitFilters()
 }
 

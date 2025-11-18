@@ -312,6 +312,7 @@
 import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useSearchStore } from '@/stores'
 import { useSEO } from '@/composables'
+import { STREAMING_PLATFORMS } from '@/types/streaming'
 import SearchBar from '@/components/SearchBar.client.vue'
 import ShowCard from '@/components/ShowCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
@@ -326,7 +327,7 @@ const searchStore = useSearchStore()
 
 const searchBarRef = ref<InstanceType<typeof SearchBar> | null>(null)
 const searchQuery = ref('')
-const filters = ref({ status: '', network: '', year: '' })
+const filters = ref({ status: '', network: '', year: '', streaming: '' })
 const isSemanticMode = ref(false)
 const semanticIntent = ref<any>(null)
 const isSemanticLoading = ref(false)
@@ -360,6 +361,16 @@ const filteredResults = computed(() => {
       if (!result.show.premiered) return false
       const year = new Date(result.show.premiered).getFullYear()
       return year.toString() === filters.value.year
+    })
+  }
+
+  if (filters.value.streaming) {
+    results = results.filter((result) => {
+      if (!result.show.streamingAvailability) return false
+      return result.show.streamingAvailability.some((option) => {
+        const platform = STREAMING_PLATFORMS[option.service.id]
+        return platform?.name === filters.value.streaming
+      })
     })
   }
 
