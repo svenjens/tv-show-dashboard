@@ -40,8 +40,8 @@ export default cachedEventHandler(
       const shows: TVMazeShow[] = response
 
       // Group and sort shows by genre on the server
-      // Cast to Show[] since TVMazeShow is compatible with Show
-      const groupedShows = groupShowsByGenre(shows as unknown as Show[])
+      // Generic function accepts TVMazeShow directly
+      const groupedShows = groupShowsByGenre(shows)
 
       // Return both the raw shows array and the grouped/sorted data
       return {
