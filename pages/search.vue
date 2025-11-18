@@ -210,8 +210,8 @@
         </div>
       </div>
 
-      <!-- Filters -->
-      <FilterBar v-model="filters" :shows="searchStore.results" />
+        <!-- Filters -->
+        <FilterBar v-model="filters" :shows="searchStore.results" :show-streaming-filter="true" />
 
       <!-- Loading State -->
       <div v-if="searchStore.isSearching || isSemanticLoading" class="flex justify-center py-12">

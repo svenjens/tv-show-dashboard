@@ -23,7 +23,11 @@
       </button>
     </div>
 
-    <div v-show="isExpanded" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div
+      v-show="isExpanded"
+      class="grid grid-cols-1 gap-4"
+      :class="showStreamingFilter ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'"
+    >
       <!-- Status Filter -->
       <div>
         <label
@@ -89,7 +93,7 @@
       </div>
 
       <!-- Streaming Service Filter (Multi-select) -->
-      <div ref="streamingDropdownRef" class="relative">
+      <div v-if="showStreamingFilter" ref="streamingDropdownRef" class="relative">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {{ t('filters.streaming') }}
         </label>
@@ -185,6 +189,7 @@
         </button>
       </span>
       <span
+        v-if="showStreamingFilter"
         v-for="service in localFilters.streaming"
         :key="service"
         class="inline-flex items-center gap-1 px-2 py-1 bg-primary-100 text-primary-700 rounded text-xs"
@@ -219,10 +224,12 @@ interface Filters {
 interface Props {
   shows: Show[]
   modelValue?: Filters
+  showStreamingFilter?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: () => ({ status: '', network: '', year: '', streaming: [] }),
+  showStreamingFilter: false,
 })
 
 const emit = defineEmits<{
@@ -332,7 +339,7 @@ const hasActiveFilters = computed(() => {
     localFilters.value.status ||
     localFilters.value.network ||
     localFilters.value.year ||
-    localFilters.value.streaming.length > 0
+    (props.showStreamingFilter && localFilters.value.streaming.length > 0)
   )
 })
 
