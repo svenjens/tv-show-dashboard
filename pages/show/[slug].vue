@@ -31,7 +31,7 @@
           :aria-label="`${show.name} background`"
         >
           <NuxtImg
-            :src="show.image.original"
+            :src="transformImageUrl(show.image.original)"
             :alt="`${show.name} background`"
             class="w-full h-full object-cover"
             format="webp"
@@ -296,7 +296,13 @@
 import { ref, computed, watch } from 'vue'
 import SafeHtml from '@/components/SafeHtml.vue'
 import { useShowsStore } from '@/stores'
-import { getShowImage, formatSchedule, extractIdFromSlug, createShowSlug } from '@/utils'
+import {
+  getShowImage,
+  transformImageUrl,
+  formatSchedule,
+  extractIdFromSlug,
+  createShowSlug,
+} from '@/utils'
 import { useSEO, getShowSEO, generateShowStructuredData } from '@/composables'
 import RatingBadge from '@/components/RatingBadge.vue'
 import GenreTags from '@/components/GenreTags.vue'

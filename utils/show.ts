@@ -74,13 +74,32 @@ export function formatRating(rating: number | null): string {
 }
 
 /**
+ * Transform TVMaze image URL to use our CDN subdomain
+ * @param imageUrl - Original image URL
+ * @returns Transformed URL or original if not a TVMaze URL
+ */
+export function transformImageUrl(imageUrl: string | null | undefined): string | null {
+  if (!imageUrl) return null
+
+  // Proxy TVMaze images through our CDN subdomain
+  if (
+    imageUrl.startsWith('https://static.tvmaze.com') ||
+    imageUrl.startsWith('http://static.tvmaze.com')
+  ) {
+    return imageUrl.replace(/^https?:\/\/static\.tvmaze\.com/, 'https://cdn.bingelist.app')
+  }
+
+  return imageUrl
+}
+
+/**
  * Get show image URL (no fallback)
  * @param show - Show object
  * @param size - Image size ('medium' or 'original')
  * @returns Image URL or null if not available
  */
 export function getShowImage(show: Show, size: 'medium' | 'original' = 'medium'): string | null {
-  return show.image?.[size] || null
+  return transformImageUrl(show.image?.[size])
 }
 
 /**

@@ -135,16 +135,6 @@ export default defineNuxtConfig({
       xxl: 1536,
     },
     domains: ['cdn.bingelist.app', 'static.tvmaze.com', 'image.tmdb.org'],
-    providers: {
-      tvmaze: {
-        name: 'tvmaze',
-        provider: '~/providers/tvmaze',
-        options: {
-          baseURL: 'https://cdn.bingelist.app',
-        },
-      },
-    },
-    provider: 'tvmaze', // Use tvmaze provider as default
   },
 
   // Scripts configuration for third-party services
