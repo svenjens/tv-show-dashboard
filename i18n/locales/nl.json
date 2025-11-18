@@ -161,11 +161,12 @@
     "deathday": "Overleden",
     "country": "Land",
     "gender": "Geslacht",
-    "viewOnTVMaze": "Bekijk op TVMaze",
+    "yearsOld": "jaar oud",
     "knownFor": "Bekend van",
     "asCharacter": "als {character}",
     "showMore": "Meer tonen",
     "noCredits": "Geen tv-serie credits beschikbaar",
+    "noCreditsMessage": "Deze persoon heeft geen geregistreerde tv-serie optredens.",
     "description": "{name} - {country} acteur/actrice",
     "fallbackDescription": "Bekijk filmografie en biografie"
   },

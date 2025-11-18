@@ -93,9 +93,9 @@
                 <div v-if="show.premiered" class="flex items-center gap-2">
                   <dt class="font-semibold">{{ t('show.premiered') }}:</dt>
                   <dd>
-                    {{ formatDate(show.premiered) }}
+                    {{ d(new Date(show.premiered), 'long') }}
                     <span v-if="show.ended" class="text-gray-400">
-                      - {{ formatDate(show.ended) }}
+                      - {{ d(new Date(show.ended), 'long') }}
                     </span>
                   </dd>
                 </div>
@@ -275,7 +275,7 @@ import CastList from '@/components/CastList.vue'
 import DarkModeToggle from '@/components/DarkModeToggle.vue'
 import StreamingAvailability from '@/components/StreamingAvailability.vue'
 
-const { t } = useI18n()
+const { t, d } = useI18n()
 const localePath = useLocalePath()
 
 const route = useRoute()
@@ -376,14 +376,6 @@ watch(
   },
   { immediate: false }
 )
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
 
 // Validate slug and redirect if incorrect (for SEO)
 watch(

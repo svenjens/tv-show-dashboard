@@ -161,11 +161,12 @@
     "deathday": "Died",
     "country": "Country",
     "gender": "Gender",
-    "viewOnTVMaze": "View on TVMaze",
+    "yearsOld": "years old",
     "knownFor": "Known For",
     "asCharacter": "as {character}",
     "showMore": "Show More",
     "noCredits": "No TV show credits available",
+    "noCreditsMessage": "This person has no recorded TV show appearances.",
     "description": "{name} - {country} actor/actress",
     "fallbackDescription": "View filmography and biography"
   },

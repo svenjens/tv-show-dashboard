@@ -3,102 +3,128 @@
     <SkipToContent />
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center py-20">
-      <LoadingSpinner :text="t('person.loading')" />
-    </div>
+    <LoadingSpinner
+      v-if="loading"
+      :text="t('person.loading')"
+      :full-screen="true"
+      role="status"
+      :aria-label="t('status.loading')"
+    />
 
     <!-- Error State -->
-    <ErrorMessage v-else-if="error" :message="error.message" :retry="true" @retry="refreshPerson" />
+    <ErrorMessage
+      v-else-if="error"
+      :message="error.message"
+      :retry="true"
+      :full-screen="true"
+      @retry="refreshPerson"
+    />
 
     <!-- Person Content -->
-    <div v-else-if="person" class="max-w-7xl mx-auto px-4 py-8">
-      <!-- Person Header -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
-        <div class="md:flex">
-          <!-- Person Image -->
-          <div class="md:w-1/3 lg:w-1/4 flex-shrink-0">
-            <div class="aspect-[3/4] bg-gray-200 dark:bg-gray-700 relative">
-              <NuxtImg
-                v-if="person.image"
-                :src="person.image.original"
-                :alt="person.name"
-                format="webp"
-                :quality="90"
-                class="w-full h-full object-cover"
-                loading="eager"
-                fetchpriority="high"
-              />
-              <div
-                v-else
-                class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500"
+    <div v-else-if="person" class="pb-12">
+      <!-- Hero Section -->
+      <header class="relative bg-gray-900 dark:bg-gray-950 text-white">
+        <!-- Background Image -->
+        <div
+          v-if="person.image?.original"
+          class="absolute inset-0 opacity-20 dark:opacity-30"
+          :aria-label="`${person.name} background`"
+        >
+          <NuxtImg
+            :src="person.image.original"
+            :alt="`${person.name} background`"
+            format="webp"
+            :quality="85"
+            class="w-full h-full object-cover"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 py-12">
+          <div class="flex items-center justify-between mb-6">
+            <button
+              class="inline-flex items-center gap-2 text-white hover:text-primary-300 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-lg px-2 py-1"
+              :aria-label="t('navigation.back')"
+              @click="useRouter().back()"
+            >
+              <Icon name="heroicons:chevron-left" class="h-5 w-5" />
+              {{ t('navigation.back') }}
+            </button>
+
+            <div class="flex items-center gap-3">
+              <DarkModeToggle variant="header" />
+              <button
+                class="inline-flex items-center gap-2 text-white hover:text-primary-300 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-lg px-3 py-2 bg-white/10 hover:bg-white/20"
+                :aria-label="t('navigation.home')"
+                @click="navigateTo(localePath('/'))"
               >
-                <Icon name="heroicons:user-solid" class="w-24 h-24" />
-              </div>
+                <Icon name="heroicons:home" class="h-5 w-5" />
+                {{ t('navigation.home') }}
+              </button>
             </div>
           </div>
 
-          <!-- Person Info -->
-          <div class="md:w-2/3 lg:w-3/4 p-6 md:p-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              {{ person.name }}
-            </h1>
-
-            <!-- Details Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <div v-if="person.birthday">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {{ t('person.birthday') }}
-                </dt>
-                <dd class="text-base text-gray-900 dark:text-white mt-1">
-                  {{ formatDate(person.birthday) }}
-                  <span v-if="age" class="text-gray-500 dark:text-gray-400">({{ age }})</span>
-                </dd>
-              </div>
-
-              <div v-if="person.deathday">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {{ t('person.deathday') }}
-                </dt>
-                <dd class="text-base text-gray-900 dark:text-white mt-1">
-                  {{ formatDate(person.deathday) }}
-                </dd>
-              </div>
-
-              <div v-if="person.country">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {{ t('person.country') }}
-                </dt>
-                <dd class="text-base text-gray-900 dark:text-white mt-1">
-                  {{ person.country.name }}
-                </dd>
-              </div>
-
-              <div v-if="person.gender">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {{ t('person.gender') }}
-                </dt>
-                <dd class="text-base text-gray-900 dark:text-white mt-1">
-                  {{ person.gender }}
-                </dd>
-              </div>
+          <div class="flex flex-col md:flex-row gap-8">
+            <!-- Person Image -->
+            <div v-if="person.image?.original" class="flex-shrink-0">
+              <NuxtImg
+                :src="person.image.original"
+                :alt="`${person.name} photo`"
+                format="webp"
+                :quality="85"
+                class="w-64 rounded-lg shadow-2xl"
+                loading="eager"
+                fetchpriority="high"
+                width="256"
+                height="384"
+              />
             </div>
 
-            <!-- External Links -->
-            <div class="flex gap-4">
-              <a
-                v-if="person.url"
-                :href="person.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
-              >
-                <Icon name="heroicons:link" class="w-5 h-5" />
-                {{ t('person.viewOnTVMaze') }}
-              </a>
+            <!-- Person Info -->
+            <div class="flex-1">
+              <h1 id="person-title" class="text-4xl md:text-5xl font-bold mb-6">
+                {{ person.name }}
+              </h1>
+
+              <dl class="space-y-3 text-gray-200">
+                <div v-if="person.birthday" class="flex flex-col sm:flex-row sm:gap-2">
+                  <dt class="font-semibold text-primary-300 min-w-[120px]">
+                    {{ t('person.birthday') }}:
+                  </dt>
+                  <dd>
+                    {{ d(new Date(person.birthday), 'long') }}
+                    <span v-if="age" class="text-gray-400 ml-2"
+                      >({{ age }} {{ t('person.yearsOld') }})</span
+                    >
+                  </dd>
+                </div>
+
+                <div v-if="person.deathday" class="flex flex-col sm:flex-row sm:gap-2">
+                  <dt class="font-semibold text-primary-300 min-w-[120px]">
+                    {{ t('person.deathday') }}:
+                  </dt>
+                  <dd>{{ d(new Date(person.deathday), 'long') }}</dd>
+                </div>
+
+                <div v-if="person.country" class="flex flex-col sm:flex-row sm:gap-2">
+                  <dt class="font-semibold text-primary-300 min-w-[120px]">
+                    {{ t('person.country') }}:
+                  </dt>
+                  <dd>{{ person.country.name }}</dd>
+                </div>
+
+                <div v-if="person.gender" class="flex flex-col sm:flex-row sm:gap-2">
+                  <dt class="font-semibold text-primary-300 min-w-[120px]">
+                    {{ t('person.gender') }}:
+                  </dt>
+                  <dd>{{ person.gender }}</dd>
+                </div>
+              </dl>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       <!-- Cast Credits Section -->
       <div v-if="person.castCredits && person.castCredits.length > 0" class="mb-8">
@@ -196,7 +222,7 @@ import type { PersonDetailsResponse } from '~/server/api/people/[id].get'
 import { extractIdFromSlug, createSlugWithId } from '~/utils/slug'
 
 const route = useRoute()
-const { t } = useI18n()
+const { t, d } = useI18n()
 const localePath = useLocalePath()
 
 // Extract person ID from slug
@@ -235,16 +261,6 @@ const displayedCredits = computed(() => {
   if (showAllCredits.value) return person.value.castCredits
   return person.value.castCredits.slice(0, initialDisplayCount.value)
 })
-
-// Format date helper
-function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  return date.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
 
 // SEO
 if (person.value) {
