@@ -30,12 +30,10 @@
           class="absolute inset-0 opacity-20 dark:opacity-30"
           :aria-label="`${show.name} background`"
         >
-          <NuxtImg
+          <img
             :src="transformImageUrl(show.image.original)"
             :alt="`${show.name} background`"
             class="w-full h-full object-cover"
-            format="webp"
-            :quality="70"
             loading="eager"
           />
         </div>
@@ -93,14 +91,12 @@
           <div class="flex flex-col md:flex-row gap-8">
             <!-- Poster -->
             <div v-if="getShowImage(show, 'original')" class="flex-shrink-0">
-              <NuxtImg
+              <img
                 :src="getShowImage(show, 'original')!"
                 :alt="`${show.name} poster`"
                 class="w-64 rounded-lg shadow-2xl"
                 loading="eager"
                 fetchpriority="high"
-                format="webp"
-                :quality="90"
                 width="256"
               />
             </div>
@@ -457,9 +453,24 @@ watch(
       const title = `${showData.name} - BingeList`
       const image = showData.image?.original || showData.image?.medium
 
+      // Preload critical images for better performance
+      const links: Array<{ rel: string; as?: string; href: string; fetchpriority?: string }> = []
+      if (showData.image?.original) {
+        const transformedImage = transformImageUrl(showData.image.original)
+        if (transformedImage) {
+          links.push({
+            rel: 'preload',
+            as: 'image',
+            href: transformedImage,
+            fetchpriority: 'high',
+          })
+        }
+      }
+
       useHead({
         title,
         meta: [{ name: 'description', content: description }],
+        link: links,
       })
 
       useSeoMeta({

@@ -66,13 +66,11 @@
           v-if="episode.image"
           class="flex-shrink-0 w-24 h-16 rounded overflow-hidden bg-gray-100"
         >
-          <NuxtImg
+          <img
             :src="transformImageUrl(episode.image.medium)"
             :alt="episode.name"
             class="w-full h-full object-cover"
             loading="lazy"
-            format="webp"
-            :quality="85"
           />
         </div>
 
