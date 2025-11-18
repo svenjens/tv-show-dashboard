@@ -34,7 +34,6 @@
             :src="show.image.original"
             :alt="`${show.name} background`"
             class="w-full h-full object-cover"
-            loading="eager"
             preload
             format="webp"
             :quality="85"
@@ -72,7 +71,6 @@
                 :src="getShowImage(show, 'original')!"
                 :alt="`${show.name} poster`"
                 class="w-64 rounded-lg shadow-2xl"
-                loading="eager"
                 preload
                 format="webp"
                 :quality="85"
