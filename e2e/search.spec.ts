@@ -18,11 +18,16 @@ test.describe('Search Functionality', () => {
     // Use the input ID directly
     const searchInput = page.locator('#tv-show-search')
 
-    // Click the input to focus and trigger navigation
-    await navigateSPA(page, /.*\/en\/search\?q=.*/, async () => {
+    // Click the input - this triggers navigation to /search page
+    await navigateSPA(page, /.*\/en\/search/, async () => {
       await searchInput.click()
-      await searchInput.fill('Game of Thrones')
     })
+
+    // Now we're on the search page - type in the input
+    await searchInput.fill('Game of Thrones')
+
+    // Wait for URL to update with query parameter
+    await page.waitForURL(/.*\/en\/search\?q=.*/, { timeout: 5000 })
 
     // Verify URL contains /en/search and the query
     expect(page.url()).toContain('/en/search')
@@ -33,13 +38,15 @@ test.describe('Search Functionality', () => {
     // Use the input ID directly
     const searchInput = page.locator('#tv-show-search')
 
-    // Click and type to trigger navigation
-    await navigateSPA(page, /.*\/en\/search\?q=.*/, async () => {
+    // Click the input - this triggers navigation to /search page
+    await navigateSPA(page, /.*\/en\/search/, async () => {
       await searchInput.click()
-      await searchInput.fill('Friends')
     })
 
-    // Wait for show cards to appear
+    // Now we're on the search page - type in the input
+    await searchInput.fill('Friends')
+
+    // Wait for show cards to appear (search is auto-triggered by typing)
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 15000 })
 
     // Check that results are displayed
