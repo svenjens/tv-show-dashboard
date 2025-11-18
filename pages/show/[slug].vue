@@ -112,16 +112,6 @@
                   </dd>
                 </div>
 
-                <div v-if="show.network" class="flex items-center gap-2">
-                  <dt class="font-semibold">{{ t('show.network') }}:</dt>
-                  <dd>{{ show.network.name }}</dd>
-                </div>
-
-                <div v-if="show.schedule" class="flex items-center gap-2">
-                  <dt class="font-semibold">{{ t('show.schedule') }}:</dt>
-                  <dd>{{ formatSchedule(show.schedule) }}</dd>
-                </div>
-
                 <div v-if="show.runtime" class="flex items-center gap-2">
                   <dt class="font-semibold">{{ t('show.runtime') }}:</dt>
                   <dd>{{ t('show.minutes', { count: show.runtime }) }}</dd>
@@ -247,7 +237,7 @@
 import { ref, computed, watch } from 'vue'
 import SafeHtml from '@/components/SafeHtml.vue'
 import { useShowsStore } from '@/stores'
-import { getShowImage, formatSchedule, extractIdFromSlug, createShowSlug } from '@/utils'
+import { getShowImage, extractIdFromSlug, createShowSlug } from '@/utils'
 import { useSEO, getShowSEO, generateShowStructuredData } from '@/composables'
 import RatingBadge from '@/components/RatingBadge.vue'
 import GenreTags from '@/components/GenreTags.vue'
