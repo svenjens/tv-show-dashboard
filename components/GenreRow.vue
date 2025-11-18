@@ -29,19 +29,7 @@
           aria-label="Scroll left"
           @click="scrollLeft"
         >
-          <svg
-            class="h-6 w-6 text-gray-800 dark:text-gray-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
+          <Icon name="heroicons:chevron-left" class="h-6 w-6 text-gray-800 dark:text-gray-200" />
         </button>
 
         <div
@@ -64,19 +52,7 @@
           aria-label="Scroll right"
           @click="scrollRight"
         >
-          <svg
-            class="h-6 w-6 text-gray-800 dark:text-gray-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <Icon name="heroicons:chevron-right" class="h-6 w-6 text-gray-800 dark:text-gray-200" />
         </button>
       </div>
     </div>
