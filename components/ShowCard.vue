@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="cardElement"
     v-motion
     :initial="{ opacity: 0, y: 20 }"
     :visible="{ opacity: 1, y: 0, transition: { duration: 400, delay: 50 } }"
@@ -105,11 +106,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { Show } from '@/types'
 import { getShowImage, createShowSlug } from '@/utils'
 import { getServiceGradient } from '@/utils/streaming'
 import { STREAMING_PLATFORMS } from '@/types/streaming'
+import { useIntersectionObserver } from '@/composables/useIntersectionObserver'
 import RatingBadge from './RatingBadge.vue'
 import GenreTags from './GenreTags.vue'
 import WatchlistButton from './WatchlistButton.vue'
@@ -128,6 +130,31 @@ const props = withDefaults(defineProps<Props>(), {
 const localePath = useLocalePath()
 const imageLoaded = ref(!props.lazy)
 const imageError = ref(false)
+
+// Use IntersectionObserver for proper lazy loading
+const cardElement = ref<HTMLElement | null>(null)
+const { target, isIntersecting } = props.lazy
+  ? useIntersectionObserver({
+      rootMargin: '50px', // Load images 50px before they enter viewport
+      once: true,
+    })
+  : { target: ref(null), isIntersecting: ref(true) }
+
+// Watch for intersection to load image
+if (props.lazy) {
+  watch(isIntersecting, (visible) => {
+    if (visible) {
+      imageLoaded.value = true
+    }
+  })
+
+  // Connect the cardElement to the observer target
+  watch(cardElement, (el) => {
+    if (el) {
+      target.value = el
+    }
+  })
+}
 
 const showImage = computed(() => {
   if (imageError.value) {
@@ -172,13 +199,4 @@ function navigateToShow() {
 function handleImageError() {
   imageError.value = true
 }
-
-onMounted(() => {
-  if (props.lazy) {
-    // Simulate lazy loading - in production, use IntersectionObserver
-    setTimeout(() => {
-      imageLoaded.value = true
-    }, 100)
-  }
-})
 </script>

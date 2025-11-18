@@ -6,12 +6,19 @@ import type { Show, ShowsByGenre } from '@/types'
 
 /**
  * Group shows by genre and sort by rating
+ * Note: This is a client-side version. Server-side uses ~/server/utils/shows
+ * Both implementations are identical for consistency.
+ *
  * @param shows - Array of shows
  * @returns Object with genres as keys and sorted show arrays as values
+ * @example
+ * const grouped = groupShowsByGenre(allShows)
+ * const dramaShows = grouped['Drama'] // All drama shows, sorted by rating
  */
 export function groupShowsByGenre(shows: Show[]): ShowsByGenre {
   const grouped: ShowsByGenre = {}
 
+  // Group shows by genre
   shows.forEach((show) => {
     // Skip shows without genres
     if (!show.genres || show.genres.length === 0) {
@@ -29,9 +36,9 @@ export function groupShowsByGenre(shows: Show[]): ShowsByGenre {
 
   // Sort shows within each genre by rating (highest first)
   Object.keys(grouped).forEach((genre) => {
-    const shows = grouped[genre]
-    if (shows) {
-      shows.sort((a, b) => {
+    const genreShows = grouped[genre]
+    if (genreShows) {
+      genreShows.sort((a, b) => {
         const ratingA = a.rating?.average || 0
         const ratingB = b.rating?.average || 0
         return ratingB - ratingA

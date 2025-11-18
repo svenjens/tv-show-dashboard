@@ -6,29 +6,65 @@
  */
 
 import type { H3Event } from 'h3'
+import type { TVMazeShow } from '~/types'
+import { isTVMazeShow } from '~/types'
 import { sanitizeShowSummary } from '~/server/utils/sanitize'
 import { TMDB_PROVIDER_MAP, STREAMING_PLATFORMS } from '~/types/streaming'
+import { logger } from '~/utils/logger'
+import {
+  validateShowId,
+  validateCountryCode,
+  createValidationError,
+} from '~/server/utils/validation'
+import { ZodError } from 'zod'
 
 export default cachedEventHandler(
   async (event: H3Event) => {
-    const id = getRouterParam(event, 'id')
+    // Validate route parameters with Zod
+    const rawId = getRouterParam(event, 'id')
     const query = getQuery(event)
-    const country = (query.country as string) || 'US'
-
-    if (!id) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Show ID is required',
-      })
-    }
 
     try {
+      // Validate show ID
+      if (!rawId) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Show ID is required',
+        })
+      }
+
+      const id = validateShowId(rawId)
+
+      // Validate country code if provided
+      const country = query.country ? validateCountryCode(query.country) : 'US'
+
       // Fetch show data from TVMaze
-      const show: any = await $fetch<any>(`https://api.tvmaze.com/shows/${id}`, {
+      const response = await $fetch<unknown>(`https://api.tvmaze.com/shows/${id}`, {
         headers: {
           'User-Agent': 'BingeList/1.0',
         },
       })
+
+      // Validate response is a valid TVMaze show
+      if (!isTVMazeShow(response)) {
+        logger.error(
+          'Invalid show response from TVMaze API',
+          {
+            module: 'api/shows/[id]',
+            action: 'fetchShowById',
+            showId: id,
+            responseType: typeof response,
+          },
+          response
+        )
+        throw createError({
+          statusCode: 500,
+          statusMessage: 'Invalid show data received from API',
+        })
+      }
+
+      // Type-safe: we know response is TVMazeShow now
+      const show: TVMazeShow = response
 
       // Sanitize HTML content server-side
       if (show.summary) {
@@ -129,14 +165,33 @@ export default cachedEventHandler(
             }
           }
         } catch (tmdbError) {
-          console.error(`Error fetching TMDB data for show ${id}:`, tmdbError)
-          // Continue without TMDB data
+          logger.warn('Failed to fetch TMDB data for show', {
+            module: 'api/shows/[id]',
+            action: 'fetchTMDBData',
+            showId: id,
+            showName: show.name,
+            error: tmdbError instanceof Error ? tmdbError.message : String(tmdbError),
+          })
+          // Continue without TMDB data - not critical
         }
       }
 
       return combinedData
     } catch (error) {
-      console.error(`Error fetching show ${id}:`, error)
+      // Handle validation errors
+      if (error instanceof ZodError) {
+        throw createError(createValidationError(error))
+      }
+
+      logger.error(
+        'Failed to fetch show details',
+        {
+          module: 'api/shows/[id]',
+          action: 'fetchShowById',
+          showId: rawId,
+        },
+        error
+      )
       throw createError({
         statusCode: 404,
         statusMessage: 'Show not found',

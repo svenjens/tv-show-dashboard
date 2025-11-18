@@ -12,6 +12,23 @@ export default defineVitestConfig({
           indexedDb: true,
         },
         overrides: {
+          // Disable color-mode module for tests
+          modules: [
+            '@nuxt/eslint',
+            '@nuxtjs/tailwindcss',
+            '@nuxtjs/i18n',
+            '@pinia/nuxt',
+            '@vueuse/nuxt',
+            '@vueuse/motion/nuxt',
+            '@nuxt/icon',
+            '@nuxt/image',
+            '@nuxt/scripts',
+            // '@nuxtjs/color-mode', // Disabled for tests
+            '@nuxtjs/robots',
+            '@nuxtjs/sitemap',
+            '@nuxtjs/fontaine',
+            'nuxt-security',
+          ],
           // Disable i18n lazy loading for tests
           i18n: {
             locales: [
