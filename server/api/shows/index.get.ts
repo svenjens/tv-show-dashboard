@@ -4,66 +4,44 @@
  * Returns shows grouped by genre and sorted by rating
  */
 
-import type { Show, ShowsByGenre } from '~/types'
-
-/**
- * Group shows by genre and sort by rating (server-side version)
- * @param shows - Array of shows
- * @returns Object with genres as keys and sorted show arrays as values
- */
-function groupShowsByGenreAndSort(shows: Show[]): ShowsByGenre {
-  const grouped: ShowsByGenre = {}
-
-  shows.forEach((show) => {
-    // Skip shows without genres
-    if (!show.genres || show.genres.length === 0) {
-      return
-    }
-
-    // Add show to each of its genres
-    show.genres.forEach((genre) => {
-      if (!grouped[genre]) {
-        grouped[genre] = []
-      }
-      grouped[genre].push(show)
-    })
-  })
-
-  // Sort shows within each genre by rating (highest first)
-  Object.keys(grouped).forEach((genre) => {
-    const shows = grouped[genre]
-    if (shows) {
-      shows.sort((a, b) => {
-        const ratingA = a.rating?.average || 0
-        const ratingB = b.rating?.average || 0
-        return ratingB - ratingA
-      })
-    }
-  })
-
-  return grouped
-}
+import type { TVMazeShow } from '~/types'
+import { isTVMazeShowArray } from '~/types'
+import { logger } from '~/utils/logger'
+import { groupShowsByGenre } from '~/server/utils/shows'
 
 export default cachedEventHandler(
   async (_event) => {
     try {
-      const shows = await $fetch<Show[]>('https://api.tvmaze.com/shows', {
+      const response = await $fetch<unknown>('https://api.tvmaze.com/shows', {
         headers: {
           'User-Agent': 'BingeList/1.0',
         },
       })
 
-      // Validate response is an array
-      if (!Array.isArray(shows)) {
-        console.error('Invalid shows response:', shows)
+      // Validate response is an array of valid TVMaze shows
+      if (!isTVMazeShowArray(response)) {
+        logger.error(
+          'Invalid shows response from TVMaze API',
+          {
+            module: 'api/shows',
+            action: 'fetchAllShows',
+            responseType: typeof response,
+            isArray: Array.isArray(response),
+          },
+          response
+        )
         throw createError({
           statusCode: 500,
           statusMessage: 'Invalid shows data received from API',
         })
       }
 
+      // Type-safe: we know response is TVMazeShow[] now
+      const shows: TVMazeShow[] = response
+
       // Group and sort shows by genre on the server
-      const groupedShows = groupShowsByGenreAndSort(shows)
+      // Generic function accepts TVMazeShow directly
+      const groupedShows = groupShowsByGenre(shows)
 
       // Return both the raw shows array and the grouped/sorted data
       return {
@@ -71,7 +49,16 @@ export default cachedEventHandler(
         showsByGenre: groupedShows,
       }
     } catch (error) {
-      console.error('Error fetching shows:', error)
+      // Preserve existing H3/Nitro errors (from createError)
+      if (error && typeof (error as any).statusCode === 'number') {
+        throw error
+      }
+
+      logger.error(
+        'Failed to fetch shows from TVMaze API',
+        { module: 'api/shows', action: 'fetchAllShows' },
+        error
+      )
       throw createError({
         statusCode: 500,
         statusMessage: 'Failed to fetch shows',

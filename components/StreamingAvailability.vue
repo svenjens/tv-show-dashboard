@@ -76,7 +76,7 @@
 
     <!-- Disclaimer -->
     <div class="mt-4 text-xs text-gray-500 dark:text-gray-400 italic">
-      {{ t('streaming.disclaimer') }}
+      {{ disclaimerText }}
     </div>
   </div>
 </template>
@@ -86,6 +86,7 @@ import type { StreamingAvailability } from '@/types'
 import { STREAMING_PLATFORMS } from '@/types'
 import { trackStreamingClick } from '@/utils'
 import { getServiceGradient } from '@/utils/streaming'
+import { getCountryName } from '@/utils/countries'
 
 interface Props {
   availability: StreamingAvailability[]
@@ -94,6 +95,18 @@ interface Props {
 
 const props = defineProps<Props>()
 const { t, locale } = useI18n()
+const { location } = useLocation()
+
+/**
+ * Get localized disclaimer text with dynamic country
+ * Uses shared country name utility for consistency across the app
+ */
+const disclaimerText = computed(() => {
+  const countryCode = location.value.country || 'NL'
+  const countryName = getCountryName(countryCode, locale.value)
+
+  return t('streaming.disclaimer', { country: countryName })
+})
 
 /**
  * Handle streaming link click and track event

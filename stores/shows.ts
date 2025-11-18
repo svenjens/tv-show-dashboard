@@ -60,7 +60,12 @@ export const useShowsStore = defineStore('shows', () => {
     showsByGenre.value = groupShowsByGenre(shows)
     loading.value = false
     error.value = null
-    logger.debug(`[Store] Set ${shows.length} shows across ${genres.value.length} genres`)
+    logger.debug('Shows loaded and grouped by genre', {
+      module: 'stores/shows',
+      action: 'setShows',
+      showsCount: shows.length,
+      genresCount: genres.value.length,
+    })
   }
 
   /**
@@ -71,9 +76,12 @@ export const useShowsStore = defineStore('shows', () => {
     showsByGenre.value = sortedShowsByGenre // Use server-sorted data
     loading.value = false
     error.value = null
-    logger.debug(
-      `[Store] Set ${shows.length} shows across ${Object.keys(sortedShowsByGenre).length} genres (server-sorted)`
-    )
+    logger.debug('Shows loaded with server-sorted genres', {
+      module: 'stores/shows',
+      action: 'setShowsWithGenres',
+      showsCount: shows.length,
+      genresCount: Object.keys(sortedShowsByGenre).length,
+    })
   }
 
   /**
@@ -96,15 +104,22 @@ export const useShowsStore = defineStore('shows', () => {
       showsByGenre.value = response.showsByGenre
       loading.value = false
       error.value = null
-      logger.debug(
-        `[Store] Set ${response.shows.length} shows across ${genres.value.length} genres`
-      )
+      logger.debug('Shows fetched from API', {
+        module: 'stores/shows',
+        action: 'fetchAllShows',
+        showsCount: response.shows.length,
+        genresCount: genres.value.length,
+      })
     } catch (err) {
       error.value = err as ApiError
       if (toast) {
         toast.error('Failed to load TV shows. Please try again later.')
       }
-      logger.error('[Store] Failed to fetch shows:', err)
+      logger.error(
+        'Failed to fetch shows',
+        { module: 'stores/shows', action: 'fetchAllShows' },
+        err
+      )
       loading.value = false
     }
   }
@@ -126,7 +141,11 @@ export const useShowsStore = defineStore('shows', () => {
       if (toast) {
         toast.error('Failed to load show details. Please try again later.')
       }
-      logger.error(`[Store] Failed to fetch show ${id}:`, err)
+      logger.error(
+        'Failed to fetch show by ID',
+        { module: 'stores/shows', action: 'fetchShowById', showId: id },
+        err
+      )
       return null
     } finally {
       loading.value = false

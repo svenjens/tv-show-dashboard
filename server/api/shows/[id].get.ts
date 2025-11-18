@@ -6,29 +6,95 @@
  */
 
 import type { H3Event } from 'h3'
+import type { TVMazeShow, ShowDetailsResponse, Show, StreamingAvailability } from '~/types'
+import { isTVMazeShow } from '~/types'
 import { sanitizeShowSummary } from '~/server/utils/sanitize'
 import { TMDB_PROVIDER_MAP, STREAMING_PLATFORMS } from '~/types/streaming'
+import { logger } from '~/utils/logger'
+import {
+  validateShowId,
+  validateCountryCode,
+  createValidationError,
+} from '~/server/utils/validation'
+import { ZodError } from 'zod'
+
+// TMDB API response types
+interface TMDBSearchResponse {
+  results: Array<{
+    id: number
+    poster_path: string | null
+    backdrop_path: string | null
+    overview: string
+    vote_average: number
+    vote_count: number
+    popularity: number
+  }>
+}
+
+interface TMDBProvider {
+  provider_id: number
+  provider_name: string
+  logo_path: string | null
+}
+
+interface TMDBProvidersResponse {
+  results: {
+    [countryCode: string]: {
+      link?: string
+      flatrate?: TMDBProvider[]
+      buy?: TMDBProvider[]
+      rent?: TMDBProvider[]
+    }
+  }
+}
 
 export default cachedEventHandler(
   async (event: H3Event) => {
-    const id = getRouterParam(event, 'id')
+    // Validate route parameters with Zod
+    const rawId = getRouterParam(event, 'id')
     const query = getQuery(event)
-    const country = (query.country as string) || 'US'
-
-    if (!id) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Show ID is required',
-      })
-    }
 
     try {
+      // Validate show ID
+      if (!rawId) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Show ID is required',
+        })
+      }
+
+      const id = validateShowId(rawId)
+
+      // Validate country code if provided
+      const country = query.country ? validateCountryCode(query.country) : 'US'
+
       // Fetch show data from TVMaze
-      const show: any = await $fetch<any>(`https://api.tvmaze.com/shows/${id}`, {
+      const response = await $fetch<unknown>(`https://api.tvmaze.com/shows/${id}`, {
         headers: {
           'User-Agent': 'BingeList/1.0',
         },
       })
+
+      // Validate response is a valid TVMaze show
+      if (!isTVMazeShow(response)) {
+        logger.error(
+          'Invalid show response from TVMaze API',
+          {
+            module: 'api/shows/[id]',
+            action: 'fetchShowById',
+            showId: id,
+            responseType: typeof response,
+          },
+          response
+        )
+        throw createError({
+          statusCode: 500,
+          statusMessage: 'Invalid show data received from API',
+        })
+      }
+
+      // Type-safe: we know response is TVMazeShow now
+      const show: TVMazeShow = response
 
       // Sanitize HTML content server-side
       if (show.summary) {
@@ -38,11 +104,12 @@ export default cachedEventHandler(
       const config = useRuntimeConfig()
       const tmdbApiKey = config.public.tmdbApiKey
 
-      // Initialize combined response
-      const combinedData: any = {
-        ...show,
-        tmdb: null as any,
-        streamingAvailability: [] as any[],
+      // Initialize combined response with proper typing
+      // Use type assertion since TVMazeShow is structurally compatible with Show
+      const combinedData: ShowDetailsResponse = {
+        ...(show as unknown as Show),
+        tmdb: null,
+        streamingAvailability: [],
       }
 
       // If TMDB API key is available, fetch additional data
@@ -50,7 +117,7 @@ export default cachedEventHandler(
         try {
           // Search for the show on TMDB
           const searchUrl = `https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(show.name)}`
-          const searchResponse = await $fetch<any>(searchUrl)
+          const searchResponse = await $fetch<TMDBSearchResponse>(searchUrl)
 
           if (
             searchResponse.results &&
@@ -58,11 +125,13 @@ export default cachedEventHandler(
             searchResponse.results.length > 0
           ) {
             const tmdbShow = searchResponse.results[0]
+            if (!tmdbShow) return combinedData
+
             const tmdbId = tmdbShow.id
 
             // Fetch watch providers for the user's country
             const providersUrl = `https://api.themoviedb.org/3/tv/${tmdbId}/watch/providers?api_key=${tmdbApiKey}`
-            const providersResponse = await $fetch<any>(providersUrl)
+            const providersResponse = await $fetch<TMDBProvidersResponse>(providersUrl)
 
             // Add TMDB data to combined response
             combinedData.tmdb = {
@@ -78,10 +147,10 @@ export default cachedEventHandler(
             // Extract streaming providers for user's country
             const countryData = providersResponse.results?.[country]
             if (countryData) {
-              const providers = []
+              const providers: StreamingAvailability[] = []
 
               // Helper function to transform TMDB provider to our StreamingAvailability format
-              const transformProvider = (p: any, type: string) => {
+              const transformProvider = (p: TMDBProvider, type: string): StreamingAvailability => {
                 const tmdbProviderId = String(p.provider_id)
                 // Map TMDB provider ID to our internal service ID
                 const serviceId = TMDB_PROVIDER_MAP[tmdbProviderId] || tmdbProviderId
@@ -100,7 +169,9 @@ export default cachedEventHandler(
                     logo:
                       platform?.logo ||
                       (p.logo_path ? `https://image.tmdb.org/t/p/original${p.logo_path}` : ''),
-                    type,
+                    link,
+                    country,
+                    type: type as StreamingAvailability['service']['type'],
                   },
                   link,
                   availableFrom: undefined,
@@ -111,35 +182,61 @@ export default cachedEventHandler(
               // Flatrate (subscription services like Netflix, Disney+)
               if (Array.isArray(countryData.flatrate)) {
                 providers.push(
-                  ...countryData.flatrate.map((p: any) => transformProvider(p, 'subscription'))
+                  ...countryData.flatrate.map((p) => transformProvider(p, 'subscription'))
                 )
               }
 
               // Buy options
               if (Array.isArray(countryData.buy)) {
-                providers.push(...countryData.buy.map((p: any) => transformProvider(p, 'buy')))
+                providers.push(...countryData.buy.map((p) => transformProvider(p, 'buy')))
               }
 
               // Rent options
               if (Array.isArray(countryData.rent)) {
-                providers.push(...countryData.rent.map((p: any) => transformProvider(p, 'rent')))
+                providers.push(...countryData.rent.map((p) => transformProvider(p, 'rent')))
               }
 
               combinedData.streamingAvailability = providers
             }
           }
         } catch (tmdbError) {
-          console.error(`Error fetching TMDB data for show ${id}:`, tmdbError)
-          // Continue without TMDB data
+          logger.warn('Failed to fetch TMDB data for show', {
+            module: 'api/shows/[id]',
+            action: 'fetchTMDBData',
+            showId: id,
+            showName: show.name,
+            country,
+            error: tmdbError instanceof Error ? tmdbError.message : String(tmdbError),
+          })
+          // Continue without TMDB data - not critical
         }
       }
 
       return combinedData
     } catch (error) {
-      console.error(`Error fetching show ${id}:`, error)
+      // Handle validation errors
+      if (error instanceof ZodError) {
+        throw createError(createValidationError(error))
+      }
+
+      // Preserve existing H3/Nitro errors (from createError)
+      if (error && typeof (error as any).statusCode === 'number') {
+        throw error
+      }
+
+      logger.error(
+        'Failed to fetch show details',
+        {
+          module: 'api/shows/[id]',
+          action: 'fetchShowById',
+          showId: rawId,
+          country: query.country ? String(query.country) : 'US',
+        },
+        error
+      )
       throw createError({
-        statusCode: 404,
-        statusMessage: 'Show not found',
+        statusCode: 500,
+        statusMessage: 'Failed to fetch show details',
       })
     }
   },

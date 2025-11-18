@@ -175,3 +175,20 @@ export interface WatchedEpisode {
   episode: number
   watchedAt: number
 }
+
+/**
+ * Combined show details response from API
+ * Merges TVMaze show data with TMDB metadata and streaming availability
+ */
+export interface ShowDetailsResponse extends Show {
+  tmdb: {
+    id: number
+    posterPath: string | null
+    backdropPath: string | null
+    overview: string
+    voteAverage: number
+    voteCount: number
+    popularity: number
+  } | null
+  streamingAvailability: import('./streaming').StreamingAvailability[]
+}
