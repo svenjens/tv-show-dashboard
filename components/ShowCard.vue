@@ -47,6 +47,31 @@
         <WatchlistButton :show="show" variant="icon" size="md" @click.stop />
       </div>
 
+      <!-- Streaming Availability Badges -->
+      <div
+        v-if="streamingLogos.length > 0"
+        class="absolute bottom-2 left-2 right-2 flex gap-1 justify-end"
+      >
+        <div
+          v-for="logo in streamingLogos.slice(0, 4)"
+          :key="logo.id"
+          class="w-8 h-8 rounded-md overflow-hidden shadow-lg border-2 border-white dark:border-gray-800"
+          :style="{ background: logo.gradient }"
+        >
+          <img
+            :src="logo.path"
+            :alt="logo.name"
+            class="w-full h-full object-contain p-1 filter brightness-0 invert"
+          />
+        </div>
+        <div
+          v-if="streamingLogos.length > 4"
+          class="w-8 h-8 rounded-md bg-gray-800 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white dark:border-gray-800"
+        >
+          +{{ streamingLogos.length - 4 }}
+        </div>
+      </div>
+
       <!-- Match Reason Badge (for Smart Search) -->
       <div
         v-if="matchReason"
@@ -84,6 +109,7 @@
 import { ref, computed, onMounted } from 'vue'
 import type { Show } from '@/types'
 import { getShowImage, createShowSlug } from '@/utils'
+import { STREAMING_PLATFORMS } from '@/types/streaming'
 import RatingBadge from './RatingBadge.vue'
 import GenreTags from './GenreTags.vue'
 import WatchlistButton from './WatchlistButton.vue'
@@ -114,6 +140,49 @@ const premieredYear = computed(() => {
   if (!props.show.premiered) return ''
   return new Date(props.show.premiered).getFullYear()
 })
+
+// Get streaming logos with gradients
+const streamingLogos = computed(() => {
+  if (!props.show.streamingAvailability) return []
+
+  const uniqueServices = new Map()
+
+  props.show.streamingAvailability.forEach((availability) => {
+    const serviceId = availability.service.id
+    const platform = STREAMING_PLATFORMS[serviceId]
+
+    if (platform && !uniqueServices.has(serviceId)) {
+      uniqueServices.set(serviceId, {
+        id: serviceId,
+        name: platform.name,
+        path: platform.logo,
+        gradient: `linear-gradient(135deg, ${platform.themeColorCode} 0%, ${adjustColorBrightness(platform.themeColorCode, -20)} 100%)`,
+      })
+    }
+  })
+
+  return Array.from(uniqueServices.values())
+})
+
+// Helper function to adjust color brightness
+function adjustColorBrightness(hex: string, percent: number): string {
+  const num = parseInt(hex.replace('#', ''), 16)
+  const amt = Math.round(2.55 * percent)
+  const R = (num >> 16) + amt
+  const G = ((num >> 8) & 0x00ff) + amt
+  const B = (num & 0x0000ff) + amt
+  return (
+    '#' +
+    (
+      0x1000000 +
+      (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+      (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+      (B < 255 ? (B < 1 ? 0 : B) : 255)
+    )
+      .toString(16)
+      .slice(1)
+  )
+}
 
 function navigateToShow() {
   const slug = createShowSlug(props.show.name, props.show.id)
