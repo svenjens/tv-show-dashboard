@@ -5,7 +5,7 @@ import { useIntersectionObserver } from '@/composables/useIntersectionObserver'
 
 // Mock IntersectionObserver
 let observeCallback: IntersectionObserverCallback | null = null
-let observedElements: Set<Element> = new Set()
+const observedElements: Set<Element> = new Set()
 
 const mockIntersectionObserver = vi.fn((callback, options) => {
   observeCallback = callback
@@ -320,7 +320,7 @@ describe('useIntersectionObserver', () => {
   it('should fallback gracefully when IntersectionObserver is not supported', async () => {
     // Remove IntersectionObserver
     const originalIO = global.IntersectionObserver
-    // @ts-ignore
+    // @ts-ignore - Testing fallback when IntersectionObserver is not available in browser
     global.IntersectionObserver = undefined
 
     const TestComponent = {
