@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Search Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/en')
     await page.waitForSelector('[data-testid="search-bar"]', { timeout: 5000 })
   })
 
@@ -16,16 +16,15 @@ test.describe('Search Functionality', () => {
     // Use the input ID directly
     const searchInput = page.locator('#tv-show-search')
 
-    // Type search query
+    // Type search query and press Enter
     await searchInput.fill('Game of Thrones')
-
-    // Press Enter and wait for URL change
-    const initialUrl = page.url()
     await searchInput.press('Enter')
-    await page.waitForURL((url) => url.href !== initialUrl, { timeout: 15000 })
+    
+    // Wait for navigation to search page
+    await page.waitForURL(/.*\/en\/search\?q=.*/, { timeout: 15000 })
 
-    // Verify URL contains /search and the query
-    expect(page.url()).toContain('/search')
+    // Verify URL contains /en/search and the query
+    expect(page.url()).toContain('/en/search')
     expect(page.url()).toContain('Game')
   })
 
@@ -35,11 +34,10 @@ test.describe('Search Functionality', () => {
 
     // Search for a popular show
     await searchInput.fill('Friends')
-
-    // Press Enter and wait for URL change
-    const initialUrl = page.url()
     await searchInput.press('Enter')
-    await page.waitForURL((url) => url.href !== initialUrl, { timeout: 15000 })
+    
+    // Wait for navigation to search page
+    await page.waitForURL(/.*\/en\/search\?q=.*/, { timeout: 15000 })
 
     // Wait for show cards to appear
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 15000 })

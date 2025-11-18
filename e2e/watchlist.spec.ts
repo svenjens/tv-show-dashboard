@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Watchlist Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/en')
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 10000 })
   })
 
@@ -42,13 +42,12 @@ test.describe('Watchlist Functionality', () => {
     // Wait for watchlist count to appear
     await page.waitForSelector('[data-testid="watchlist-count"]', { timeout: 10000 })
 
-    // Click watchlist link and wait for URL change
-    const initialUrl = page.url()
+    // Click watchlist link and wait for navigation
     await page.locator('[data-testid="watchlist-link"]').click()
-    await page.waitForURL((url) => url.href !== initialUrl, { timeout: 10000 })
+    await page.waitForURL(/.*\/en\/watchlist/, { timeout: 10000 })
 
     // Verify we're on watchlist page
-    expect(page.url()).toContain('/watchlist')
+    expect(page.url()).toContain('/en/watchlist')
 
     // Check that the show is displayed
     const showCards = page.locator('[data-testid^="show-card-"]')

@@ -2,19 +2,18 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Show Details Page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/en')
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 10000 })
 
     // Navigate to first show's details page
-    const initialUrl = page.url()
     const firstCard = page.locator('[data-testid^="show-card-"]').first()
-    await firstCard.click({ force: true })
-    await page.waitForURL((url) => url.href !== initialUrl, { timeout: 15000 })
+    await firstCard.click()
+    await page.waitForURL(/.*\/en\/show\/.*/, { timeout: 15000 })
   })
 
   test('should display show details page', async ({ page }) => {
-    // Check that we're on a show details page (URL contains /show/ and a slug)
-    expect(page.url()).toContain('/show/')
+    // Check that we're on a show details page (URL contains /en/show/ and a slug)
+    expect(page.url()).toMatch(/\/en\/show\/[\w-]+-\d+/)
 
     // Page should have loaded with a title
     await expect(page).toHaveTitle(/.*/)

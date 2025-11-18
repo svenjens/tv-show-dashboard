@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Homepage - Browse Shows', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/en')
     // Wait for shows to load
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 10000 })
   })
@@ -49,15 +49,12 @@ test.describe('Homepage - Browse Shows', () => {
   test('should navigate to show details when clicking on a card', async ({ page }) => {
     const firstCard = page.locator('[data-testid^="show-card-"]').first()
 
-    // Get current URL before click
-    const initialUrl = page.url()
+    // Click on the show card and wait for navigation
+    await firstCard.click()
+    await page.waitForURL(/.*\/en\/show\/.*/, { timeout: 15000 })
 
-    // Click on the show card and wait for URL change
-    await firstCard.click({ force: true })
-    await page.waitForURL((url) => url.href !== initialUrl, { timeout: 15000 })
-
-    // Check that we're on a show details page (URL contains /show/ and a slug)
-    expect(page.url()).toMatch(/show\/[\w-]+-\d+/)
+    // Check that we're on a show details page (URL contains /en/show/ and a slug)
+    expect(page.url()).toMatch(/\/en\/show\/[\w-]+-\d+/)
   })
 
   test('should display shows grouped by genre', async ({ page }) => {
