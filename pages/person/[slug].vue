@@ -87,6 +87,14 @@
                 {{ person.name }}
               </h1>
 
+              <!-- Biography -->
+              <div v-if="person.biography" class="mb-6">
+                <SafeHtml
+                  :content="person.biography"
+                  class="text-gray-200 leading-relaxed prose prose-invert max-w-none prose-sm"
+                />
+              </div>
+
               <dl class="space-y-3 text-gray-200">
                 <div v-if="person.birthday" class="flex flex-col sm:flex-row sm:gap-2">
                   <dt class="font-semibold text-primary-300 min-w-[120px]">
@@ -223,6 +231,7 @@
 import { ref, computed } from 'vue'
 import type { PersonDetailsResponse } from '~/server/api/people/[id].get'
 import { extractIdFromSlug, createSlugWithId } from '~/utils/slug'
+import SafeHtml from '~/components/SafeHtml.vue'
 
 const route = useRoute()
 const { t, d } = useI18n()

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { logger } from '~/utils/logger'
 import type { H3Event } from 'h3'
-import type { Person } from '~/types/show'
+import type { TVMazePerson } from '~/types/show'
 
 /**
  * TVMaze Cast Credit Response
@@ -51,7 +51,7 @@ interface CastCreditShow {
 /**
  * Person Details Response
  */
-export interface PersonDetailsResponse extends Person {
+export interface PersonDetailsResponse extends TVMazePerson {
   castCredits?: CastCreditShow[]
 }
 
