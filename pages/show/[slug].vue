@@ -33,6 +33,8 @@
           <NuxtImg
             :src="show.image.original"
             :alt="`${show.name} background`"
+            format="webp"
+            :quality="85"
             class="w-full h-full object-cover"
             preload
           />
@@ -68,6 +70,8 @@
               <NuxtImg
                 :src="getShowImage(show, 'original')!"
                 :alt="`${show.name} poster`"
+                format="webp"
+                :quality="85"
                 class="w-64 rounded-lg shadow-2xl"
                 preload
                 width="256"
