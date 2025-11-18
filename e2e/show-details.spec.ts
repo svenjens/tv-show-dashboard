@@ -12,8 +12,8 @@ test.describe('Show Details Page', () => {
   })
 
   test('should display show details page', async ({ page }) => {
-    // Check that we're on a show details page
-    expect(page.url()).toMatch(/\/show\/\d+/)
+    // Check that we're on a show details page (URL contains /show/ and a slug)
+    expect(page.url()).toMatch(/\/show\/[\w-]+-\d+/)
 
     // Page should have loaded
     await expect(page).toHaveTitle(/.*/)

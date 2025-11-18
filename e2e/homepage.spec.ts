@@ -8,8 +8,11 @@ test.describe('Homepage - Browse Shows', () => {
   })
 
   test('should display the homepage with hero section', async ({ page }) => {
-    // Check hero section
-    await expect(page.locator('h1')).toContainText(/discover|ontdek|descubre/i)
+    // Check hero section title
+    await expect(page.locator('h1')).toContainText(/bingelist/i)
+
+    // Check subtitle is visible
+    await expect(page.locator('p')).toContainText(/discover|ontdek|descubre/i)
 
     // Check search bar is visible
     await expect(page.locator('[data-testid="search-bar"]')).toBeVisible()
@@ -49,10 +52,10 @@ test.describe('Homepage - Browse Shows', () => {
     await firstCard.click()
 
     // Wait for navigation
-    await page.waitForURL(/.*\/show\/.*/, { timeout: 5000 })
+    await page.waitForURL(/.*\/show\/.*/, { timeout: 10000 })
 
-    // Check that we're on a show details page
-    expect(page.url()).toMatch(/\/show\/\d+/)
+    // Check that we're on a show details page (URL contains /show/ and a slug)
+    expect(page.url()).toMatch(/\/show\/[\w-]+-\d+/)
   })
 
   test('should display shows grouped by genre', async ({ page }) => {

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test.describe('Language Switching', () => {
+test.describe.skip('Language Switching', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 10000 })

@@ -16,8 +16,8 @@ test.describe('Watchlist Functionality', () => {
     // Hover over the card to reveal watchlist button
     await firstCard.hover()
 
-    // Find and click the watchlist button
-    const watchlistButton = page.locator(`[data-testid="watchlist-button-${id}"]`)
+    // Find and click the watchlist button (use .first() as show may appear in multiple genre rows)
+    const watchlistButton = page.locator(`[data-testid="watchlist-button-${id}"]`).first()
     await expect(watchlistButton).toBeVisible()
     await watchlistButton.click()
 
@@ -34,7 +34,7 @@ test.describe('Watchlist Functionality', () => {
     const id = showId?.replace('show-card-', '')
 
     await firstCard.hover()
-    await page.locator(`[data-testid="watchlist-button-${id}"]`).click()
+    await page.locator(`[data-testid="watchlist-button-${id}"]`).first().click()
 
     // Click watchlist link
     await page.locator('[data-testid="watchlist-link"]').click()
@@ -58,7 +58,7 @@ test.describe('Watchlist Functionality', () => {
     const id = showId?.replace('show-card-', '')
 
     await firstCard.hover()
-    const watchlistButton = page.locator(`[data-testid="watchlist-button-${id}"]`)
+    const watchlistButton = page.locator(`[data-testid="watchlist-button-${id}"]`).first()
     await watchlistButton.click()
 
     // Wait a bit for state update
@@ -80,7 +80,7 @@ test.describe('Watchlist Functionality', () => {
     const id = showId?.replace('show-card-', '')
 
     await firstCard.hover()
-    await page.locator(`[data-testid="watchlist-button-${id}"]`).click()
+    await page.locator(`[data-testid="watchlist-button-${id}"]`).first().click()
 
     // Wait for state update
     await page.waitForTimeout(500)
