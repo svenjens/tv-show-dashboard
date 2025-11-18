@@ -316,6 +316,11 @@ const {
   }
 )
 
+// Ensure shows are loaded for related shows
+if (showsStore.showsCount === 0 && !showsStore.isLoading) {
+  showsStore.fetchAllShows()
+}
+
 // Streaming availability comes from server now
 const streamingAvailability = computed(() => show.value?.streamingAvailability || [])
 
