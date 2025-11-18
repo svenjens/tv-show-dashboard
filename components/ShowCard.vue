@@ -63,8 +63,8 @@
         {{ show.name }}
       </h3>
 
-      <div class="mt-auto space-y-2">
-        <div class="h-[2rem] flex items-start">
+      <div class="mt-auto space-y-3">
+        <div class="min-h-[2rem]">
           <GenreTags
             v-if="show.genres && show.genres.length > 0"
             :genres="show.genres"
@@ -72,7 +72,7 @@
           />
         </div>
 
-        <div class="text-sm text-gray-500 dark:text-gray-400 h-5">
+        <div class="text-sm text-gray-500 dark:text-gray-400">
           {{ premieredYear || '\u00A0' }}
         </div>
       </div>
