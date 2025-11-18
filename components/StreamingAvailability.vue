@@ -267,6 +267,7 @@ const formatPrice = (price: number, currency?: string): string => {
 
 .streaming-logo {
   @apply w-full h-full object-contain;
+  /* Make SVG logos white on colored backgrounds */
   filter: brightness(0) invert(1);
 }
 

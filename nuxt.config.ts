@@ -124,16 +124,10 @@ export default defineNuxtConfig({
   },
 
   // Image optimization configuration
+  // Note: Provider set to 'none' to avoid proxying external images through Vercel/server
+  // This prevents 500 errors when fetching images from external sources
   image: {
-    format: ['webp', 'avif', 'png', 'jpg'],
-    screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      xxl: 1536,
-    },
+    provider: 'none',
     domains: ['static.tvmaze.com', 'image.tmdb.org'],
   },
 
@@ -164,6 +158,7 @@ export default defineNuxtConfig({
           'https://*.google-analytics.com', // Google Analytics
           'https://*.googletagmanager.com', // Google Tag Manager
           'https://*.adtrafficquality.google', // Google Ad Traffic Quality
+          'https://api.iconify.design', // Nuxt Icon - Iconify API
           'https://vercel.live', // Vercel Live feedback (preview only)
         ],
         'img-src': [
