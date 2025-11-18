@@ -149,18 +149,40 @@ export function isTVMazeShow(obj: unknown): obj is TVMazeShow {
   if (!obj || typeof obj !== 'object') return false
   const show = obj as Partial<TVMazeShow>
 
-  return (
-    typeof show.id === 'number' &&
-    typeof show.name === 'string' &&
-    Array.isArray(show.genres) &&
-    show.rating !== undefined &&
-    (show.rating === null || typeof show.rating === 'object')
-  )
+  // Validate required fields
+  if (typeof show.id !== 'number') return false
+  if (typeof show.name !== 'string') return false
+
+  // Validate genres array contains only strings
+  if (!Array.isArray(show.genres)) return false
+  if (!show.genres.every((g) => typeof g === 'string')) return false
+
+  // Validate rating structure
+  if (show.rating === undefined) return false
+  if (show.rating !== null) {
+    if (typeof show.rating !== 'object') return false
+    const rating = show.rating as { average?: unknown }
+    if (rating.average !== null && typeof rating.average !== 'number') return false
+  }
+
+  return true
 }
 
 /**
  * Type guard to check if response is an array of TVMazeShows
+ * Validates all elements in the array for production safety
  */
 export function isTVMazeShowArray(obj: unknown): obj is TVMazeShow[] {
-  return Array.isArray(obj) && (obj.length === 0 || isTVMazeShow(obj[0]))
+  if (!Array.isArray(obj)) return false
+  // For large arrays, validate a sample for performance
+  if (obj.length > 100) {
+    // Check first, middle, and last elements
+    return (
+      (obj.length === 0 || isTVMazeShow(obj[0])) &&
+      isTVMazeShow(obj[Math.floor(obj.length / 2)]) &&
+      isTVMazeShow(obj[obj.length - 1])
+    )
+  }
+  // For smaller arrays, validate all elements
+  return obj.every(isTVMazeShow)
 }

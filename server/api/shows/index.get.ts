@@ -49,6 +49,11 @@ export default cachedEventHandler(
         showsByGenre: groupedShows,
       }
     } catch (error) {
+      // Preserve existing H3/Nitro errors (from createError)
+      if (error && typeof (error as any).statusCode === 'number') {
+        throw error
+      }
+
       logger.error(
         'Failed to fetch shows from TVMaze API',
         { module: 'api/shows', action: 'fetchAllShows' },

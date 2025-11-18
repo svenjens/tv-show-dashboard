@@ -49,9 +49,11 @@ function getTimestamp(): string {
 }
 
 /**
- * Serialize error objects
+ * Serialize error objects, including non-Error throwables
  */
 function serializeError(error: unknown): LogEntry['error'] | undefined {
+  if (!error) return undefined
+
   if (error instanceof Error) {
     return {
       name: error.name,
@@ -59,21 +61,34 @@ function serializeError(error: unknown): LogEntry['error'] | undefined {
       stack: isDevelopment ? error.stack : undefined,
     }
   }
-  return undefined
+
+  // Handle non-Error throwables (strings, objects, etc.)
+  return {
+    name: 'NonError',
+    message: String(error),
+  }
 }
 
 /**
- * Format log entry for output
+ * Format log entry for output with safe JSON serialization
  */
 function formatLogEntry(entry: LogEntry): string {
   const parts = [`[${entry.level}]`, entry.timestamp, entry.message]
 
   if (entry.context && Object.keys(entry.context).length > 0) {
-    parts.push(JSON.stringify(entry.context))
+    try {
+      parts.push(JSON.stringify(entry.context))
+    } catch {
+      parts.push('[unserializable-context]')
+    }
   }
 
   if (entry.error) {
-    parts.push(JSON.stringify(entry.error))
+    try {
+      parts.push(JSON.stringify(entry.error))
+    } catch {
+      parts.push('[unserializable-error]')
+    }
   }
 
   return parts.join(' ')

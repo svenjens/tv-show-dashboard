@@ -183,6 +183,11 @@ export default cachedEventHandler(
         throw createError(createValidationError(error))
       }
 
+      // Preserve existing H3/Nitro errors (from createError)
+      if (error && typeof (error as any).statusCode === 'number') {
+        throw error
+      }
+
       logger.error(
         'Failed to fetch show details',
         {
@@ -193,8 +198,8 @@ export default cachedEventHandler(
         error
       )
       throw createError({
-        statusCode: 404,
-        statusMessage: 'Show not found',
+        statusCode: 500,
+        statusMessage: 'Failed to fetch show details',
       })
     }
   },
