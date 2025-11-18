@@ -214,10 +214,10 @@ describe('ShowCard', () => {
   })
 
   it('should handle show without premiered date', () => {
-    const showWithoutPremiered: Show = {
+    const showWithoutPremiered = {
       ...mockShow,
-      premiered: null,
-    }
+      premiered: null as any, // Testing edge case
+    } as Show
 
     const wrapper = mount(ShowCard, {
       props: {

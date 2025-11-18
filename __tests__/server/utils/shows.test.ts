@@ -80,9 +80,9 @@ describe('server/utils/shows', () => {
 
       // Drama should have all three shows, sorted by rating
       expect(grouped.Drama).toHaveLength(3)
-      expect(grouped.Drama![0].rating.average).toBe(9.0) // mockShow3
-      expect(grouped.Drama![1].rating.average).toBe(8.5) // mockShow1
-      expect(grouped.Drama![2].rating.average).toBe(7.2) // mockShow2
+      expect(grouped.Drama?.[0]?.rating.average).toBe(9.0) // mockShow3
+      expect(grouped.Drama?.[1]?.rating.average).toBe(8.5) // mockShow1
+      expect(grouped.Drama?.[2]?.rating.average).toBe(7.2) // mockShow2
     })
 
     it('should handle shows without genres', () => {
@@ -97,7 +97,7 @@ describe('server/utils/shows', () => {
 
       // Should only include mockShow1's genres
       expect(grouped.Drama).toHaveLength(1)
-      expect(grouped.Drama![0].id).toBe(1)
+      expect(grouped.Drama?.[0]?.id).toBe(1)
     })
 
     it('should handle shows with null/undefined genres gracefully', () => {
@@ -112,7 +112,7 @@ describe('server/utils/shows', () => {
 
       // Should only include mockShow1's genres
       expect(grouped.Drama).toHaveLength(1)
-      expect(grouped.Drama![0].id).toBe(1)
+      expect(grouped.Drama?.[0]?.id).toBe(1)
     })
 
     it('should handle empty shows array', () => {
@@ -132,9 +132,9 @@ describe('server/utils/shows', () => {
 
       // Shows with null rating should be sorted as 0
       expect(grouped.Drama).toHaveLength(3)
-      expect(grouped.Drama![0].rating.average).toBe(9.0)
-      expect(grouped.Drama![1].rating.average).toBe(8.5)
-      expect(grouped.Drama![2].rating.average).toBe(null)
+      expect(grouped.Drama?.[0]?.rating.average).toBe(9.0)
+      expect(grouped.Drama?.[1]?.rating.average).toBe(8.5)
+      expect(grouped.Drama?.[2]?.rating.average).toBe(null)
     })
 
     it('should handle shows with multiple genres correctly', () => {
@@ -150,19 +150,19 @@ describe('server/utils/shows', () => {
       expect(grouped).toHaveProperty('Action')
       expect(grouped).toHaveProperty('Adventure')
       expect(grouped).toHaveProperty('Sci-Fi')
-      expect(grouped.Action![0].id).toBe(8)
-      expect(grouped.Adventure![0].id).toBe(8)
-      expect(grouped['Sci-Fi'][0].id).toBe(8)
+      expect(grouped.Action?.[0]?.id).toBe(8)
+      expect(grouped.Adventure?.[0]?.id).toBe(8)
+      expect(grouped['Sci-Fi']?.[0]?.id).toBe(8)
     })
 
     it('should place the same show in multiple genre arrays', () => {
       const shows = [mockShow1] // Has both Drama and Thriller
       const grouped = groupShowsByGenre(shows)
 
-      expect(grouped.Drama![0].id).toBe(1)
-      expect(grouped.Thriller![0].id).toBe(1)
+      expect(grouped.Drama?.[0]?.id).toBe(1)
+      expect(grouped.Thriller?.[0]?.id).toBe(1)
       // Should be the same show object
-      expect(grouped.Drama![0]).toBe(grouped.Thriller![0])
+      expect(grouped.Drama?.[0]).toBe(grouped.Thriller?.[0])
     })
 
     it('should maintain correct sort order across different genres', () => {
@@ -170,13 +170,13 @@ describe('server/utils/shows', () => {
       const grouped = groupShowsByGenre(shows)
 
       // Comedy: mockShow2 (7.2) and mockShow4 (6.5)
-      expect(grouped.Comedy![0].rating.average).toBe(7.2)
-      expect(grouped.Comedy![1].rating.average).toBe(6.5)
+      expect(grouped.Comedy?.[0]?.rating.average).toBe(7.2)
+      expect(grouped.Comedy?.[1]?.rating.average).toBe(6.5)
 
       // Drama: mockShow3 (9.0), mockShow1 (8.5), mockShow2 (7.2)
-      expect(grouped.Drama![0].rating.average).toBe(9.0)
-      expect(grouped.Drama![1].rating.average).toBe(8.5)
-      expect(grouped.Drama![2].rating.average).toBe(7.2)
+      expect(grouped.Drama?.[0]?.rating.average).toBe(9.0)
+      expect(grouped.Drama?.[1]?.rating.average).toBe(8.5)
+      expect(grouped.Drama?.[2]?.rating.average).toBe(7.2)
     })
 
     it('should handle shows with same rating', () => {
@@ -227,8 +227,8 @@ describe('server/utils/shows', () => {
 
       expect(grouped).toHaveProperty('Science-Fiction')
       expect(grouped).toHaveProperty('Horror/Thriller')
-      expect(grouped['Science-Fiction'][0].id).toBe(9)
-      expect(grouped['Horror/Thriller'][0].id).toBe(9)
+      expect(grouped['Science-Fiction']?.[0]?.id).toBe(9)
+      expect(grouped['Horror/Thriller']?.[0]?.id).toBe(9)
     })
   })
 })
