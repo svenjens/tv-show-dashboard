@@ -231,7 +231,12 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const localFilters = ref<Filters>({ ...props.modelValue })
+const localFilters = ref<Filters>({
+  status: props.modelValue.status || '',
+  network: props.modelValue.network || '',
+  year: props.modelValue.year || '',
+  streaming: props.modelValue.streaming || [],
+})
 const isExpanded = ref(false)
 const showStreamingDropdown = ref(false)
 const streamingDropdownRef = ref<HTMLElement | null>(null)
@@ -385,7 +390,12 @@ function handleClickOutside(event: MouseEvent) {
 watch(
   () => props.modelValue,
   (newValue) => {
-    localFilters.value = { ...newValue }
+    localFilters.value = {
+      status: newValue.status || '',
+      network: newValue.network || '',
+      year: newValue.year || '',
+      streaming: newValue.streaming || [],
+    }
   },
   { deep: true }
 )
