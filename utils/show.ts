@@ -74,21 +74,16 @@ export function formatRating(rating: number | null): string {
 }
 
 /**
- * Transform TVMaze image URL to use our CDN subdomain
+ * Transform TVMaze image URL (currently just passes through)
+ * Images are optimized by Nuxt Image module when using <NuxtImg>
  * @param imageUrl - Original image URL
- * @returns Transformed URL or original if not a TVMaze URL
+ * @returns Original URL (TVMaze images are already served via CDN)
  */
 export function transformImageUrl(imageUrl: string | null | undefined): string | undefined {
   if (!imageUrl) return undefined
 
-  // Proxy TVMaze images through our CDN subdomain
-  if (
-    imageUrl.startsWith('https://static.tvmaze.com') ||
-    imageUrl.startsWith('http://static.tvmaze.com')
-  ) {
-    return imageUrl.replace(/^https?:\/\/static\.tvmaze\.com/, 'https://cdn.bingelist.app/_image')
-  }
-
+  // TVMaze images are already served via Cloudflare CDN with CORS enabled
+  // Nuxt Image will optimize them automatically via Vercel's image optimizer
   return imageUrl
 }
 
