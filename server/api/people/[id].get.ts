@@ -115,7 +115,7 @@ export default cachedEventHandler(
           },
         }),
         $fetch<CastCredit[]>(
-          `https://api.tvmaze.com/people/${id}/castcredits?embed=show,character`,
+          `https://api.tvmaze.com/people/${id}/castcredits?embed[]=show&embed[]=character`,
           {
             headers: {
               'User-Agent': 'BingeList/1.0',
@@ -147,18 +147,21 @@ export default cachedEventHandler(
 
       if (Array.isArray(creditsResponse)) {
         for (const credit of creditsResponse) {
-          // TVMaze embeds show data when using ?embed=show
+          // TVMaze embeds show data when using ?embed[]=show&embed[]=character
           const embedded = (credit as unknown as Record<string, unknown>)._embedded as
             | Record<string, unknown>
             | undefined
 
           if (embedded?.show) {
-            const show = embedded.show as CastCreditShow
-            // Also add character info if embedded
-            if (embedded.character) {
-              show._embedded = {
-                character: embedded.character as CastCreditShow['_embedded']['character'],
-              }
+            const showData = embedded.show as CastCreditShow
+            // Create a proper show object with character info if available
+            const show: CastCreditShow = {
+              ...showData,
+              _embedded: embedded.character
+                ? {
+                    character: embedded.character as CastCreditShow['_embedded']['character'],
+                  }
+                : undefined,
             }
             castCredits.push(show)
           }
@@ -175,6 +178,8 @@ export default cachedEventHandler(
         action: 'fetchPersonById',
         personId: id,
         creditsCount: castCredits.length,
+        hasCredits: castCredits.length > 0,
+        firstCredit: castCredits[0] ? { id: castCredits[0].id, name: castCredits[0].name } : null,
       })
 
       return personData
