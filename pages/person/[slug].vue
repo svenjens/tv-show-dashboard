@@ -158,16 +158,6 @@
                 >
                   <Icon name="heroicons:tv" class="w-12 h-12" />
                 </div>
-
-                <!-- Character Badge -->
-                <div
-                  v-if="credit._embedded?.character"
-                  class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2"
-                >
-                  <p class="text-xs text-white font-medium truncate">
-                    {{ t('person.asCharacter', { character: credit._embedded.character.name }) }}
-                  </p>
-                </div>
               </div>
 
               <!-- Show Info -->
@@ -178,6 +168,16 @@
                 >
                   {{ credit.name }}
                 </h3>
+
+                <!-- Character name under title -->
+                <p
+                  v-if="credit._embedded?.character"
+                  class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate"
+                  :title="t('person.asCharacter', { character: credit._embedded.character.name })"
+                >
+                  {{ t('person.asCharacter', { character: credit._embedded.character.name }) }}
+                </p>
+
                 <div class="flex items-center gap-2 mt-1">
                   <span v-if="credit.premiered" class="text-xs text-gray-500 dark:text-gray-400">
                     {{ new Date(credit.premiered).getFullYear() }}

@@ -138,7 +138,7 @@
               "
               :aria-selected="activeTab === tab.id"
               role="tab"
-              @click="activeTab = tab.id"
+              @click="changeTab(tab.id)"
             >
               {{ t(tab.label) }}
             </button>
@@ -256,10 +256,8 @@ const { t, d } = useI18n()
 const localePath = useLocalePath()
 
 const route = useRoute()
+const router = useRouter()
 const showsStore = useShowsStore()
-
-// Active tab
-const activeTab = ref('overview')
 
 // Tab configuration
 const tabs = [
@@ -267,6 +265,30 @@ const tabs = [
   { id: 'episodes', label: 'tabs.episodes' },
   { id: 'cast', label: 'tabs.cast' },
 ]
+
+// Active tab - initialize from query parameter or default to 'overview'
+const validTabs = tabs.map((t) => t.id)
+const initialTab = (route.query.tab as string) || 'overview'
+const activeTab = ref(validTabs.includes(initialTab) ? initialTab : 'overview')
+
+// Function to change tab and update URL
+const changeTab = (tabId: string) => {
+  activeTab.value = tabId
+  router.push({
+    query: { ...route.query, tab: tabId },
+  })
+}
+
+// Watch for query parameter changes (e.g., browser back/forward)
+watch(
+  () => route.query.tab,
+  (newTab) => {
+    const tab = (newTab as string) || 'overview'
+    if (validTabs.includes(tab)) {
+      activeTab.value = tab
+    }
+  }
+)
 
 // Extract ID from slug (format: show-name-123)
 const slug = computed(() => route.params.slug as string)
