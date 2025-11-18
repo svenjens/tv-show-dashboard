@@ -12,7 +12,7 @@
         <NuxtLink
           v-for="member in displayedCast"
           :key="member.person.id"
-          :to="localePath(`/person/${createSlug(member.person.name, member.person.id)}`)"
+          :to="localePath(`/person/${createSlugWithId(member.person.name, member.person.id)}`)"
           class="group bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-lg transition-all"
         >
           <!-- Person image -->
@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { CastMember, ApiError } from '@/types'
-import { createSlug } from '~/utils/slug'
+import { createSlugWithId } from '~/utils/slug'
 import LoadingSpinner from './LoadingSpinner.vue'
 import ErrorMessage from './ErrorMessage.vue'
 

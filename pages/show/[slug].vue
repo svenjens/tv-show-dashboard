@@ -198,7 +198,9 @@
               class="mt-12"
               :aria-label="t('show.relatedShows')"
             >
-              <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ t('show.relatedShows') }}</h2>
+              <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                {{ t('show.relatedShows') }}
+              </h2>
               <div
                 class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 auto-rows-fr"
                 role="list"
@@ -207,6 +209,7 @@
                   v-for="relatedShow in relatedShows"
                   :key="relatedShow.id"
                   :show="relatedShow"
+                  :lazy="true"
                   role="listitem"
                 />
               </div>

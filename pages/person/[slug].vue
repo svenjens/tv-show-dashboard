@@ -110,7 +110,7 @@
           <NuxtLink
             v-for="credit in displayedCredits"
             :key="credit.id"
-            :to="localePath(`/show/${createSlug(credit.name, credit.id)}`)"
+            :to="localePath(`/show/${createSlugWithId(credit.name, credit.id)}`)"
             class="group bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-lg transition-all"
           >
             <!-- Show Image -->
@@ -193,7 +193,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { PersonDetailsResponse } from '~/server/api/people/[id].get'
-import { extractIdFromSlug, createSlug } from '~/utils/slug'
+import { extractIdFromSlug, createSlugWithId } from '~/utils/slug'
 
 const route = useRoute()
 const { t } = useI18n()
