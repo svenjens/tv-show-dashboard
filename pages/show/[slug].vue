@@ -29,12 +29,16 @@
           v-if="show.image?.original"
           class="absolute inset-0 opacity-20 dark:opacity-30"
           :aria-label="`${show.name} background`"
-          :style="{
-            backgroundImage: `url(${show.image.original})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }"
-        />
+        >
+          <NuxtImg
+            :src="show.image.original"
+            :alt="`${show.name} background`"
+            class="w-full h-full object-cover"
+            format="webp"
+            :quality="70"
+            loading="eager"
+          />
+        </div>
 
         <div class="relative max-w-7xl mx-auto px-4 py-12">
           <div class="flex items-center justify-between mb-6">

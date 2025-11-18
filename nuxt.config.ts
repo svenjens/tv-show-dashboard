@@ -134,7 +134,17 @@ export default defineNuxtConfig({
       xl: 1280,
       xxl: 1536,
     },
-    domains: ['static.tvmaze.com', 'image.tmdb.org'],
+    domains: ['cdn.bingelist.app', 'static.tvmaze.com', 'image.tmdb.org'],
+    providers: {
+      tvmaze: {
+        name: 'tvmaze',
+        provider: '~/providers/tvmaze',
+        options: {
+          baseURL: 'https://cdn.bingelist.app',
+        },
+      },
+    },
+    provider: 'tvmaze', // Use tvmaze provider as default
   },
 
   // Scripts configuration for third-party services
@@ -169,7 +179,7 @@ export default defineNuxtConfig({
           "'self'",
           'data:',
           'https:',
-          'https://*.tmdb.org',
+          'https://cdn.bingelist.app', // CDN subdomain for proxied images
           'https://*.google-analytics.com', // Google Analytics
           'https://*.googletagmanager.com', // Google Tag Manager
         ],
