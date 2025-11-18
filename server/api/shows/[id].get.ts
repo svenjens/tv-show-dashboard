@@ -165,16 +165,13 @@ export default cachedEventHandler(
             }
           }
         } catch (tmdbError) {
-          logger.warn(
-            'Failed to fetch TMDB data for show',
-            {
-              module: 'api/shows/[id]',
-              action: 'fetchTMDBData',
-              showId: id,
-              showName: show.name,
-              error: tmdbError instanceof Error ? tmdbError.message : String(tmdbError),
-            }
-          )
+          logger.warn('Failed to fetch TMDB data for show', {
+            module: 'api/shows/[id]',
+            action: 'fetchTMDBData',
+            showId: id,
+            showName: show.name,
+            error: tmdbError instanceof Error ? tmdbError.message : String(tmdbError),
+          })
           // Continue without TMDB data - not critical
         }
       }
