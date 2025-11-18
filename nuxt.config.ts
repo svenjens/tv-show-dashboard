@@ -133,6 +133,13 @@ export default defineNuxtConfig({
     domains: ['static.tvmaze.com', 'image.tmdb.org'],
   },
 
+  // Icon configuration - bundle icons locally to avoid CORS issues
+  icon: {
+    serverBundle: {
+      collections: ['heroicons'], // Bundle heroicons locally
+    },
+  },
+
   // Scripts configuration for third-party services
   scripts: {
     registry: {
@@ -160,7 +167,6 @@ export default defineNuxtConfig({
           'https://*.google-analytics.com', // Google Analytics
           'https://*.googletagmanager.com', // Google Tag Manager
           'https://*.adtrafficquality.google', // Google Ad Traffic Quality
-          'https://api.iconify.design', // Nuxt Icon - Iconify API
           'https://vercel.live', // Vercel Live feedback (preview only)
         ],
         'img-src': [
