@@ -171,7 +171,7 @@ export default defineNuxtConfig({
           'https://*.googletagmanager.com', // Google Tag Manager
         ],
         'object-src': ["'none'"],
-        'script-src-attr': ["'unsafe-hashes'"], // Allow event handlers for components like Nuxt Icon
+        'script-src-attr': ["'unsafe-inline'"], // Allow inline event handlers for Vue components
         'style-src': ["'self'", 'https:', "'unsafe-inline'"],
         'script-src': [
           "'self'",
