@@ -99,7 +99,7 @@ export function transformImageUrl(imageUrl: string | null | undefined): string |
  * @returns Image URL or null if not available
  */
 export function getShowImage(show: Show, size: 'medium' | 'original' = 'medium'): string | null {
-  return transformImageUrl(show.image?.[size])
+  return transformImageUrl(show.image?.[size]) ?? null
 }
 
 /**
