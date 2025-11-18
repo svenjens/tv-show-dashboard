@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test'
+import { waitForHydration, navigateSPA } from './helpers'
 
 test.describe('Homepage - Browse Shows', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/en', { waitUntil: 'networkidle' })
+    await waitForHydration(page)
     // Wait for shows to load
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 10000 })
   })
@@ -49,9 +51,10 @@ test.describe('Homepage - Browse Shows', () => {
   test('should navigate to show details when clicking on a card', async ({ page }) => {
     const firstCard = page.locator('[data-testid^="show-card-"]').first()
 
-    // Click on the show card and wait for navigation
-    await firstCard.click()
-    await page.waitForURL(/.*\/en\/show\/.*/, { timeout: 15000 })
+    // Use SPA navigation helper
+    await navigateSPA(page, /.*\/en\/show\/.*/, async () => {
+      await firstCard.click()
+    })
 
     // Check that we're on a show details page (URL contains /en/show/ and a slug)
     expect(page.url()).toMatch(/\/en\/show\/[\w-]+-\d+/)

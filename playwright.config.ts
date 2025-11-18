@@ -16,6 +16,9 @@ export default defineConfig({
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    // Wait for network to be idle for SPAs
+    navigationTimeout: 30000,
+    actionTimeout: 15000,
   },
 
   projects: [

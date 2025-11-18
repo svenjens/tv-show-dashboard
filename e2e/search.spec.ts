@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test'
+import { waitForHydration, navigateSPA } from './helpers'
 
 test.describe('Search Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/en', { waitUntil: 'networkidle' })
+    await waitForHydration(page)
     await page.waitForSelector('[data-testid="search-bar"]', { timeout: 5000 })
   })
 
@@ -16,12 +18,13 @@ test.describe('Search Functionality', () => {
     // Use the input ID directly
     const searchInput = page.locator('#tv-show-search')
 
-    // Type search query and press Enter
+    // Type search query
     await searchInput.fill('Game of Thrones')
-    await searchInput.press('Enter')
 
-    // Wait for navigation to search page
-    await page.waitForURL(/.*\/en\/search\?q=.*/, { timeout: 15000 })
+    // Use SPA navigation helper for form submit
+    await navigateSPA(page, /.*\/en\/search\?q=.*/, async () => {
+      await searchInput.press('Enter')
+    })
 
     // Verify URL contains /en/search and the query
     expect(page.url()).toContain('/en/search')
@@ -34,10 +37,11 @@ test.describe('Search Functionality', () => {
 
     // Search for a popular show
     await searchInput.fill('Friends')
-    await searchInput.press('Enter')
 
-    // Wait for navigation to search page
-    await page.waitForURL(/.*\/en\/search\?q=.*/, { timeout: 15000 })
+    // Use SPA navigation helper
+    await navigateSPA(page, /.*\/en\/search\?q=.*/, async () => {
+      await searchInput.press('Enter')
+    })
 
     // Wait for show cards to appear
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 15000 })

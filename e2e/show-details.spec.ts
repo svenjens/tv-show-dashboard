@@ -1,14 +1,17 @@
 import { test, expect } from '@playwright/test'
+import { waitForHydration, navigateSPA } from './helpers'
 
 test.describe('Show Details Page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/en')
+    await page.goto('/en', { waitUntil: 'networkidle' })
+    await waitForHydration(page)
     await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 10000 })
 
-    // Navigate to first show's details page
+    // Navigate to first show's details page using SPA helper
     const firstCard = page.locator('[data-testid^="show-card-"]').first()
-    await firstCard.click()
-    await page.waitForURL(/.*\/en\/show\/.*/, { timeout: 15000 })
+    await navigateSPA(page, /.*\/en\/show\/.*/, async () => {
+      await firstCard.click()
+    })
   })
 
   test('should display show details page', async ({ page }) => {
