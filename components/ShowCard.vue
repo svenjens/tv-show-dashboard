@@ -64,13 +64,13 @@
       </h3>
 
       <div class="space-y-3">
-          <div class="min-h-[2rem]">
-            <GenreTags
-              v-if="show.genres && show.genres.length > 0"
-              :genres="show.genres"
-              :max-display="4"
-            />
-          </div>
+        <div class="min-h-[2rem]">
+          <GenreTags
+            v-if="show.genres && show.genres.length > 0"
+            :genres="show.genres"
+            :max-display="4"
+          />
+        </div>
 
         <!-- Streaming Availability Badges -->
         <div v-if="streamingLogos.length > 0" class="flex gap-1.5 flex-wrap">

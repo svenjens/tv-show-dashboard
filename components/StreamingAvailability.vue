@@ -134,7 +134,6 @@ const getServiceLogo = (serviceId: string): string => {
   return platform?.logo || ''
 }
 
-
 /**
  * Get brand name to display for a streaming service
  */
