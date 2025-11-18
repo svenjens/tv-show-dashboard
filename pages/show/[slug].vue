@@ -391,13 +391,17 @@ watch(
 )
 
 // Lazy load episodes and cast when tabs are opened
-watch(activeTab, (newTab) => {
-  if (newTab === 'episodes' && !episodes.value && !episodesLoading.value) {
-    fetchEpisodes()
-  } else if (newTab === 'cast' && !cast.value && !castLoading.value) {
-    fetchCast()
-  }
-})
+watch(
+  activeTab,
+  (newTab) => {
+    if (newTab === 'episodes' && !episodes.value && !episodesLoading.value) {
+      fetchEpisodes()
+    } else if (newTab === 'cast' && !cast.value && !castLoading.value) {
+      fetchCast()
+    }
+  },
+  { immediate: true } // Also run on initial load (e.g., refresh with ?tab=cast)
+)
 
 // SEO: Update meta tags when show data changes
 watch(
