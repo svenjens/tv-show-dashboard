@@ -68,7 +68,7 @@
           <GenreTags
             v-if="show.genres && show.genres.length > 0"
             :genres="show.genres"
-            :max-display="2"
+            :max-display="10"
           />
         </div>
 
