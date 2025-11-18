@@ -14,7 +14,7 @@
       ]
     },
     {
-      "source": "/_image/(.*)",
+      "source": "/api/image/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -42,12 +42,6 @@
           "value": "1; mode=block"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/_image/:path*",
-      "destination": "https://static.tvmaze.com/:path*"
     }
   ]
 }

@@ -134,7 +134,7 @@ export default defineNuxtConfig({
       xl: 1280,
       xxl: 1536,
     },
-    domains: ['cdn.bingelist.app', 'static.tvmaze.com', 'image.tmdb.org'],
+    domains: ['static.tvmaze.com', 'image.tmdb.org'],
   },
 
   // Scripts configuration for third-party services
@@ -169,7 +169,6 @@ export default defineNuxtConfig({
           "'self'",
           'data:',
           'https:',
-          'https://cdn.bingelist.app', // CDN subdomain for proxied images
           'https://*.google-analytics.com', // Google Analytics
           'https://*.googletagmanager.com', // Google Tag Manager
         ],
