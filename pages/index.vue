@@ -34,7 +34,7 @@
             />
             <div>
               <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ t('home.title') }}</h1>
-              <p class="text-lg md:text-xl text-primary-100 mb-8">
+              <p class="text-lg md:text-xl text-white/90 mb-8">
                 {{ t('home.subtitle') }}
               </p>
             </div>
@@ -178,9 +178,9 @@
             aria-hidden="true"
           />
         </picture>
-        <h3 class="mt-6 text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 class="mt-6 text-lg font-medium text-gray-900 dark:text-gray-100">
           {{ t('home.noShows') }}
-        </h3>
+        </h2>
         <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ t('home.noShowsMessage') }}</p>
       </div>
     </main>
