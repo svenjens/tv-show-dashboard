@@ -73,5 +73,4 @@ test.describe('Watchlist Functionality', () => {
     await watchlistButton.click()
     await expect(watchlistCount).not.toBeVisible({ timeout: 5000 })
   })
-
 })

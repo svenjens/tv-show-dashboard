@@ -154,6 +154,21 @@
     "showMore": "Show more cast",
     "more": "more"
   },
+  "person": {
+    "title": "Actor Profile",
+    "loading": "Loading person details...",
+    "birthday": "Birthday",
+    "deathday": "Died",
+    "country": "Country",
+    "gender": "Gender",
+    "viewOnTVMaze": "View on TVMaze",
+    "knownFor": "Known For",
+    "asCharacter": "as {character}",
+    "showMore": "Show More",
+    "noCredits": "No TV show credits available",
+    "description": "{name} - {country} actor/actress",
+    "fallbackDescription": "View filmography and biography"
+  },
   "tabs": {
     "overview": "Overview",
     "episodes": "Episodes",
