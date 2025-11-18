@@ -4,7 +4,7 @@
     v-motion
     :initial="{ opacity: 0, y: 20 }"
     :visible="{ opacity: 1, y: 0, transition: { duration: 400, delay: 50 } }"
-    class="card group/card cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1 h-full flex flex-col"
+    class="card group/card cursor-pointer rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 hover:-translate-y-1 h-full flex flex-col"
     :data-testid="`show-card-${show.id}`"
     @click="navigateToShow"
   >
