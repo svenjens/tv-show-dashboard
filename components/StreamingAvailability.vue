@@ -208,7 +208,7 @@ const formatPrice = (price: number, currency?: string): string => {
 }
 
 .streaming-scroll-container {
-  @apply -mx-2 px-2 overflow-x-auto;
+  @apply -mx-2 px-2 py-2 overflow-x-auto;
   scrollbar-width: thin;
   scrollbar-color: rgb(209 213 219) transparent;
 }
@@ -235,7 +235,7 @@ const formatPrice = (price: number, currency?: string): string => {
 }
 
 .streaming-horizontal-list {
-  @apply flex gap-4 pb-2;
+  @apply flex gap-4;
   min-width: min-content;
 }
 
