@@ -21,10 +21,10 @@
     <!-- Person Content -->
     <DetailPageLayout
       v-else-if="person"
+      v-model="activeTab"
       :title="person.name"
       :background-image="person.image?.original"
       :tabs="tabs"
-      v-model="activeTab"
     >
       <!-- Header Content -->
       <template #header>
@@ -275,7 +275,6 @@ import SafeHtml from '~/components/SafeHtml.vue'
 import DetailPageLayout from '~/components/DetailPageLayout.vue'
 
 const route = useRoute()
-const router = useRouter()
 const { t, d } = useI18n()
 const localePath = useLocalePath()
 
@@ -303,14 +302,6 @@ const tabs = [
 const initialTab = (route.query.tab as string) || 'biography'
 const validTabs = tabs.map((t) => t.id)
 const activeTab = ref(validTabs.includes(initialTab) ? initialTab : 'biography')
-
-// Function to change tab and update URL
-const changeTab = (tabId: string) => {
-  activeTab.value = tabId
-  router.push({
-    query: { ...route.query, tab: tabId },
-  })
-}
 
 // Watch for URL query changes
 watch(

@@ -17,9 +17,6 @@ test.describe.skip('Language Switching', () => {
   })
 
   test('should change language when switching', async ({ page }) => {
-    // Get initial URL (should have a language prefix)
-    const initialUrl = page.url()
-
     // Try to find and click language switcher
     // This might be a dropdown or button - we'll try to find it generically
     const languageButtons = page.locator('button, a, [role="button"]').filter({
@@ -44,8 +41,6 @@ test.describe.skip('Language Switching', () => {
         // Wait for URL or content to change
         await page.waitForTimeout(1000)
 
-        // URL should have changed (language prefix)
-        const newUrl = page.url()
         // Don't expect exact URL change as it depends on implementation
         // Just verify page is still functional
         await expect(page.locator('[data-testid^="show-card-"]').first()).toBeVisible()
@@ -76,13 +71,8 @@ test.describe.skip('Language Switching', () => {
         await page.reload()
         await page.waitForSelector('[data-testid^="show-card-"]', { timeout: 10000 })
 
-        // Language should be persisted (URL should contain /nl or content should be in Dutch)
+        // Language should be persisted - verify page still loads
         const url = page.url()
-        const content = await page.textContent('body')
-
-        // Either URL contains language or content shows it
-        const isDutch =
-          url.includes('/nl') || content?.includes('Ontdek') || content?.includes('zoek')
         // This is a soft check as implementation may vary
         expect(url.length).toBeGreaterThan(0)
       }

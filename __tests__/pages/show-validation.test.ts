@@ -186,7 +186,7 @@ describe('Show/Person Page Validation Edge Cases', () => {
         { slug: 'test', description: 'Test page' },
       ]
 
-      crawlerEdgeCases.forEach(({ slug, description }) => {
+      crawlerEdgeCases.forEach(({ slug }) => {
         const id = extractIdFromSlug(slug)
 
         // All of these should return null, triggering a 404 page
