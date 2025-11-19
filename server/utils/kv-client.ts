@@ -56,7 +56,7 @@ export async function kvGet<T>(key: string): Promise<T | null> {
   // Try KV first if available
   if (kvAvailable && kvClient) {
     try {
-      const value = await kvClient.get<T>(key)
+      const value = await (kvClient.get(key) as Promise<T | null>)
       if (value !== null) {
         logger.debug('KV cache hit', { module: 'kv-client', key })
         return value
