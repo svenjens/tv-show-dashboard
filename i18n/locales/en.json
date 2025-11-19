@@ -121,7 +121,8 @@
     "emptyMessage": "Start adding shows to your watchlist to keep track of what you want to watch.",
     "showCount": "No show | {count} show | {count} shows",
     "clearAll": "Clear all",
-    "confirmClear": "Are you sure you want to clear your entire watchlist?"
+    "confirmClear": "Are you sure you want to clear your entire watchlist?",
+    "browseShows": "Browse Shows"
   },
   "pwa": {
     "installTitle": "Install BingeList",

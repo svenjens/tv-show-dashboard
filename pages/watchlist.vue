@@ -40,13 +40,21 @@
             </p>
           </div>
 
-          <button
-            v-if="watchlistStore.hasShows"
-            class="btn-secondary bg-white/10 hover:bg-white/20 text-white border-white/30"
-            @click="handleClearAll"
-          >
-            {{ t('watchlist.clearAll') }}
-          </button>
+          <div class="flex items-center gap-3">
+            <NuxtLink
+              :to="localePath('/')"
+              class="btn-secondary bg-white/10 hover:bg-white/20 text-white border-white/30"
+            >
+              {{ t('watchlist.browseShows') }}
+            </NuxtLink>
+            <button
+              v-if="watchlistStore.hasShows"
+              class="btn-secondary bg-white/10 hover:bg-white/20 text-white border-white/30"
+              @click="handleClearAll"
+            >
+              {{ t('watchlist.clearAll') }}
+            </button>
+          </div>
         </div>
       </div>
     </header>
@@ -111,6 +119,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import DarkModeToggle from '@/components/DarkModeToggle.vue'
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 const watchlistStore = useWatchlistStore()
 
 // SEO (multilingual)

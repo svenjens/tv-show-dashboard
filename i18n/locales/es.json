@@ -121,7 +121,8 @@
     "emptyMessage": "Comienza a agregar series a tu lista para realizar un seguimiento de lo que quieres ver.",
     "showCount": "Ninguna serie | {count} serie | {count} series",
     "clearAll": "Limpiar todo",
-    "confirmClear": "¿Estás seguro de que quieres limpiar toda tu lista?"
+    "confirmClear": "¿Estás seguro de que quieres limpiar toda tu lista?",
+    "browseShows": "Explorar Series"
   },
   "pwa": {
     "installTitle": "Instalar BingeList",
