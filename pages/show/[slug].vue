@@ -346,7 +346,7 @@ const relatedShows = computed(() => {
   return showsStore.getRelatedShows(show.value, 6)
 })
 
-// Episodes - lazy loaded via server API when tab is opened
+// Episodes - progressive loading (fast initial load, then translations)
 const {
   data: episodes,
   error: episodesError,
@@ -354,10 +354,30 @@ const {
   execute: fetchEpisodes,
 } = await useLazyAsyncData(
   `episodes-${showId.value}`,
-  () =>
-    $fetch(`/api/shows/${showId.value}/episodes`, {
-      query: { locale: locale.value },
-    }),
+  async () => {
+    // Step 1: Load episodes WITHOUT translations for instant display
+    const untranslatedEpisodes = await $fetch(`/api/shows/${showId.value}/episodes`, {
+      query: { locale: locale.value, skipTranslation: 'true' },
+    })
+
+    // Step 2: If not English, fetch translations in the background
+    if (locale.value !== 'en') {
+      // Return untranslated immediately, translations will be fetched separately
+      setTimeout(async () => {
+        try {
+          const translatedEpisodes = await $fetch(`/api/shows/${showId.value}/episodes`, {
+            query: { locale: locale.value },
+          })
+          // Update episodes with translations
+          episodes.value = translatedEpisodes
+        } catch (error) {
+          console.warn('Failed to load episode translations:', error)
+        }
+      }, 100) // Small delay to let UI render first
+    }
+
+    return untranslatedEpisodes
+  },
   {
     immediate: false,
     server: false, // Only fetch on client when needed

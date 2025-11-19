@@ -12,6 +12,7 @@ import { getCachedEpisodes } from '~/server/utils/tvmaze-cache'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
+  const query = getQuery(event)
 
   if (!id) {
     throw createError({
@@ -22,6 +23,9 @@ export default defineEventHandler(async (event) => {
 
   // Get locale from request for translation
   const locale = getLocaleFromRequest(event)
+  
+  // Allow skipping translation for faster initial load (progressive enhancement)
+  const skipTranslation = query.skipTranslation === 'true'
 
   try {
     // Vercel KV handles caching globally (7 days TTL)
@@ -39,6 +43,11 @@ export default defineEventHandler(async (event) => {
         episode.summary = sanitizeEpisodeSummary(episode.summary)
       }
     })
+
+    // Skip translation if requested (for progressive loading)
+    if (skipTranslation) {
+      return episodes
+    }
 
     // Translate episodes if locale is not English
     // Replace the original fields directly with translated versions
