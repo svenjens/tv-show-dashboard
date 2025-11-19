@@ -21,7 +21,6 @@ async function initKV() {
   if (kvUrl && kvToken) {
     try {
       // Dynamically import @vercel/kv to avoid requiring it
-      // @ts-expect-error - @vercel/kv is optional and loaded dynamically
       const { createClient } = await import('@vercel/kv')
       kvClient = createClient({
         url: kvUrl,
@@ -57,7 +56,6 @@ export async function kvGet<T>(key: string): Promise<T | null> {
   // Try KV first if available
   if (kvAvailable && kvClient) {
     try {
-      // @ts-expect-error - kvClient type is not strictly typed
       const value = await kvClient.get<T>(key)
       if (value !== null) {
         logger.debug('KV cache hit', { module: 'kv-client', key })
