@@ -157,11 +157,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Dark Mode Toggle (below content) -->
-      <div class="mt-8 flex justify-center">
-        <DarkModeToggle />
-      </div>
     </div>
   </NuxtLayout>
 </template>
