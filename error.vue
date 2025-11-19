@@ -208,7 +208,11 @@ const errorMessage = computed(() => {
 useSEO({
   title: `${errorTitle.value} - BingeList`,
   description: errorMessage.value,
-  robots: 'noindex, nofollow', // Don't index error pages
+})
+
+// Don't index error pages
+useHead({
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 })
 
 const handleError = () => {
