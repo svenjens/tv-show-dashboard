@@ -243,7 +243,7 @@ const currentFeatures = [
   {
     title: 'roadmap.current.smartSearch',
     description: 'roadmap.current.smartSearchDesc',
-    tech: ['Vue 3', 'TypeScript', 'TVMaze API'],
+    tech: ['Nuxt 4', 'Vue 3', 'TypeScript', 'TVMaze API'],
   },
   {
     title: 'roadmap.current.watchlist',
@@ -339,6 +339,7 @@ const techStacks = [
   {
     category: 'roadmap.tech.frontend',
     items: [
+      { name: 'Nuxt 4', icon: '💚', purpose: 'Meta Framework' },
       { name: 'Vue 3', icon: '⚡', purpose: 'UI Framework' },
       { name: 'TypeScript', icon: 'TS', purpose: 'Type Safety' },
       { name: 'Tailwind CSS', icon: '🎨', purpose: 'Styling' },

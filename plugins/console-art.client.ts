@@ -1,5 +1,7 @@
+import packageJson from '../package.json'
+
 export default defineNuxtPlugin(() => {
-  // Only run in browser and production
+  // Only run in browser
   if (process.client) {
     // ASCII Art for BingeList
     const asciiArt = `
@@ -13,7 +15,7 @@ export default defineNuxtPlugin(() => {
 
     const info = `
   🎬 Your ultimate TV show discovery and tracking platform
-  📦 Version: 4.0.0
+  📦 Version: ${packageJson.version}
   🌐 Website: https://bingelist.app
   💻 Built with: Nuxt 4 + Vue 3 + TypeScript
   
