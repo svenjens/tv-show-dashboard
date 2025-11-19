@@ -15,11 +15,13 @@ const { t } = useI18n()
 const colorMode = useColorMode()
 
 // Map @nuxtjs/color-mode to our interface
-const isDark = computed(() => colorMode.value === 'dark')
-const theme = computed(() => colorMode.preference as 'light' | 'dark' | 'system')
+const isDark = computed(() => colorMode?.value === 'dark')
+const theme = computed(() => colorMode?.preference as 'light' | 'dark' | 'system')
 
 function toggle() {
-  colorMode.preference = isDark.value ? 'light' : 'dark'
+  if (colorMode) {
+    colorMode.preference = isDark.value ? 'light' : 'dark'
+  }
 }
 
 const themeLabel = computed(() => {

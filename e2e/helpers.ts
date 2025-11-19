@@ -7,8 +7,12 @@ import type { Page } from '@playwright/test'
 export async function makeTestElementsVisible(page: Page) {
   await page.addStyleTag({
     content: `
-      [data-e2e-visible] {
+      [data-e2e-visible],
+      [data-testid^="show-card-"],
+      [data-testid="search-bar"] {
         opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
       }
     `,
   })
