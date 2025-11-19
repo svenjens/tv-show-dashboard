@@ -494,13 +494,27 @@ watch(
   { immediate: true }
 )
 
-// Lazy load episodes and cast when tabs are opened
+// Preload episodes in background after show loads (for instant tab switching)
+watch(
+  show,
+  (showData) => {
+    if (showData && !episodes.value && !episodesLoading.value) {
+      // Small delay to not block initial render
+      setTimeout(() => {
+        if (!episodes.value && !episodesLoading.value) {
+          fetchEpisodes()
+        }
+      }, 300)
+    }
+  },
+  { immediate: true }
+)
+
+// Load cast when cast tab is opened (less common, so keep it lazy)
 watch(
   activeTab,
   (newTab) => {
-    if (newTab === 'episodes' && !episodes.value && !episodesLoading.value) {
-      fetchEpisodes()
-    } else if (newTab === 'cast' && !cast.value && !castLoading.value) {
+    if (newTab === 'cast' && !cast.value && !castLoading.value) {
       fetchCast()
     }
   },
