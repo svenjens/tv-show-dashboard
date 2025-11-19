@@ -117,6 +117,7 @@ import DarkModeToggle from '@/components/DarkModeToggle.vue'
 import SafeHtml from '@/components/SafeHtml.vue'
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const router = useRouter()
 
 const tvmazeLink =

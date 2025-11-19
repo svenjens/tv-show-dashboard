@@ -169,6 +169,7 @@ import LegalArticle from '@/components/LegalArticle.vue'
 import DarkModeToggle from '@/components/DarkModeToggle.vue'
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const router = useRouter()
 
 const lastUpdated = computed(() => {
