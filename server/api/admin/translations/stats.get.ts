@@ -6,7 +6,7 @@
 
 import { getTranslationStats } from '~/server/utils/translate'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   // Get translation statistics
   const stats = getTranslationStats()
 
