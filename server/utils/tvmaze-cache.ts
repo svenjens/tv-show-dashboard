@@ -5,14 +5,7 @@
  */
 
 import { logger } from '~/utils/logger'
-
-/**
- * Get KV storage instance
- * Falls back to Nitro's regular cache in development
- */
-function getCache() {
-  return useStorage('cache')
-}
+import { kvGet, kvSet } from './kv-client'
 
 /**
  * Cache TTL configurations (in seconds)
@@ -28,20 +21,18 @@ const CACHE_TTL = {
 
 /**
  * Fetch with global cache
- * Checks Vercel KV first, falls back to API call if not cached
+ * Checks Vercel KV first (or Nitro storage), falls back to API call if not cached
  */
 async function fetchWithCache<T>(
   cacheKey: string,
   fetchFn: () => Promise<T>,
   ttl: number
 ): Promise<T> {
-  const cache = getCache()
-
   try {
-    // Try to get from cache
-    const cached = await cache.getItem<T>(cacheKey)
+    // Try to get from cache (KV or Nitro storage)
+    const cached = await kvGet<T>(cacheKey)
     if (cached !== null) {
-      logger.debug('TVMaze cache hit', {
+      logger.debug('Cache hit', {
         module: 'tvmaze-cache',
         cacheKey,
       })
@@ -49,22 +40,20 @@ async function fetchWithCache<T>(
     }
 
     // Cache miss - fetch from API
-    logger.debug('TVMaze cache miss', {
+    logger.debug('Cache miss, fetching from API', {
       module: 'tvmaze-cache',
       cacheKey,
     })
 
     const data = await fetchFn()
 
-    // Store in cache with TTL
-    await cache.setItem(cacheKey, data as any, {
-      ttl,
-    })
+    // Store in cache with TTL (KV or Nitro storage)
+    await kvSet(cacheKey, data, { ex: ttl })
 
     return data
   } catch (error) {
     logger.error(
-      'TVMaze cache error, falling back to direct fetch',
+      'Cache error, falling back to direct fetch',
       {
         module: 'tvmaze-cache',
         cacheKey,
@@ -231,11 +220,11 @@ export async function getCachedAllShows(): Promise<unknown[]> {
  * Useful for manual cache clearing if needed
  */
 export async function invalidateShowCache(showId: number): Promise<void> {
-  const cache = getCache()
+  const { kvDel } = await import('./kv-client')
   await Promise.all([
-    cache.removeItem(`tvmaze:show:${showId}`),
-    cache.removeItem(`tvmaze:episodes:${showId}`),
-    cache.removeItem(`tvmaze:cast:${showId}`),
+    kvDel(`tvmaze:show:${showId}`),
+    kvDel(`tvmaze:episodes:${showId}`),
+    kvDel(`tvmaze:cast:${showId}`),
   ])
 
   logger.info('Show cache invalidated', {

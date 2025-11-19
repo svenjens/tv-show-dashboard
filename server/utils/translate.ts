@@ -196,8 +196,9 @@ export async function translateText(text: string, targetLocale: string): Promise
 
   const cacheKey = generateCacheKey(cleanedText, targetLocale)
 
-  // Try to get from cache first
-  const cached = await useStorage('cache').getItem<string>(cacheKey)
+  // Try to get from cache first (KV or Nitro storage)
+  const { kvGet, kvSet } = await import('./kv-client')
+  const cached = await kvGet<string>(cacheKey)
   if (cached) {
     stats.cacheHits++
     logger.debug('Translation cache hit', {
@@ -221,8 +222,8 @@ export async function translateText(text: string, targetLocale: string): Promise
   const translated = await translateWithOpenAI(cleanedText, targetLocale)
 
   if (translated) {
-    // Cache indefinitely (translations don't expire)
-    await useStorage('cache').setItem(cacheKey, translated)
+    // Cache indefinitely (translations don't expire) in KV or Nitro storage
+    await kvSet(cacheKey, translated)
     logger.info('Translation cached successfully', {
       module: 'translate',
       action: 'translateText',

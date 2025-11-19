@@ -46,11 +46,11 @@ export default defineNuxtConfig({
         '/api/**', // Never prerender API routes
       ],
     },
-    // Storage configuration for global cache sharing
+    // Storage configuration for fallback caching (when KV is not available)
     storage: {
       cache: {
-        driver: 'vercel-kv',
-        // Falls back to filesystem in development
+        driver: 'fs',
+        base: './.cache',
       },
     },
   },
