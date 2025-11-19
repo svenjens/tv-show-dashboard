@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Sanitize episode summaries server-side
-    episodes.forEach((episode) => {
+    episodes.forEach((episode: any) => {
       if (episode.summary) {
         episode.summary = sanitizeEpisodeSummary(episode.summary)
       }
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
     // Translate episodes if locale is not English
     // Replace the original fields directly with translated versions
     if (needsTranslation(locale)) {
-      for (const episode of episodes) {
+      for (const episode of episodes as any[]) {
         // Translate episode name
         if (episode.name) {
           const translatedName = await translateText(episode.name, locale)

@@ -57,7 +57,7 @@ async function fetchWithCache<T>(
     const data = await fetchFn()
 
     // Store in cache with TTL
-    await cache.setItem(cacheKey, data, {
+    await cache.setItem(cacheKey, data as any, {
       ttl,
     })
 
