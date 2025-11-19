@@ -1,5 +1,3 @@
-import packageJson from '../package.json'
-
 export default defineNuxtPlugin(() => {
   // Only run in browser
   if (import.meta.client) {
@@ -15,7 +13,7 @@ export default defineNuxtPlugin(() => {
 
     const info = `
   🎬 Your ultimate TV show discovery and tracking platform
-  📦 Version: ${packageJson.version}
+  📦 Version: 4.0.0
   🌐 Website: https://bingelist.app
   💻 Built with: Nuxt 4 + Vue 3 + TypeScript
   
