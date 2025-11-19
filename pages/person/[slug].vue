@@ -242,6 +242,15 @@ const localePath = useLocalePath()
 const slug = computed(() => route.params.slug as string)
 const personId = computed(() => extractIdFromSlug(slug.value))
 
+// Validate person ID before fetching
+if (!personId.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Invalid person URL',
+    fatal: true,
+  })
+}
+
 // Display settings
 const initialDisplayCount = ref(10)
 const showAllCredits = ref(false)

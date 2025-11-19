@@ -302,6 +302,15 @@ const showId = computed(() => extractIdFromSlug(slug.value))
 const { country } = useLocation()
 const userCountry = computed(() => country.value || 'US')
 
+// Validate show ID before fetching
+if (!showId.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Invalid show URL',
+    fatal: true,
+  })
+}
+
 // Server-side data fetching with useAsyncData
 // This runs on the server during SSR and provides instant content
 const {

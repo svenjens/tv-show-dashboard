@@ -6,6 +6,7 @@
   "navigation": {
     "home": "Home",
     "search": "Search",
+    "watchlist": "Watchlist",
     "back": "Back"
   },
   "home": {
@@ -414,5 +415,15 @@
       "resourceA11y": "The A11Y Project",
       "reviewedDesc": "This statement was last reviewed on {date}."
     }
+  },
+  "errors": {
+    "notFound": "Page Not Found",
+    "notFoundMessage": "The page you're looking for doesn't exist or has been moved.",
+    "serverError": "Server Error",
+    "serverErrorMessage": "Something went wrong on our end. We're working to fix it.",
+    "somethingWrong": "Something Went Wrong",
+    "defaultMessage": "An unexpected error occurred. Please try again later.",
+    "tryAgain": "Try Again",
+    "lookingFor": "Looking for something?"
   }
 }
