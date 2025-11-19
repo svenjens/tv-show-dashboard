@@ -132,6 +132,192 @@ function isTVMazePerson(data: unknown): data is TVMazePerson {
   return hasValidId && hasValidUrl && hasValidName && hasValidImage
 }
 
+/**
+ * Fetch person data from TVMaze API
+ */
+async function fetchPersonFromTVMaze(id: number): Promise<{
+  person: TVMazePerson
+  credits: CastCredit[]
+}> {
+  const [personResponse, creditsResponse] = await Promise.all([
+    $fetch<unknown>(`https://api.tvmaze.com/people/${id}`, {
+      headers: {
+        'User-Agent': 'BingeList/1.0',
+      },
+    }),
+    $fetch<CastCredit[]>(
+      `https://api.tvmaze.com/people/${id}/castcredits?embed[]=show&embed[]=character`,
+      {
+        headers: {
+          'User-Agent': 'BingeList/1.0',
+        },
+      }
+    ).catch(() => [] as CastCredit[]),
+  ])
+
+  // Validate person response
+  if (!isTVMazePerson(personResponse)) {
+    logger.error(
+      'Invalid person response from TVMaze API',
+      {
+        module: 'api/people/[id]',
+        action: 'fetchPersonFromTVMaze',
+        personId: id,
+        responseType: typeof personResponse,
+      },
+      personResponse
+    )
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Invalid person data received from API',
+    })
+  }
+
+  return {
+    person: personResponse,
+    credits: creditsResponse,
+  }
+}
+
+/**
+ * Extract cast credits with embedded show data
+ */
+function extractCastCredits(creditsResponse: CastCredit[]): CastCreditShow[] {
+  const castCredits: CastCreditShow[] = []
+
+  if (!Array.isArray(creditsResponse)) {
+    return castCredits
+  }
+
+  for (const credit of creditsResponse) {
+    // TVMaze embeds show data when using ?embed[]=show&embed[]=character
+    const embedded = (credit as unknown as Record<string, unknown>)._embedded as
+      | Record<string, unknown>
+      | undefined
+
+    if (embedded?.show) {
+      const showData = embedded.show as CastCreditShow
+      // Create a proper show object with character info if available
+      const show: CastCreditShow = {
+        ...showData,
+        _embedded: embedded.character
+          ? {
+              character: embedded.character as NonNullable<
+                CastCreditShow['_embedded']
+              >['character'],
+            }
+          : undefined,
+      }
+      castCredits.push(show)
+    }
+  }
+
+  return castCredits
+}
+
+/**
+ * Search for a person on TMDB by name
+ */
+async function searchTMDBPerson(personName: string, apiKey: string): Promise<number | null> {
+  try {
+    const searchUrl = `https://api.themoviedb.org/3/search/person?api_key=${apiKey}&query=${encodeURIComponent(personName)}`
+    const searchResponse = await $fetch<TMDBPersonSearchResponse>(searchUrl)
+
+    if (
+      searchResponse.results &&
+      Array.isArray(searchResponse.results) &&
+      searchResponse.results.length > 0
+    ) {
+      const tmdbPerson = searchResponse.results[0]
+      if (!tmdbPerson) {
+        logger.debug('No TMDB person found', {
+          module: 'api/people/[id]',
+          action: 'searchTMDBPerson',
+          personName,
+        })
+        return null
+      }
+      return tmdbPerson.id
+    }
+
+    return null
+  } catch (error) {
+    logger.warn('Failed to search TMDB person', {
+      module: 'api/people/[id]',
+      action: 'searchTMDBPerson',
+      personName,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+}
+
+/**
+ * Fetch detailed person data from TMDB
+ */
+async function fetchTMDBPersonDetails(
+  tmdbId: number,
+  apiKey: string
+): Promise<TMDBPersonDetails | null> {
+  try {
+    const detailsUrl = `https://api.themoviedb.org/3/person/${tmdbId}?api_key=${apiKey}`
+    return await $fetch<TMDBPersonDetails>(detailsUrl)
+  } catch (error) {
+    logger.warn('Failed to fetch TMDB person details', {
+      module: 'api/people/[id]',
+      action: 'fetchTMDBPersonDetails',
+      tmdbId,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+}
+
+/**
+ * Enrich person data with TMDB information
+ */
+async function enrichWithTMDBData(
+  personData: PersonDetailsResponse,
+  personName: string
+): Promise<void> {
+  const config = useRuntimeConfig()
+  const tmdbApiKey = config.public.tmdbApiKey
+
+  if (!tmdbApiKey) {
+    return
+  }
+
+  // Search for the person on TMDB
+  const tmdbId = await searchTMDBPerson(personName, tmdbApiKey)
+  if (!tmdbId) {
+    return
+  }
+
+  // Fetch full person details from TMDB
+  const detailsResponse = await fetchTMDBPersonDetails(tmdbId, tmdbApiKey)
+  if (!detailsResponse) {
+    return
+  }
+
+  // Add TMDB data to person data
+  personData.tmdb = {
+    id: detailsResponse.id,
+    biography: detailsResponse.biography || '',
+    placeOfBirth: detailsResponse.place_of_birth,
+    profilePath: detailsResponse.profile_path,
+    knownForDepartment: detailsResponse.known_for_department,
+    popularity: detailsResponse.popularity,
+  }
+
+  logger.debug('TMDB person data fetched successfully', {
+    module: 'api/people/[id]',
+    action: 'enrichWithTMDBData',
+    personName,
+    tmdbId,
+    hasBiography: !!detailsResponse.biography,
+  })
+}
+
 export default cachedEventHandler(
   async (event: H3Event) => {
     const rawId = getRouterParam(event, 'id')
@@ -148,132 +334,20 @@ export default cachedEventHandler(
       const id = validatePersonId(rawId)
 
       // Fetch person data from TVMaze
-      const [personResponse, creditsResponse] = await Promise.all([
-        $fetch<unknown>(`https://api.tvmaze.com/people/${id}`, {
-          headers: {
-            'User-Agent': 'BingeList/1.0',
-          },
-        }),
-        $fetch<CastCredit[]>(
-          `https://api.tvmaze.com/people/${id}/castcredits?embed[]=show&embed[]=character`,
-          {
-            headers: {
-              'User-Agent': 'BingeList/1.0',
-            },
-          }
-        ).catch(() => [] as CastCredit[]),
-      ])
-
-      // Validate person response
-      if (!isTVMazePerson(personResponse)) {
-        logger.error(
-          'Invalid person response from TVMaze API',
-          {
-            module: 'api/people/[id]',
-            action: 'fetchPersonById',
-            personId: id,
-            responseType: typeof personResponse,
-          },
-          personResponse
-        )
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'Invalid person data received from API',
-        })
-      }
+      const { person, credits } = await fetchPersonFromTVMaze(id)
 
       // Extract cast credits with embedded show data
-      const castCredits: CastCreditShow[] = []
+      const castCredits = extractCastCredits(credits)
 
-      if (Array.isArray(creditsResponse)) {
-        for (const credit of creditsResponse) {
-          // TVMaze embeds show data when using ?embed[]=show&embed[]=character
-          const embedded = (credit as unknown as Record<string, unknown>)._embedded as
-            | Record<string, unknown>
-            | undefined
-
-          if (embedded?.show) {
-            const showData = embedded.show as CastCreditShow
-            // Create a proper show object with character info if available
-            const show: CastCreditShow = {
-              ...showData,
-              _embedded: embedded.character
-                ? {
-                    character: embedded.character as NonNullable<
-                      CastCreditShow['_embedded']
-                    >['character'],
-                  }
-                : undefined,
-            }
-            castCredits.push(show)
-          }
-        }
-      }
-
+      // Build person data response
       const personData: PersonDetailsResponse = {
-        ...personResponse,
+        ...person,
         castCredits,
         tmdb: null,
       }
 
-      // Fetch TMDB data if API key is available
-      const config = useRuntimeConfig()
-      const tmdbApiKey = config.public.tmdbApiKey
-
-      if (tmdbApiKey) {
-        try {
-          // Search for the person on TMDB by name
-          const searchUrl = `https://api.themoviedb.org/3/search/person?api_key=${tmdbApiKey}&query=${encodeURIComponent(personResponse.name)}`
-          const searchResponse = await $fetch<TMDBPersonSearchResponse>(searchUrl)
-
-          if (
-            searchResponse.results &&
-            Array.isArray(searchResponse.results) &&
-            searchResponse.results.length > 0
-          ) {
-            const tmdbPerson = searchResponse.results[0]
-            if (!tmdbPerson) {
-              logger.debug('No TMDB person found', {
-                module: 'api/people/[id]',
-                action: 'fetchTMDBPerson',
-                personName: personResponse.name,
-              })
-            } else {
-              const tmdbId = tmdbPerson.id
-
-              // Fetch full person details from TMDB
-              const detailsUrl = `https://api.themoviedb.org/3/person/${tmdbId}?api_key=${tmdbApiKey}`
-              const detailsResponse = await $fetch<TMDBPersonDetails>(detailsUrl)
-
-              // Add TMDB data to combined response
-              personData.tmdb = {
-                id: detailsResponse.id,
-                biography: detailsResponse.biography || '',
-                placeOfBirth: detailsResponse.place_of_birth,
-                profilePath: detailsResponse.profile_path,
-                knownForDepartment: detailsResponse.known_for_department,
-                popularity: detailsResponse.popularity,
-              }
-
-              logger.debug('TMDB person data fetched successfully', {
-                module: 'api/people/[id]',
-                action: 'fetchTMDBPerson',
-                personName: personResponse.name,
-                tmdbId,
-                hasBiography: !!detailsResponse.biography,
-              })
-            }
-          }
-        } catch (error) {
-          // Log but don't fail if TMDB enrichment fails
-          logger.warn('Failed to fetch TMDB person data', {
-            module: 'api/people/[id]',
-            action: 'fetchTMDBPerson',
-            personName: personResponse.name,
-            error: error instanceof Error ? error.message : String(error),
-          })
-        }
-      }
+      // Enrich with TMDB data (optional, won't fail if TMDB is unavailable)
+      await enrichWithTMDBData(personData, person.name)
 
       logger.debug('Person details fetched successfully', {
         module: 'api/people/[id]',
