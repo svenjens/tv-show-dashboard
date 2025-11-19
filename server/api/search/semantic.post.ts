@@ -5,9 +5,10 @@
 
 import OpenAI from 'openai'
 
-export default defineEventHandler(async (event) => {
-  const { query } = await readBody(event)
-
+/**
+ * Validate search query
+ */
+function validateQuery(query: unknown): string {
   if (!query || typeof query !== 'string') {
     throw createError({
       statusCode: 400,
@@ -23,27 +24,14 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const config = useRuntimeConfig()
+  return query
+}
 
-  if (!config.openaiApiKey) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'OpenAI API key not configured',
-    })
-  }
-
-  try {
-    const openai = new OpenAI({
-      apiKey: config.openaiApiKey,
-    })
-
-    // Step 1: Use GPT to understand the query and generate search terms
-    const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a TV show search expert. Transform natural language queries into optimized search terms for TVMaze API.
+/**
+ * Get OpenAI system prompt for TV show search
+ */
+function getSystemPrompt(): string {
+  return `You are a TV show search expert. Transform natural language queries into optimized search terms for TVMaze API.
 
 Your task:
 1. Extract show names, genres, moods, and themes from the query
@@ -101,78 +89,190 @@ Response: {
 }
 
 Always return valid JSON. Be creative with search terms to maximize results.
-IMPORTANT: The "reason" should explain WHY the search term matches the query, NOT just repeat the show title.`,
+IMPORTANT: The "reason" should explain WHY the search term matches the query, NOT just repeat the show title.`
+}
+
+/**
+ * Use GPT to generate search terms from natural language query
+ */
+async function generateSearchTermsWithGPT(
+  openai: OpenAI,
+  query: string
+): Promise<{ searches: Array<{ term: string; reason: string }>; intent: any }> {
+  const response = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [
+      {
+        role: 'system',
+        content: getSystemPrompt(),
+      },
+      {
+        role: 'user',
+        content: query,
+      },
+    ],
+    response_format: { type: 'json_object' },
+    temperature: 0.7,
+    max_tokens: 300,
+  })
+
+  const content = response.choices?.[0]?.message?.content || '{}'
+  return JSON.parse(content)
+}
+
+/**
+ * Normalize search terms from GPT response
+ * Supports both new format (searches) and old format (searchTerms) for backward compatibility
+ */
+function normalizeSearchTerms(
+  gptResult: any,
+  fallbackQuery: string
+): Array<{ term: string; reason: string }> {
+  if (Array.isArray(gptResult.searches)) {
+    return gptResult.searches
+  }
+
+  if (Array.isArray(gptResult.searchTerms)) {
+    return gptResult.searchTerms.map((term: string) => ({
+      term,
+      reason: 'relevant match',
+    }))
+  }
+
+  return [{ term: fallbackQuery, reason: 'search query' }]
+}
+
+/**
+ * Search TVMaze for a single term
+ */
+async function searchTVMazeForTerm(
+  term: string,
+  reason: string
+): Promise<Array<{ show: any; score: number; matchedTerm: string }>> {
+  try {
+    const shows = await $fetch<Array<{ show: any; score: number }>>(
+      `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(term)}`,
+      {
+        headers: {
+          'User-Agent': 'BingeList/1.0',
         },
-        {
-          role: 'user',
-          content: query,
-        },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.7,
-      max_tokens: 300,
-    })
-
-    const gptResult = JSON.parse(response.choices?.[0]?.message?.content || '{}')
-
-    // Step 2: Search TVMaze with generated terms
-    // Support both new format (searches) and old format (searchTerms) for backward compatibility
-    const searches = Array.isArray(gptResult.searches)
-      ? gptResult.searches
-      : Array.isArray(gptResult.searchTerms)
-        ? gptResult.searchTerms.map((term: string) => ({ term, reason: 'relevant match' }))
-        : [{ term: query, reason: 'search query' }]
-
-    const allResults = new Map() // Deduplicate by show ID
-
-    // Search with each term
-    for (const search of searches.slice(0, 5)) {
-      // Limit to 5 terms to avoid too many API calls
-      const term = typeof search === 'string' ? search : search.term
-      const reason = typeof search === 'string' ? 'relevant match' : search.reason
-
-      try {
-        const shows = await $fetch<Array<{ show: any; score: number }>>(
-          `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(term)}`,
-          {
-            headers: {
-              'User-Agent': 'BingeList/1.0',
-            },
-          }
-        )
-
-        // Validate response is an array
-        if (!Array.isArray(shows)) {
-          console.error(`Invalid shows response for term: ${term}`, shows)
-          continue
-        }
-
-        // Add to results (TVMaze returns [{score, show}])
-        for (const result of shows.slice(0, 10)) {
-          // Top 10 per search term
-          if (!allResults.has(result.show.id)) {
-            allResults.set(result.show.id, {
-              show: result.show,
-              score: result.score,
-              matchedTerm: reason, // Use the reason instead of the term
-            })
-          }
-        }
-      } catch (error) {
-        console.error(`Failed to search for term: ${term}`, error)
-        // Continue with other terms
       }
+    )
+
+    // Validate response is an array
+    if (!Array.isArray(shows)) {
+      console.error(`Invalid shows response for term: ${term}`, shows)
+      return []
     }
 
-    // Step 3: Convert to array and sort by relevance
-    const results = Array.from(allResults.values())
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 20) // Top 20 results
+    // Top 10 per search term
+    return shows.slice(0, 10).map((result) => ({
+      show: result.show,
+      score: result.score,
+      matchedTerm: reason, // Use the reason instead of the term
+    }))
+  } catch (error) {
+    console.error(`Failed to search for term: ${term}`, error)
+    return []
+  }
+}
+
+/**
+ * Search TVMaze with multiple terms and deduplicate results
+ */
+async function searchWithMultipleTerms(
+  searches: Array<{ term: string; reason: string }>
+): Promise<Array<{ show: any; score: number; matchedTerm: string }>> {
+  const allResults = new Map() // Deduplicate by show ID
+
+  // Limit to 5 terms to avoid too many API calls
+  for (const search of searches.slice(0, 5)) {
+    const term = typeof search === 'string' ? search : search.term
+    const reason = typeof search === 'string' ? 'relevant match' : search.reason
+
+    const results = await searchTVMazeForTerm(term, reason)
+
+    // Add to results, avoiding duplicates
+    for (const result of results) {
+      if (!allResults.has(result.show.id)) {
+        allResults.set(result.show.id, result)
+      }
+    }
+  }
+
+  // Convert to array and sort by relevance
+  return Array.from(allResults.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 20) // Top 20 results
+}
+
+/**
+ * Fallback to regular TVMaze search
+ */
+async function fallbackSearch(query: string) {
+  const fallbackResults = await $fetch<Array<{ show: any; score: number }>>(
+    `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`,
+    {
+      headers: {
+        'User-Agent': 'BingeList/1.0',
+      },
+    }
+  )
+
+  // Validate response is an array
+  if (!Array.isArray(fallbackResults)) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Invalid search results',
+    })
+  }
+
+  return {
+    query,
+    intent: { fallback: true },
+    searchTerms: [query],
+    results: fallbackResults.slice(0, 20).map((r) => ({
+      show: r.show,
+      score: r.score,
+      matchedTerm: query,
+    })),
+    total: fallbackResults.length,
+  }
+}
+
+export default defineEventHandler(async (event) => {
+  const { query } = await readBody(event)
+
+  // Validate query
+  const validatedQuery = validateQuery(query)
+
+  const config = useRuntimeConfig()
+
+  if (!config.openaiApiKey) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'OpenAI API key not configured',
+    })
+  }
+
+  try {
+    const openai = new OpenAI({
+      apiKey: config.openaiApiKey,
+    })
+
+    // Step 1: Use GPT to understand the query and generate search terms
+    const gptResult = await generateSearchTermsWithGPT(openai, validatedQuery)
+
+    // Step 2: Normalize search terms from GPT response
+    const searches = normalizeSearchTerms(gptResult, validatedQuery)
+
+    // Step 3: Search TVMaze with generated terms
+    const results = await searchWithMultipleTerms(searches)
 
     return {
-      query,
+      query: validatedQuery,
       intent: gptResult.intent,
-      searchTerms: gptResult.searchTerms || searches.map((s: any) => s.term || s),
+      searchTerms: searches.map((s) => s.term),
       results,
       total: results.length,
     }
@@ -181,34 +281,7 @@ IMPORTANT: The "reason" should explain WHY the search term matches the query, NO
 
     // Fallback to regular search if GPT fails
     try {
-      const fallbackResults = await $fetch<Array<{ show: any; score: number }>>(
-        `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`,
-        {
-          headers: {
-            'User-Agent': 'BingeList/1.0',
-          },
-        }
-      )
-
-      // Validate response is an array
-      if (!Array.isArray(fallbackResults)) {
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'Invalid search results',
-        })
-      }
-
-      return {
-        query,
-        intent: { fallback: true },
-        searchTerms: [query],
-        results: fallbackResults.slice(0, 20).map((r) => ({
-          show: r.show,
-          score: r.score,
-          matchedTerm: query,
-        })),
-        total: fallbackResults.length,
-      }
+      return await fallbackSearch(validatedQuery)
     } catch {
       throw createError({
         statusCode: 500,

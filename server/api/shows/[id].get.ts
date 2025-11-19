@@ -48,6 +48,212 @@ interface TMDBProvidersResponse {
   }
 }
 
+/**
+ * Fetch show data from TVMaze API
+ */
+async function fetchShowFromTVMaze(id: number): Promise<TVMazeShow> {
+  const response = await $fetch<unknown>(`https://api.tvmaze.com/shows/${id}`, {
+    headers: {
+      'User-Agent': 'BingeList/1.0',
+    },
+  })
+
+  // Validate response is a valid TVMaze show
+  if (!isTVMazeShow(response)) {
+    logger.error(
+      'Invalid show response from TVMaze API',
+      {
+        module: 'api/shows/[id]',
+        action: 'fetchShowFromTVMaze',
+        showId: id,
+        responseType: typeof response,
+      },
+      response
+    )
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Invalid show data received from API',
+    })
+  }
+
+  return response
+}
+
+/**
+ * Search for show on TMDB by name
+ */
+async function searchTMDBShow(
+  showName: string,
+  apiKey: string
+): Promise<TMDBSearchResponse['results'][0] | null> {
+  const searchUrl = `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${encodeURIComponent(showName)}`
+  const searchResponse = await $fetch<TMDBSearchResponse>(searchUrl)
+
+  if (
+    searchResponse.results &&
+    Array.isArray(searchResponse.results) &&
+    searchResponse.results.length > 0
+  ) {
+    return searchResponse.results[0] || null
+  }
+
+  return null
+}
+
+/**
+ * Fetch watch providers from TMDB
+ */
+async function fetchTMDBProviders(
+  tmdbId: number,
+  apiKey: string
+): Promise<TMDBProvidersResponse> {
+  const providersUrl = `https://api.themoviedb.org/3/tv/${tmdbId}/watch/providers?api_key=${apiKey}`
+  return await $fetch<TMDBProvidersResponse>(providersUrl)
+}
+
+/**
+ * Transform TMDB provider to our StreamingAvailability format
+ */
+function transformProvider(
+  provider: TMDBProvider,
+  type: string,
+  country: string,
+  tmdbId: number,
+  countryLink: string | undefined,
+  showName: string
+): StreamingAvailability {
+  const tmdbProviderId = String(provider.provider_id)
+  // Map TMDB provider ID to our internal service ID
+  const serviceId = TMDB_PROVIDER_MAP[tmdbProviderId]
+  const platform = serviceId ? STREAMING_PLATFORMS[serviceId] : undefined
+
+  // Log unknown providers for future mapping
+  if (!serviceId) {
+    logger.info('Unknown TMDB provider encountered', {
+      module: 'api/shows/[id]',
+      action: 'transformProvider',
+      tmdbProviderId,
+      providerName: provider.provider_name,
+      country,
+      showName,
+    })
+  }
+
+  // For unmapped providers, create a unique ID from the provider name
+  const finalServiceId = serviceId || `tmdb-${tmdbProviderId}`
+
+  // Use our platform's homepage or fallback to TMDB/JustWatch link
+  const link = platform?.homePage || countryLink || `https://www.themoviedb.org/tv/${tmdbId}`
+
+  return {
+    service: {
+      id: finalServiceId,
+      name: platform?.name || provider.provider_name,
+      logo:
+        platform?.logo ||
+        (provider.logo_path ? `https://image.tmdb.org/t/p/original${provider.logo_path}` : ''),
+      link,
+      country,
+      type: type as StreamingAvailability['service']['type'],
+    },
+    link,
+    availableFrom: undefined,
+    availableUntil: undefined,
+  }
+}
+
+/**
+ * Extract streaming providers for a specific country
+ */
+function extractStreamingProviders(
+  countryData: NonNullable<TMDBProvidersResponse['results'][string]>,
+  country: string,
+  tmdbId: number,
+  showName: string
+): StreamingAvailability[] {
+  const providers: StreamingAvailability[] = []
+
+  // Flatrate (subscription services like Netflix, Disney+)
+  if (Array.isArray(countryData.flatrate)) {
+    providers.push(
+      ...countryData.flatrate.map((p) =>
+        transformProvider(p, 'subscription', country, tmdbId, countryData.link, showName)
+      )
+    )
+  }
+
+  // Buy options
+  if (Array.isArray(countryData.buy)) {
+    providers.push(
+      ...countryData.buy.map((p) =>
+        transformProvider(p, 'buy', country, tmdbId, countryData.link, showName)
+      )
+    )
+  }
+
+  // Rent options
+  if (Array.isArray(countryData.rent)) {
+    providers.push(
+      ...countryData.rent.map((p) =>
+        transformProvider(p, 'rent', country, tmdbId, countryData.link, showName)
+      )
+    )
+  }
+
+  return providers
+}
+
+/**
+ * Enrich show data with TMDB information
+ */
+async function enrichWithTMDBData(
+  show: TVMazeShow,
+  country: string,
+  apiKey: string
+): Promise<{ tmdb: ShowDetailsResponse['tmdb']; streamingAvailability: StreamingAvailability[] }> {
+  try {
+    // Search for the show on TMDB
+    const tmdbShow = await searchTMDBShow(show.name, apiKey)
+    if (!tmdbShow) {
+      return { tmdb: null, streamingAvailability: [] }
+    }
+
+    const tmdbId = tmdbShow.id
+
+    // Fetch watch providers for the user's country
+    const providersResponse = await fetchTMDBProviders(tmdbId, apiKey)
+
+    // Build TMDB data
+    const tmdbData = {
+      id: tmdbId,
+      posterPath: tmdbShow.poster_path,
+      backdropPath: tmdbShow.backdrop_path,
+      overview: tmdbShow.overview,
+      voteAverage: tmdbShow.vote_average,
+      voteCount: tmdbShow.vote_count,
+      popularity: tmdbShow.popularity,
+    }
+
+    // Extract streaming providers for user's country
+    const countryData = providersResponse.results?.[country]
+    const streamingAvailability = countryData
+      ? extractStreamingProviders(countryData, country, tmdbId, show.name)
+      : []
+
+    return { tmdb: tmdbData, streamingAvailability }
+  } catch (tmdbError) {
+    logger.warn('Failed to fetch TMDB data for show', {
+      module: 'api/shows/[id]',
+      action: 'enrichWithTMDBData',
+      showName: show.name,
+      country,
+      error: tmdbError instanceof Error ? tmdbError.message : String(tmdbError),
+    })
+    // Continue without TMDB data - not critical
+    return { tmdb: null, streamingAvailability: [] }
+  }
+}
+
 export default cachedEventHandler(
   async (event: H3Event) => {
     // Validate route parameters with Zod
@@ -69,40 +275,12 @@ export default cachedEventHandler(
       const country = query.country ? validateCountryCode(query.country) : 'US'
 
       // Fetch show data from TVMaze
-      const response = await $fetch<unknown>(`https://api.tvmaze.com/shows/${id}`, {
-        headers: {
-          'User-Agent': 'BingeList/1.0',
-        },
-      })
-
-      // Validate response is a valid TVMaze show
-      if (!isTVMazeShow(response)) {
-        logger.error(
-          'Invalid show response from TVMaze API',
-          {
-            module: 'api/shows/[id]',
-            action: 'fetchShowById',
-            showId: id,
-            responseType: typeof response,
-          },
-          response
-        )
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'Invalid show data received from API',
-        })
-      }
-
-      // Type-safe: we know response is TVMazeShow now
-      const show: TVMazeShow = response
+      const show = await fetchShowFromTVMaze(id)
 
       // Sanitize HTML content server-side
       if (show.summary) {
         show.summary = sanitizeShowSummary(show.summary)
       }
-
-      const config = useRuntimeConfig()
-      const tmdbApiKey = config.public.tmdbApiKey
 
       // Initialize combined response with proper typing
       // Use type assertion since TVMazeShow is structurally compatible with Show
@@ -113,118 +291,13 @@ export default cachedEventHandler(
       }
 
       // If TMDB API key is available, fetch additional data
+      const config = useRuntimeConfig()
+      const tmdbApiKey = config.public.tmdbApiKey
+
       if (tmdbApiKey) {
-        try {
-          // Search for the show on TMDB
-          const searchUrl = `https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(show.name)}`
-          const searchResponse = await $fetch<TMDBSearchResponse>(searchUrl)
-
-          if (
-            searchResponse.results &&
-            Array.isArray(searchResponse.results) &&
-            searchResponse.results.length > 0
-          ) {
-            const tmdbShow = searchResponse.results[0]
-            if (!tmdbShow) return combinedData
-
-            const tmdbId = tmdbShow.id
-
-            // Fetch watch providers for the user's country
-            const providersUrl = `https://api.themoviedb.org/3/tv/${tmdbId}/watch/providers?api_key=${tmdbApiKey}`
-            const providersResponse = await $fetch<TMDBProvidersResponse>(providersUrl)
-
-            // Add TMDB data to combined response
-            combinedData.tmdb = {
-              id: tmdbId,
-              posterPath: tmdbShow.poster_path,
-              backdropPath: tmdbShow.backdrop_path,
-              overview: tmdbShow.overview,
-              voteAverage: tmdbShow.vote_average,
-              voteCount: tmdbShow.vote_count,
-              popularity: tmdbShow.popularity,
-            }
-
-            // Extract streaming providers for user's country
-            const countryData = providersResponse.results?.[country]
-            if (countryData) {
-              const providers: StreamingAvailability[] = []
-
-              // Helper function to transform TMDB provider to our StreamingAvailability format
-              const transformProvider = (p: TMDBProvider, type: string): StreamingAvailability => {
-                const tmdbProviderId = String(p.provider_id)
-                // Map TMDB provider ID to our internal service ID
-                const serviceId = TMDB_PROVIDER_MAP[tmdbProviderId]
-                const platform = serviceId ? STREAMING_PLATFORMS[serviceId] : undefined
-
-                // Log unknown providers for future mapping
-                if (!serviceId) {
-                  logger.info('Unknown TMDB provider encountered', {
-                    module: 'api/shows/[id]',
-                    action: 'transformProvider',
-                    tmdbProviderId,
-                    providerName: p.provider_name,
-                    country,
-                    showName: show.name,
-                  })
-                }
-
-                // For unmapped providers, create a unique ID from the provider name
-                const finalServiceId = serviceId || `tmdb-${tmdbProviderId}`
-
-                // Use our platform's homepage or fallback to TMDB/JustWatch link
-                const link =
-                  platform?.homePage ||
-                  countryData.link ||
-                  `https://www.themoviedb.org/tv/${tmdbId}`
-
-                return {
-                  service: {
-                    id: finalServiceId,
-                    name: platform?.name || p.provider_name,
-                    logo:
-                      platform?.logo ||
-                      (p.logo_path ? `https://image.tmdb.org/t/p/original${p.logo_path}` : ''),
-                    link,
-                    country,
-                    type: type as StreamingAvailability['service']['type'],
-                  },
-                  link,
-                  availableFrom: undefined,
-                  availableUntil: undefined,
-                }
-              }
-
-              // Flatrate (subscription services like Netflix, Disney+)
-              if (Array.isArray(countryData.flatrate)) {
-                providers.push(
-                  ...countryData.flatrate.map((p) => transformProvider(p, 'subscription'))
-                )
-              }
-
-              // Buy options
-              if (Array.isArray(countryData.buy)) {
-                providers.push(...countryData.buy.map((p) => transformProvider(p, 'buy')))
-              }
-
-              // Rent options
-              if (Array.isArray(countryData.rent)) {
-                providers.push(...countryData.rent.map((p) => transformProvider(p, 'rent')))
-              }
-
-              combinedData.streamingAvailability = providers
-            }
-          }
-        } catch (tmdbError) {
-          logger.warn('Failed to fetch TMDB data for show', {
-            module: 'api/shows/[id]',
-            action: 'fetchTMDBData',
-            showId: id,
-            showName: show.name,
-            country,
-            error: tmdbError instanceof Error ? tmdbError.message : String(tmdbError),
-          })
-          // Continue without TMDB data - not critical
-        }
+        const tmdbData = await enrichWithTMDBData(show, country, tmdbApiKey)
+        combinedData.tmdb = tmdbData.tmdb
+        combinedData.streamingAvailability = tmdbData.streamingAvailability
       }
 
       return combinedData
