@@ -73,7 +73,6 @@ import AdSense from '@/components/AdSense.vue'
 import DarkModeToggle from '@/components/DarkModeToggle.vue'
 
 const { t } = useI18n()
-const localePath = useLocalePath()
 const route = useRoute()
 const showsStore = useShowsStore()
 
