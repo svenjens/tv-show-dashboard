@@ -194,12 +194,12 @@
           <p class="text-sm text-gray-600 dark:text-gray-400">
             {{ t('footer.madeWith') }}
             <a
-              href="https://vuejs.org"
+              href="https://nuxt.com"
               target="_blank"
               rel="noopener noreferrer external"
               class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
             >
-              Vue 3
+              Nuxt 4
             </a>
             {{ t('footer.and') }}
             <a
