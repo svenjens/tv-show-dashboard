@@ -146,43 +146,54 @@ export interface TVMazeSearchResult {
  * Type guard to check if an object is a valid TVMazeShow
  */
 export function isTVMazeShow(obj: unknown): obj is TVMazeShow {
-  if (!obj || typeof obj !== 'object') return false
+  if (typeof obj !== 'object' || obj === null) return false
+
   const show = obj as Partial<TVMazeShow>
 
   // Validate required fields
-  if (typeof show.id !== 'number') return false
-  if (typeof show.name !== 'string') return false
+  const hasValidId = typeof show.id === 'number'
+  const hasValidName = typeof show.name === 'string'
 
   // Validate genres array contains only strings
-  if (!Array.isArray(show.genres)) return false
-  if (!show.genres.every((g) => typeof g === 'string')) return false
+  const hasGenresArray = Array.isArray(show.genres)
+  const hasValidGenres = hasGenresArray && show.genres.every((g) => typeof g === 'string')
 
-  // Validate rating structure
-  if (show.rating === undefined) return false
-  if (show.rating !== null) {
-    if (typeof show.rating !== 'object') return false
-    const rating = show.rating as { average?: unknown }
-    if (rating.average !== null && typeof rating.average !== 'number') return false
-  }
+  // Validate rating structure (rating may be null or an object with optional average)
+  const hasRating = show.rating !== undefined
+  const hasValidRating = !hasRating
+    ? false
+    : show.rating === null ||
+      (typeof show.rating === 'object' &&
+        ((show.rating as { average?: unknown }).average === null ||
+          typeof (show.rating as { average?: unknown }).average === 'number'))
 
-  return true
+  return hasValidId && hasValidName && hasValidGenres && hasValidRating
 }
 
 /**
  * Type guard to check if response is an array of TVMazeShows
  * Validates all elements in the array for production safety
+ * For large arrays (>100), validates a sample for performance
  */
 export function isTVMazeShowArray(obj: unknown): obj is TVMazeShow[] {
   if (!Array.isArray(obj)) return false
+
+  const isLargeArray = obj.length > 100
+  const isEmpty = obj.length === 0
+
   // For large arrays, validate a sample for performance
-  if (obj.length > 100) {
-    // Check first, middle, and last elements
-    return (
-      (obj.length === 0 || isTVMazeShow(obj[0])) &&
-      isTVMazeShow(obj[Math.floor(obj.length / 2)]) &&
-      isTVMazeShow(obj[obj.length - 1])
-    )
+  if (isLargeArray) {
+    const firstItem = obj[0]
+    const middleItem = obj[Math.floor(obj.length / 2)]
+    const lastItem = obj[obj.length - 1]
+
+    const hasValidFirst = isEmpty || isTVMazeShow(firstItem)
+    const hasValidMiddle = isTVMazeShow(middleItem)
+    const hasValidLast = isTVMazeShow(lastItem)
+
+    return hasValidFirst && hasValidMiddle && hasValidLast
   }
+
   // For smaller arrays, validate all elements
   return obj.every(isTVMazeShow)
 }

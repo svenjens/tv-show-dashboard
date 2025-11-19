@@ -113,19 +113,23 @@ function validatePersonId(id: string | number): number {
  * Type guard to validate TVMaze person response
  */
 function isTVMazePerson(data: unknown): data is TVMazePerson {
-  if (!data || typeof data !== 'object') return false
+  if (typeof data !== 'object' || data === null) return false
 
   const person = data as Record<string, unknown>
 
-  return (
-    typeof person.id === 'number' &&
-    typeof person.url === 'string' &&
-    typeof person.name === 'string' &&
-    (person.image === null ||
-      (typeof person.image === 'object' &&
-        person.image !== null &&
-        typeof (person.image as Record<string, unknown>).medium === 'string'))
-  )
+  const hasValidId = typeof person.id === 'number'
+  const hasValidUrl = typeof person.url === 'string'
+  const hasValidName = typeof person.name === 'string'
+
+  // Image may be null, or an object with a string medium property
+  const image = person.image
+  const hasValidImage =
+    image === null ||
+    (typeof image === 'object' &&
+      image !== null &&
+      typeof (image as Record<string, unknown>).medium === 'string')
+
+  return hasValidId && hasValidUrl && hasValidName && hasValidImage
 }
 
 export default cachedEventHandler(
