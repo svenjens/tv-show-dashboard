@@ -42,10 +42,10 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 class="text-3xl font-bold text-white mb-2">
               {{ t('roadmap.title') }}
             </h1>
-            <p class="text-gray-600 dark:text-gray-400 text-lg">
+            <p class="text-white/90 text-lg">
               {{ t('roadmap.subtitle') }}
             </p>
           </div>
