@@ -6,6 +6,12 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const i18n = nuxtApp.$i18n as any
 
+  // Guard: ensure i18n is ready
+  if (!i18n || typeof i18n.setDateTimeFormat !== 'function') {
+    // Fail silently if i18n is not ready for some reason
+    return
+  }
+
   // Add datetime formats for all locales
   i18n.setDateTimeFormat('en', {
     short: {
