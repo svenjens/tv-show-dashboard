@@ -23,4 +23,3 @@ export default defineEventHandler(async (event) => {
     timestamp: new Date().toISOString(),
   }
 })
-

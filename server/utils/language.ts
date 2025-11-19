@@ -65,7 +65,7 @@ export function validateLocale(locale: unknown): SupportedLocale {
  */
 export function getLocaleFromRequest(event: H3Event): SupportedLocale {
   const query = getQuery(event)
-  
+
   // 1. Check query parameter
   if (query.locale) {
     const locale = validateLocale(query.locale)
@@ -128,4 +128,3 @@ export function getSupportedLocales(): Array<{ code: SupportedLocale; name: stri
     name: LOCALE_TO_LANGUAGE[code],
   }))
 }
-

@@ -252,72 +252,72 @@ async function enrichWithTMDBData(
 }
 
 export default defineEventHandler(async (event: H3Event) => {
-    // Validate route parameters with Zod
-    const rawId = getRouterParam(event, 'id')
-    const query = getQuery(event)
+  // Validate route parameters with Zod
+  const rawId = getRouterParam(event, 'id')
+  const query = getQuery(event)
 
-    try {
-      // Validate show ID
-      if (!rawId) {
-        throw createError({
-          statusCode: 400,
-          statusMessage: 'Show ID is required',
-        })
+  try {
+    // Validate show ID
+    if (!rawId) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Show ID is required',
+      })
+    }
+
+    const id = validateShowId(rawId)
+
+    // Validate country code if provided
+    const country = query.country ? validateCountryCode(query.country) : 'US'
+
+    // Get locale from request for translation
+    const locale = getLocaleFromRequest(event)
+
+    // Fetch show data from TVMaze
+    const show = await fetchShowFromTVMaze(id)
+
+    // Sanitize HTML content server-side
+    if (show.summary) {
+      show.summary = sanitizeShowSummary(show.summary)
+    }
+
+    // Initialize combined response with proper typing
+    // Use type assertion since TVMazeShow is structurally compatible with Show
+    const combinedData: ShowDetailsResponse = {
+      ...(show as unknown as Show),
+      tmdb: null,
+      streamingAvailability: [],
+    }
+
+    // Translate TVMaze summary if locale is not English
+    // Replace the summary field directly with translated version
+    if (show.summary && needsTranslation(locale)) {
+      const translatedSummary = await translateText(show.summary, locale)
+      if (translatedSummary) {
+        combinedData.summary = translatedSummary
       }
+    }
 
-      const id = validateShowId(rawId)
+    // If TMDB API key is available, fetch additional data
+    const config = useRuntimeConfig()
+    const tmdbApiKey = config.public.tmdbApiKey
 
-      // Validate country code if provided
-      const country = query.country ? validateCountryCode(query.country) : 'US'
+    if (tmdbApiKey) {
+      const tmdbData = await enrichWithTMDBData(show, country, tmdbApiKey)
+      combinedData.tmdb = tmdbData.tmdb
+      combinedData.streamingAvailability = tmdbData.streamingAvailability
 
-      // Get locale from request for translation
-      const locale = getLocaleFromRequest(event)
-
-      // Fetch show data from TVMaze
-      const show = await fetchShowFromTVMaze(id)
-
-      // Sanitize HTML content server-side
-      if (show.summary) {
-        show.summary = sanitizeShowSummary(show.summary)
-      }
-
-      // Initialize combined response with proper typing
-      // Use type assertion since TVMazeShow is structurally compatible with Show
-      const combinedData: ShowDetailsResponse = {
-        ...(show as unknown as Show),
-        tmdb: null,
-        streamingAvailability: [],
-      }
-
-      // Translate TVMaze summary if locale is not English
-      // Replace the summary field directly with translated version
-      if (show.summary && needsTranslation(locale)) {
-        const translatedSummary = await translateText(show.summary, locale)
-        if (translatedSummary) {
-          combinedData.summary = translatedSummary
+      // Translate TMDB overview if available and locale is not English
+      // Replace the overview field directly with translated version
+      if (tmdbData.tmdb?.overview && needsTranslation(locale)) {
+        const translatedOverview = await translateText(tmdbData.tmdb.overview, locale)
+        if (translatedOverview && combinedData.tmdb) {
+          combinedData.tmdb.overview = translatedOverview
         }
       }
+    }
 
-      // If TMDB API key is available, fetch additional data
-      const config = useRuntimeConfig()
-      const tmdbApiKey = config.public.tmdbApiKey
-
-      if (tmdbApiKey) {
-        const tmdbData = await enrichWithTMDBData(show, country, tmdbApiKey)
-        combinedData.tmdb = tmdbData.tmdb
-        combinedData.streamingAvailability = tmdbData.streamingAvailability
-
-        // Translate TMDB overview if available and locale is not English
-        // Replace the overview field directly with translated version
-        if (tmdbData.tmdb?.overview && needsTranslation(locale)) {
-          const translatedOverview = await translateText(tmdbData.tmdb.overview, locale)
-          if (translatedOverview && combinedData.tmdb) {
-            combinedData.tmdb.overview = translatedOverview
-          }
-        }
-      }
-
-      return combinedData
+    return combinedData
   } catch (error) {
     // Handle validation errors
     if (error instanceof ZodError) {

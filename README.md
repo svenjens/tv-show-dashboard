@@ -178,18 +178,21 @@ VITE_AMAZON_ASSOCIATE_TAG=your-tag-20
 **Get your API keys:**
 
 **OpenAI (for translations):**
+
 1. Sign up at [platform.openai.com](https://platform.openai.com/)
 2. Go to API Keys section
 3. Create new API key
 4. Copy to `.env` as `OPENAI_API_KEY`
 
 **TMDB (for streaming data):**
+
 1. Sign up at [themoviedb.org](https://www.themoviedb.org/)
 2. Go to Settings → API
 3. Request an API key (free, no credit card required)
 4. Copy to `.env` as `VITE_TMDB_API_KEY`
 
 **Vercel KV (for global translation cache):**
+
 1. Deploy to Vercel
 2. Go to Storage tab → Create Database → KV (Redis)
 3. Name it `translation-cache`
@@ -610,6 +613,7 @@ See the "Configure Environment Variables" section above for setup details.
 The application supports multiple languages with **AI-powered content translation**:
 
 ### Supported Languages
+
 - **English (en)**: `https://example.com/en/` (original)
 - **Dutch (nl)**: `https://example.com/nl/` (AI-translated)
 - **Spanish (es)**: `https://example.com/es/` (AI-translated)
@@ -646,6 +650,7 @@ CACHE MISS → Translate with OpenAI → Cache forever → Return
 ### Language Preference
 
 Language detected from:
+
 1. URL path (`/en/`, `/nl/`, `/es/`)
 2. Browser language (auto-redirect)
 3. Cookie preference
@@ -664,6 +669,7 @@ Language detected from:
 To add a new language (e.g., French):
 
 1. Add to `server/utils/language.ts`:
+
 ```typescript
 export const SUPPORTED_LOCALES = ['en', 'nl', 'es', 'fr'] as const
 export const LOCALE_TO_LANGUAGE = { /* ... */, fr: 'French' }

@@ -105,14 +105,11 @@ export async function getCachedEpisodes(showId: number): Promise<unknown[]> {
   return fetchWithCache(
     cacheKey,
     async () => {
-      const response = await $fetch<unknown[]>(
-        `https://api.tvmaze.com/shows/${showId}/episodes`,
-        {
-          headers: {
-            'User-Agent': 'BingeList/1.0',
-          },
-        }
-      )
+      const response = await $fetch<unknown[]>(`https://api.tvmaze.com/shows/${showId}/episodes`, {
+        headers: {
+          'User-Agent': 'BingeList/1.0',
+        },
+      })
       return response
     },
     CACHE_TTL.episodes
@@ -128,14 +125,11 @@ export async function getCachedCast(showId: number): Promise<unknown[]> {
   return fetchWithCache(
     cacheKey,
     async () => {
-      const response = await $fetch<unknown[]>(
-        `https://api.tvmaze.com/shows/${showId}/cast`,
-        {
-          headers: {
-            'User-Agent': 'BingeList/1.0',
-          },
-        }
-      )
+      const response = await $fetch<unknown[]>(`https://api.tvmaze.com/shows/${showId}/cast`, {
+        headers: {
+          'User-Agent': 'BingeList/1.0',
+        },
+      })
       return response
     },
     CACHE_TTL.cast
@@ -165,9 +159,7 @@ export async function getCachedPerson(id: number): Promise<unknown> {
 /**
  * Fetch person cast credits with caching
  */
-export async function getCachedPersonCredits(
-  id: number
-): Promise<unknown[]> {
+export async function getCachedPersonCredits(id: number): Promise<unknown[]> {
   const cacheKey = `tvmaze:person-credits:${id}`
 
   return fetchWithCache(
@@ -262,4 +254,3 @@ export async function getCacheStats(): Promise<{
     message: 'Cache statistics available in Vercel KV dashboard',
   }
 }
-

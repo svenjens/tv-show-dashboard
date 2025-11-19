@@ -91,10 +91,7 @@ Translated content:`
 /**
  * Translate text using OpenAI API
  */
-async function translateWithOpenAI(
-  text: string,
-  targetLocale: string
-): Promise<string | null> {
+async function translateWithOpenAI(text: string, targetLocale: string): Promise<string | null> {
   const config = useRuntimeConfig()
   const apiKey = config.openaiApiKey
 
@@ -280,4 +277,3 @@ export async function translateFields<T extends Record<string, any>>(
 
   return translations
 }
-

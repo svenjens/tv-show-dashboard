@@ -322,9 +322,9 @@ const {
   () =>
     // @ts-ignore - Type recursion issue with Nuxt routes
     $fetch(`/api/shows/${showId.value}`, {
-      query: { 
+      query: {
         country: userCountry.value,
-        locale: locale.value
+        locale: locale.value,
       },
     }),
   {
@@ -354,9 +354,10 @@ const {
   execute: fetchEpisodes,
 } = await useLazyAsyncData(
   `episodes-${showId.value}`,
-  () => $fetch(`/api/shows/${showId.value}/episodes`, {
-    query: { locale: locale.value }
-  }),
+  () =>
+    $fetch(`/api/shows/${showId.value}/episodes`, {
+      query: { locale: locale.value },
+    }),
   {
     immediate: false,
     server: false, // Only fetch on client when needed

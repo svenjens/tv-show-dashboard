@@ -324,49 +324,49 @@ async function enrichWithTMDBData(
 }
 
 export default defineEventHandler(async (event: H3Event) => {
-    const rawId = getRouterParam(event, 'id')
+  const rawId = getRouterParam(event, 'id')
 
-    try {
-      // Validate person ID
-      if (!rawId) {
-        throw createError({
-          statusCode: 400,
-          statusMessage: 'Person ID is required',
-        })
-      }
-
-      const id = validatePersonId(rawId)
-
-      // Get locale from request for translation
-      const locale = getLocaleFromRequest(event)
-
-      // Fetch person data from TVMaze
-      const { person, credits } = await fetchPersonFromTVMaze(id)
-
-      // Extract cast credits with embedded show data
-      const castCredits = extractCastCredits(credits)
-
-      // Build person data response
-      const personData: PersonDetailsResponse = {
-        ...person,
-        castCredits,
-        tmdb: null,
-      }
-
-      // Enrich with TMDB data (optional, won't fail if TMDB is unavailable)
-      await enrichWithTMDBData(personData, person.name, locale)
-
-      logger.debug('Person details fetched successfully', {
-        module: 'api/people/[id]',
-        action: 'fetchPersonById',
-        personId: id,
-        creditsCount: castCredits.length,
-        hasCredits: castCredits.length > 0,
-        hasTMDBData: !!personData.tmdb,
-        firstCredit: castCredits[0] ? { id: castCredits[0].id, name: castCredits[0].name } : null,
+  try {
+    // Validate person ID
+    if (!rawId) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Person ID is required',
       })
+    }
 
-      return personData
+    const id = validatePersonId(rawId)
+
+    // Get locale from request for translation
+    const locale = getLocaleFromRequest(event)
+
+    // Fetch person data from TVMaze
+    const { person, credits } = await fetchPersonFromTVMaze(id)
+
+    // Extract cast credits with embedded show data
+    const castCredits = extractCastCredits(credits)
+
+    // Build person data response
+    const personData: PersonDetailsResponse = {
+      ...person,
+      castCredits,
+      tmdb: null,
+    }
+
+    // Enrich with TMDB data (optional, won't fail if TMDB is unavailable)
+    await enrichWithTMDBData(personData, person.name, locale)
+
+    logger.debug('Person details fetched successfully', {
+      module: 'api/people/[id]',
+      action: 'fetchPersonById',
+      personId: id,
+      creditsCount: castCredits.length,
+      hasCredits: castCredits.length > 0,
+      hasTMDBData: !!personData.tmdb,
+      firstCredit: castCredits[0] ? { id: castCredits[0].id, name: castCredits[0].name } : null,
+    })
+
+    return personData
   } catch (error) {
     // Preserve H3 errors
     if (error && typeof error === 'object' && 'statusCode' in error) {
