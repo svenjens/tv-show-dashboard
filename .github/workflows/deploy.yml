@@ -113,6 +113,8 @@ jobs:
         run: npm run test:e2e
         env:
           BASE_URL: http://localhost:3000
+          # Note: Playwright's webServer config automatically starts 'npm run dev'
+          # and waits for http://localhost:3000 to be reachable before running tests
 
       - name: Upload test results
         if: always()
