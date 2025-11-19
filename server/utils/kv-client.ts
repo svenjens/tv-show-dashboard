@@ -4,14 +4,13 @@
  * Falls back to Nitro storage if KV is not configured
  */
 
-import { createClient } from '@vercel/kv'
 import { logger } from '~/utils/logger'
 
-let kvClient: ReturnType<typeof createClient> | null = null
+let kvClient: any = null
 let kvAvailable = false
 
 // Initialize KV client with BL_ prefix support
-function initKV() {
+async function initKV() {
   if (kvClient !== null) {
     return
   }
@@ -21,6 +20,8 @@ function initKV() {
 
   if (kvUrl && kvToken) {
     try {
+      // Dynamically import @vercel/kv to avoid requiring it
+      const { createClient } = await import('@vercel/kv')
       kvClient = createClient({
         url: kvUrl,
         token: kvToken,
@@ -37,7 +38,7 @@ function initKV() {
       })
     }
   } else {
-    logger.info('Vercel KV not configured, using Nitro storage fallback', {
+    logger.debug('Vercel KV not configured, using Nitro storage fallback', {
       module: 'kv-client',
       hasUrl: !!kvUrl,
       hasToken: !!kvToken,
@@ -45,13 +46,13 @@ function initKV() {
   }
 }
 
-// Initialize on first import
-initKV()
-
 /**
  * Get a value from KV or fallback storage
  */
 export async function kvGet<T>(key: string): Promise<T | null> {
+  // Ensure KV is initialized
+  await initKV()
+
   // Try KV first if available
   if (kvAvailable && kvClient) {
     try {
@@ -95,6 +96,9 @@ export async function kvSet<T>(
   value: T,
   options?: { ex?: number; px?: number; exat?: number; pxat?: number }
 ): Promise<void> {
+  // Ensure KV is initialized
+  await initKV()
+
   // Try KV first if available
   if (kvAvailable && kvClient) {
     try {
@@ -134,6 +138,9 @@ export async function kvSet<T>(
  * Delete a value from KV or fallback storage
  */
 export async function kvDel(key: string): Promise<void> {
+  // Ensure KV is initialized
+  await initKV()
+
   // Try KV first if available
   if (kvAvailable && kvClient) {
     try {
