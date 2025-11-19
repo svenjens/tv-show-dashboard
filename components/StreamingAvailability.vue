@@ -11,9 +11,7 @@
         <a
           v-for="option in availability"
           :key="option.service.id"
-          :href="option.link"
-          target="_blank"
-          rel="noopener noreferrer"
+          v-bind="getExternalLinkAttrs(option)"
           class="streaming-card group"
           :aria-label="`${t('streaming.watch_on')} ${option.service.name}`"
           @click="handleStreamingClick($event, option.service, option.link)"
@@ -88,6 +86,10 @@ import { STREAMING_PLATFORMS } from '@/types'
 import { trackStreamingClick } from '@/utils'
 import { getServiceGradient } from '@/utils/streaming'
 import { getCountryName } from '@/utils/countries'
+import {
+  prepareExternalLink,
+  hasAffiliateProgram as checkAffiliateProgram,
+} from '@/utils/external-links'
 
 interface Props {
   availability: StreamingAvailability[]
@@ -108,6 +110,22 @@ const disclaimerText = computed(() => {
 
   return t('streaming.disclaimer', { country: countryName })
 })
+
+/**
+ * Get external link attributes with proper SEO, affiliate, and tracking
+ */
+const getExternalLinkAttrs = (option: StreamingAvailability) => {
+  const config = useRuntimeConfig()
+  const isAffiliate = checkAffiliateProgram(option.service.id)
+
+  return prepareExternalLink({
+    url: option.service.link,
+    serviceId: option.service.id,
+    showName: props.showName,
+    isAffiliate,
+    affiliateTag: config.public.amazonAssociateTag,
+  })
+}
 
 /**
  * Handle streaming link click and track event
@@ -171,8 +189,7 @@ const getServiceBrandName = (serviceId: string, serviceName: string): string => 
  * Check if a service has an affiliate program
  */
 const hasAffiliate = (serviceId: string): boolean => {
-  const platform = STREAMING_PLATFORMS[serviceId]
-  return platform?.hasAffiliateProgram || false
+  return checkAffiliateProgram(serviceId)
 }
 
 /**

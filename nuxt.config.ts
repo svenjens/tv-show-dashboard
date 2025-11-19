@@ -264,7 +264,7 @@ export default defineNuxtConfig({
     public: {
       tmdbApiKey: process.env.VITE_TMDB_API_KEY || '',
       googleAdsenseId: process.env.VITE_GOOGLE_ADSENSE_ID || '',
-      amazonAssociateTag: process.env.VITE_AMAZON_ASSOCIATE_TAG || '',
+      amazonAssociateTag: process.env.NUXT_PUBLIC_AMAZON_ASSOCIATE_TAG || '',
       googleAdsId: process.env.VITE_GOOGLE_ADS_ID || '',
     },
   },
