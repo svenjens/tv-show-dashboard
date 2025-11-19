@@ -6,43 +6,26 @@
 
     <!-- Header -->
     <header
-      class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors"
+      class="bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900 text-white"
     >
       <div class="max-w-7xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-4">
-            <!-- Logo (hidden on mobile, clickable to home) -->
-            <NuxtLink
-              :to="localePath('/')"
-              class="hidden md:block focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 rounded-lg"
-              :aria-label="t('navigation.home')"
-            >
-              <img
-                src="/optimized/logo-main.png"
-                alt="BingeList Logo"
-                class="h-12 w-12 object-contain hover:scale-105 transition-transform"
-                width="48"
-                height="48"
-                loading="eager"
+          <button
+            class="inline-flex items-center gap-2 hover:text-primary-200 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 rounded-lg px-2 py-1"
+            :aria-label="t('navigation.back')"
+            @click="useRouter().back()"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
               />
-            </NuxtLink>
-            <button
-              class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 rounded-lg px-2 py-1"
-              :aria-label="t('navigation.back')"
-              @click="useRouter().back()"
-            >
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              {{ t('navigation.back') }}
-            </button>
-          </div>
-          <DarkModeToggle />
+            </svg>
+            {{ t('navigation.back') }}
+          </button>
+          <DarkModeToggle variant="header" />
         </div>
 
         <div class="flex items-start gap-4">
@@ -288,7 +271,6 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
-const localePath = useLocalePath()
 
 // SEO
 useSEO({
