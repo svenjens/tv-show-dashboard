@@ -6,6 +6,7 @@
   "navigation": {
     "home": "Inicio",
     "search": "Buscar",
+    "watchlist": "Mi Lista",
     "back": "Volver"
   },
   "home": {

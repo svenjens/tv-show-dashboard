@@ -97,11 +97,7 @@ describe('Show/Person Page Validation Edge Cases', () => {
 
         // In the actual implementation, this would trigger a 404 error
         // BEFORE making an API call like: `/api/shows/${id}`
-        if (id === null) {
-          // This prevents the 400 error: GET /api/shows/null
-          // by throwing a 404 error instead
-          expect(true).toBe(true) // Test passes - null ID caught
-        }
+        // This prevents the 400 error: GET /api/shows/null
       })
     })
 
@@ -124,11 +120,7 @@ describe('Show/Person Page Validation Edge Cases', () => {
 
         // In the actual implementation, this would trigger a 404 error
         // BEFORE making an API call like: `/api/people/${id}`
-        if (id === null) {
-          // This prevents the 400 error: GET /api/people/null
-          // by throwing a 404 error instead
-          expect(true).toBe(true) // Test passes - null ID caught
-        }
+        // This prevents the 400 error: GET /api/people/null
       })
     })
 
@@ -200,8 +192,6 @@ describe('Show/Person Page Validation Edge Cases', () => {
         // All of these should return null, triggering a 404 page
         // instead of attempting an API call to /api/shows/null or /api/people/null
         expect(id).toBeNull()
-
-        console.log(`✓ ${description}: "${slug}" -> null (404 instead of 400)`)
       })
     })
 
