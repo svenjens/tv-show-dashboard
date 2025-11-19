@@ -54,22 +54,7 @@
       >
         <div v-for="show in watchlistStore.watchlist" :key="show.id" class="relative group">
           <ShowCard :show="show" />
-
-          <!-- Remove Button Overlay -->
-          <button
-            class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            :aria-label="t('watchlist.removeFromWatchlist')"
-            @click="watchlistStore.removeFromWatchlist(show.id)"
-          >
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+          <RemoveFromWatchlistButton :show-id="show.id" />
         </div>
       </div>
 
@@ -86,9 +71,9 @@ import ShowCard from '@/components/ShowCard.vue'
 import SkipToContent from '@/components/SkipToContent.client.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import DarkModeToggle from '@/components/DarkModeToggle.vue'
+import RemoveFromWatchlistButton from '@/components/RemoveFromWatchlistButton.vue'
 
 const { t } = useI18n()
-const localePath = useLocalePath()
 const watchlistStore = useWatchlistStore()
 
 // SEO (multilingual)
