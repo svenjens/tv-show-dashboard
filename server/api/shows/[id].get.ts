@@ -103,10 +103,7 @@ async function searchTMDBShow(
 /**
  * Fetch watch providers from TMDB
  */
-async function fetchTMDBProviders(
-  tmdbId: number,
-  apiKey: string
-): Promise<TMDBProvidersResponse> {
+async function fetchTMDBProviders(tmdbId: number, apiKey: string): Promise<TMDBProvidersResponse> {
   const providersUrl = `https://api.themoviedb.org/3/tv/${tmdbId}/watch/providers?api_key=${apiKey}`
   return await $fetch<TMDBProvidersResponse>(providersUrl)
 }
