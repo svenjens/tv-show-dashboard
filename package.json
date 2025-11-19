@@ -22,6 +22,7 @@
     "format": "prettier --write .",
     "generate:branding": "node scripts/generate-branding.js",
     "generate:favicons": "node scripts/generate-favicons.js",
+    "perf": "npx tsx scripts/performance-test.ts",
     "prepare": "husky"
   },
   "dependencies": {

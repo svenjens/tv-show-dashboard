@@ -151,6 +151,83 @@ npm run optimize:images
 
 ---
 
+## ⚡ Performance Testing Scripts
+
+### `performance-test.ts`
+
+Tests API endpoint performance with different loading strategies to measure progressive loading improvements.
+
+**Usage:**
+
+```bash
+# Test a specific show (defaults to show ID 1)
+npm run perf 82
+
+# Run multiple iterations for statistical accuracy
+npx tsx scripts/performance-test.ts 82 --multi
+
+# Test against production
+BASE_URL=https://bingelist.app npm run perf 82
+```
+
+**What it tests:**
+
+1. **Show Details API** (`/api/shows/[id]`)
+   - Full load (TMDB + translations) - baseline
+   - Fast load (skip TMDB & translations) - optimized
+   - TMDB only (no translations)
+   - Translations only (no TMDB)
+
+2. **Episodes API** (`/api/shows/[id]/episodes`)
+   - With translations
+   - Without translations
+
+**Output:**
+
+```
+Performance Test - Show ID: 82
+Testing against: http://localhost:3000
+
+📊 Show Details Tests:
+  ✓ Full load (TMDB + translations): 2450ms [42.3KB]
+  ✓ Fast load (no TMDB, no translations): 145ms (-94.1%, 16.9x faster) [38.2KB]
+  ✓ TMDB only (no translations): 1820ms (-25.7%) [41.8KB]
+  ✓ Translations only (no TMDB): 680ms (-72.2%) [38.9KB]
+
+📺 Episodes Tests:
+  ✓ Episodes with translations: 4200ms [156.7KB]
+  ✓ Episodes without translations: 95ms (-97.7%, 44.2x faster) [152.3KB]
+
+📈 Performance Summary:
+  Initial page load improvement: 94.1%
+  Speed multiplier: 16.9x faster
+  Time saved per page load: 2305ms
+  ✓ Instant load achieved (<200ms)
+  Episodes load improvement: 97.7%
+```
+
+**Server-Timing Headers:**
+
+The API now includes `Server-Timing` headers for detailed performance breakdown:
+
+```
+Server-Timing: tvmaze;dur=142, summaryTranslation;dur=523, tmdb;dur=1654, overviewTranslation;dur=208, total;dur=2527
+```
+
+View in Chrome DevTools Network tab → Timing → Server Timing
+
+**Multi-Run Mode:**
+
+For statistical accuracy, use `--multi` flag to run 5 iterations:
+
+```bash
+npm run perf:multi 82
+```
+
+This calculates average response times and shows consistent improvement percentages.
+
+---
+
 ## 🗺️ SEO Scripts
 
 ### `generate-sitemap.js`

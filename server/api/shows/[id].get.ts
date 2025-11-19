@@ -252,6 +252,9 @@ async function enrichWithTMDBData(
 }
 
 export default defineEventHandler(async (event: H3Event) => {
+  const startTime = Date.now()
+  const timings: Record<string, number> = {}
+  
   // Validate route parameters with Zod
   const rawId = getRouterParam(event, 'id')
   const query = getQuery(event)
@@ -279,7 +282,9 @@ export default defineEventHandler(async (event: H3Event) => {
     const skipTMDB = query.skipTMDB === 'true'
 
     // Fetch show data from TVMaze
+    const tvmazeStart = Date.now()
     const show = await fetchShowFromTVMaze(id)
+    timings.tvmaze = Date.now() - tvmazeStart
 
     // Sanitize HTML content server-side
     if (show.summary) {
@@ -297,7 +302,9 @@ export default defineEventHandler(async (event: H3Event) => {
     // Translate TVMaze summary if locale is not English (unless skipped for fast load)
     // Replace the summary field directly with translated version
     if (show.summary && needsTranslation(locale) && !skipTranslation) {
+      const translateStart = Date.now()
       const translatedSummary = await translateText(show.summary, locale)
+      timings.summaryTranslation = Date.now() - translateStart
       if (translatedSummary) {
         combinedData.summary = sanitizeShowSummary(translatedSummary)
       }
@@ -308,20 +315,30 @@ export default defineEventHandler(async (event: H3Event) => {
     const tmdbApiKey = config.public.tmdbApiKey
 
     if (tmdbApiKey && !skipTMDB) {
+      const tmdbStart = Date.now()
       const tmdbData = await enrichWithTMDBData(show, country, tmdbApiKey)
+      timings.tmdb = Date.now() - tmdbStart
       combinedData.tmdb = tmdbData.tmdb
       combinedData.streamingAvailability = tmdbData.streamingAvailability
 
       // Translate TMDB overview if available and locale is not English (unless skipped for fast load)
       // Replace the overview field directly with translated version
       if (tmdbData.tmdb?.overview && needsTranslation(locale) && !skipTranslation) {
+        const overviewTranslateStart = Date.now()
         const translatedOverview = await translateText(tmdbData.tmdb.overview, locale)
+        timings.overviewTranslation = Date.now() - overviewTranslateStart
         if (translatedOverview && combinedData.tmdb) {
           combinedData.tmdb.overview = sanitizeShowSummary(translatedOverview)
         }
       }
     }
 
+    // Add performance timing headers for debugging
+    timings.total = Date.now() - startTime
+    setHeader(event, 'Server-Timing', Object.entries(timings)
+      .map(([key, value]) => `${key};dur=${value}`)
+      .join(', '))
+    
     return combinedData
   } catch (error) {
     // Handle validation errors
