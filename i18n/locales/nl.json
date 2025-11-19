@@ -414,5 +414,15 @@
       "resourceA11y": "The A11Y Project",
       "reviewedDesc": "Deze verklaring is voor het laatst beoordeeld op {date}."
     }
+  },
+  "errors": {
+    "notFound": "Pagina Niet Gevonden",
+    "notFoundMessage": "De pagina die je zoekt bestaat niet of is verplaatst.",
+    "serverError": "Serverfout",
+    "serverErrorMessage": "Er is iets misgegaan aan onze kant. We werken eraan om het op te lossen.",
+    "somethingWrong": "Er Is Iets Misgegaan",
+    "defaultMessage": "Er is een onverwachte fout opgetreden. Probeer het later opnieuw.",
+    "tryAgain": "Opnieuw Proberen",
+    "lookingFor": "Op zoek naar iets?"
   }
 }

@@ -414,5 +414,15 @@
       "resourceA11y": "The A11Y Project",
       "reviewedDesc": "Esta declaración se revisó por última vez el {date}."
     }
+  },
+  "errors": {
+    "notFound": "Página No Encontrada",
+    "notFoundMessage": "La página que buscas no existe o ha sido movida.",
+    "serverError": "Error del Servidor",
+    "serverErrorMessage": "Algo salió mal de nuestro lado. Estamos trabajando para solucionarlo.",
+    "somethingWrong": "Algo Salió Mal",
+    "defaultMessage": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.",
+    "tryAgain": "Intentar de Nuevo",
+    "lookingFor": "¿Buscas algo?"
   }
 }
