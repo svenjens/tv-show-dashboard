@@ -6,12 +6,17 @@
 import OpenAI from 'openai'
 import { createHash } from 'crypto'
 import { logger } from '~/utils/logger'
+import { LOCALE_TO_LANGUAGE } from '~/server/utils/language'
+import { kvGet, kvSet } from './kv-client'
 
-// Language mapping
-const LANGUAGE_NAMES: Record<string, string> = {
-  nl: 'Dutch',
-  es: 'Spanish',
-  en: 'English',
+// Cache OpenAI client instance per-process
+let openaiClient: OpenAI | null = null
+
+function getOpenAIClient(apiKey: string): OpenAI {
+  if (!openaiClient) {
+    openaiClient = new OpenAI({ apiKey })
+  }
+  return openaiClient
 }
 
 /**
@@ -42,11 +47,16 @@ export function getTranslationStats(): TranslationStats {
 }
 
 /**
+ * Translation cache version - increment to invalidate all cached translations
+ */
+const TRANSLATION_CACHE_VERSION = 'v1'
+
+/**
  * Generate a hash for cache key
  */
 function generateCacheKey(text: string, targetLocale: string): string {
   const hash = createHash('sha256').update(text).digest('hex').substring(0, 16)
-  return `translation-${hash}-${targetLocale}`
+  return `translation-${TRANSLATION_CACHE_VERSION}-${targetLocale}-${hash}`
 }
 
 /**
@@ -104,7 +114,7 @@ async function translateWithOpenAI(text: string, targetLocale: string): Promise<
     return null
   }
 
-  const targetLanguage = LANGUAGE_NAMES[targetLocale]
+  const targetLanguage = LOCALE_TO_LANGUAGE[targetLocale as keyof typeof LOCALE_TO_LANGUAGE]
   if (!targetLanguage) {
     logger.warn('Unsupported target locale', {
       module: 'translate',
@@ -115,7 +125,7 @@ async function translateWithOpenAI(text: string, targetLocale: string): Promise<
   }
 
   try {
-    const openai = new OpenAI({ apiKey })
+    const openai = getOpenAIClient(apiKey)
     const prompt = createTranslationPrompt(text, targetLanguage)
 
     const completion = await openai.chat.completions.create({
@@ -197,7 +207,6 @@ export async function translateText(text: string, targetLocale: string): Promise
   const cacheKey = generateCacheKey(cleanedText, targetLocale)
 
   // Try to get from cache first (KV or Nitro storage)
-  const { kvGet, kvSet } = await import('./kv-client')
   const cached = await kvGet<string>(cacheKey)
   if (cached) {
     stats.cacheHits++
@@ -252,21 +261,30 @@ export async function batchTranslateTexts(
 /**
  * Translate object fields
  * Useful for translating multiple fields in a single object
+ * Executes translations in parallel for better performance
  */
 export async function translateFields<T extends Record<string, any>>(
   obj: T,
   fields: (keyof T)[],
   targetLocale: string
 ): Promise<Partial<Record<keyof T, string>>> {
-  const translations: Partial<Record<keyof T, string>> = {}
-
-  for (const field of fields) {
-    const value = obj[field]
-    if (typeof value === 'string' && value) {
-      const translated = await translateText(value, targetLocale)
-      if (translated) {
-        translations[field] = translated
+  // Translate fields in parallel
+  const results = await Promise.all(
+    fields.map(async (field) => {
+      const value = obj[field]
+      if (typeof value === 'string' && value) {
+        const translated = await translateText(value, targetLocale)
+        return translated ? { field, translated } : null
       }
+      return null
+    })
+  )
+
+  // Collect successful translations
+  const translations: Partial<Record<keyof T, string>> = {}
+  for (const result of results) {
+    if (result) {
+      translations[result.field] = result.translated
     }
   }
 

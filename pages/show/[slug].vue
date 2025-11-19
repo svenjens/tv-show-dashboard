@@ -238,7 +238,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onUnmounted } from 'vue'
 import SafeHtml from '@/components/SafeHtml.vue'
 import { useShowsStore } from '@/stores'
 import { getShowImage, extractIdFromSlug, createShowSlug } from '@/utils'
@@ -262,6 +262,9 @@ const localePath = useLocalePath()
 const route = useRoute()
 const router = useRouter()
 const showsStore = useShowsStore()
+
+// AbortController for cancelling background translation requests
+let translationAbortController: AbortController | null = null
 
 // Tab configuration
 const tabs = [
@@ -355,6 +358,10 @@ const {
 } = await useLazyAsyncData(
   `episodes-${showId.value}`,
   async () => {
+    // Cancel any pending translation request
+    translationAbortController?.abort()
+    translationAbortController = null
+
     // Step 1: Load episodes WITHOUT translations for instant display
     const untranslatedEpisodes = await $fetch(`/api/shows/${showId.value}/episodes`, {
       query: { locale: locale.value, skipTranslation: 'true' },
@@ -362,16 +369,27 @@ const {
 
     // Step 2: If not English, fetch translations in the background
     if (locale.value !== 'en') {
-      // Return untranslated immediately, translations will be fetched separately
+      // Create new AbortController for this request
+      translationAbortController = new AbortController()
+      const currentLocale = locale.value
+      const currentController = translationAbortController
+
+      // Return untranslated immediately, then fetch translations
       setTimeout(async () => {
         try {
           const translatedEpisodes = await $fetch(`/api/shows/${showId.value}/episodes`, {
-            query: { locale: locale.value },
+            query: { locale: currentLocale },
+            signal: currentController.signal,
           })
-          // Update episodes with translations
-          episodes.value = translatedEpisodes
-        } catch (error) {
-          console.warn('Failed to load episode translations:', error)
+          // Only update if locale hasn't changed and request wasn't aborted
+          if (locale.value === currentLocale && !currentController.signal.aborted) {
+            episodes.value = translatedEpisodes
+          }
+        } catch (error: any) {
+          // Ignore abort errors - they're expected
+          if (error.name !== 'AbortError') {
+            console.warn('Failed to load episode translations:', error)
+          }
         }
       }, 100) // Small delay to let UI render first
     }
@@ -447,6 +465,12 @@ watch(locale, () => {
   if (activeTab.value === 'episodes' && !episodesLoading.value) {
     fetchEpisodes()
   }
+})
+
+// Cleanup: abort any pending translation requests on component unmount
+onUnmounted(() => {
+  translationAbortController?.abort()
+  translationAbortController = null
 })
 
 // SEO: Update meta tags when show data changes

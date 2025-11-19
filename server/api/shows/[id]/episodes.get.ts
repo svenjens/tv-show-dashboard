@@ -9,6 +9,7 @@ import { sanitizeEpisodeSummary } from '~/server/utils/sanitize'
 import { translateText } from '~/server/utils/translate'
 import { getLocaleFromRequest, needsTranslation } from '~/server/utils/language'
 import { getCachedEpisodes } from '~/server/utils/tvmaze-cache'
+import { logger } from '~/utils/logger'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
@@ -33,7 +34,11 @@ export default defineEventHandler(async (event) => {
 
     // Validate response is an array
     if (!Array.isArray(episodes)) {
-      console.error(`Invalid episodes response for show ${id}:`, episodes)
+      logger.error(`Invalid episodes response for show ${id}`, {
+        module: 'episodes',
+        showId: id,
+        response: episodes,
+      })
       return []
     }
 
@@ -52,28 +57,34 @@ export default defineEventHandler(async (event) => {
     // Translate episodes if locale is not English
     // Replace the original fields directly with translated versions
     if (needsTranslation(locale)) {
-      for (const episode of episodes as any[]) {
-        // Translate episode name
-        if (episode.name) {
-          const translatedName = await translateText(episode.name, locale)
-          if (translatedName) {
-            episode.name = translatedName
-          }
-        }
+      // Translate all episodes in parallel for better performance
+      const translationPromises = (episodes as any[]).map(async (episode) => {
+        const [translatedName, translatedSummary] = await Promise.all([
+          episode.name ? translateText(episode.name, locale) : Promise.resolve(null),
+          episode.summary ? translateText(episode.summary, locale) : Promise.resolve(null),
+        ])
 
-        // Translate episode summary
-        if (episode.summary) {
-          const translatedSummary = await translateText(episode.summary, locale)
-          if (translatedSummary) {
-            episode.summary = sanitizeEpisodeSummary(translatedSummary)
-          }
+        if (translatedName) {
+          episode.name = translatedName
         }
-      }
+        if (translatedSummary) {
+          episode.summary = sanitizeEpisodeSummary(translatedSummary)
+        }
+      })
+
+      await Promise.allSettled(translationPromises)
     }
 
     return episodes
   } catch (error) {
-    console.error(`Error fetching episodes for show ${id}:`, error)
+    logger.error(
+      `Error fetching episodes for show ${id}`,
+      {
+        module: 'episodes',
+        showId: id,
+      },
+      error
+    )
     throw createError({
       statusCode: 404,
       statusMessage: 'Episodes not found',
