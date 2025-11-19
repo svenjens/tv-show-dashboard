@@ -19,7 +19,7 @@ export default defineEventHandler((event) => {
     if (acceptLanguage) {
       // Extract country from Accept-Language (e.g., "en-US,en;q=0.9" -> "US")
       const match = acceptLanguage.match(/[-_]([A-Z]{2})/i)
-      if (match) {
+      if (match?.[1]) {
         country = match[1].toUpperCase()
       }
     }
