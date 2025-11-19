@@ -286,6 +286,9 @@ export default defineNuxtConfig({
       alwaysRedirect: false, // Don't redirect if user explicitly chose a locale
       fallbackLocale: 'en',
     },
+    // SEO configuration for automatic hreflang tags
+    baseUrl: 'https://bingelist.app',
+    seo: true, // Enable automatic hreflang tags
   },
 
   // Auto-imports (migrate composables)
