@@ -82,7 +82,6 @@
 
 <script setup lang="ts">
 import type { StreamingAvailability } from '@/types'
-import { STREAMING_PLATFORMS } from '@/types'
 import { trackStreamingClick } from '@/utils'
 import { getServiceGradient } from '@/utils/streaming'
 import { getCountryName } from '@/utils/countries'

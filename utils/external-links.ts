@@ -45,7 +45,7 @@ export function addAffiliateParams(url: string, serviceId?: string, affiliateTag
     }
 
     return urlObj.toString()
-  } catch (error) {
+  } catch (_error) {
     // If URL parsing fails, return original
     console.warn('[External Links] Failed to parse URL:', url)
     return url
@@ -67,7 +67,7 @@ export function addUTMParams(url: string, showName?: string): string {
     }
 
     return urlObj.toString()
-  } catch (error) {
+  } catch (_error) {
     console.warn('[External Links] Failed to add UTM params:', url)
     return url
   }
