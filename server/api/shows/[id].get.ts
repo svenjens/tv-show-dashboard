@@ -294,7 +294,7 @@ export default defineEventHandler(async (event: H3Event) => {
     if (show.summary && needsTranslation(locale)) {
       const translatedSummary = await translateText(show.summary, locale)
       if (translatedSummary) {
-        combinedData.summary = translatedSummary
+        combinedData.summary = sanitizeShowSummary(translatedSummary)
       }
     }
 
@@ -312,7 +312,7 @@ export default defineEventHandler(async (event: H3Event) => {
       if (tmdbData.tmdb?.overview && needsTranslation(locale)) {
         const translatedOverview = await translateText(tmdbData.tmdb.overview, locale)
         if (translatedOverview && combinedData.tmdb) {
-          combinedData.tmdb.overview = translatedOverview
+          combinedData.tmdb.overview = sanitizeShowSummary(translatedOverview)
         }
       }
     }

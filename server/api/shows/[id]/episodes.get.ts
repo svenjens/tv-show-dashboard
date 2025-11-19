@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
         if (episode.summary) {
           const translatedSummary = await translateText(episode.summary, locale)
           if (translatedSummary) {
-            episode.summary = translatedSummary
+            episode.summary = sanitizeEpisodeSummary(translatedSummary)
           }
         }
       }

@@ -238,21 +238,17 @@ export async function translateText(text: string, targetLocale: string): Promise
 /**
  * Batch translate multiple texts
  * More efficient for translating episodes or cast lists
+ * Executes in parallel - cache hits are instant, only cache misses hit OpenAI
  */
 export async function batchTranslateTexts(
   texts: string[],
   targetLocale: string
 ): Promise<(string | null)[]> {
-  // For now, translate sequentially
-  // Could be optimized with Promise.all or OpenAI batch API in the future
-  const results: (string | null)[] = []
-
-  for (const text of texts) {
-    const translated = await translateText(text, targetLocale)
-    results.push(translated)
-  }
-
-  return results
+  // Translate in parallel with rate limiting
+  // Most requests should be cache hits after warmup
+  return Promise.all(
+    texts.map(text => translateText(text, targetLocale))
+  )
 }
 
 /**

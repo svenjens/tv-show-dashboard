@@ -422,6 +422,13 @@ watch(
   { immediate: true } // Also run on initial load (e.g., refresh with ?tab=cast)
 )
 
+// Refresh episodes when locale changes while Episodes tab is active
+watch(locale, () => {
+  if (activeTab.value === 'episodes' && !episodesLoading.value) {
+    fetchEpisodes()
+  }
+})
+
 // SEO: Update meta tags when show data changes
 watch(
   show,

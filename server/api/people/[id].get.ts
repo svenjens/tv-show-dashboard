@@ -4,6 +4,7 @@ import type { H3Event } from 'h3'
 import type { TVMazePerson } from '~/types/show'
 import { translateText } from '~/server/utils/translate'
 import { getLocaleFromRequest, needsTranslation } from '~/server/utils/language'
+import { getCachedPerson, getCachedPersonCredits } from '~/server/utils/tvmaze-cache'
 
 /**
  * TVMaze Cast Credit Response
@@ -141,9 +142,6 @@ async function fetchPersonFromTVMaze(id: number): Promise<{
   person: TVMazePerson
   credits: CastCredit[]
 }> {
-  // Use cached versions for better performance
-  const { getCachedPerson, getCachedPersonCredits } = await import('~/server/utils/tvmaze-cache')
-
   const [personResponse, creditsResponse] = await Promise.all([
     getCachedPerson(id),
     getCachedPersonCredits(id).catch(() => [] as CastCredit[]),

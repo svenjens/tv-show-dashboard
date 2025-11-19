@@ -326,8 +326,7 @@ const {
   refresh: refreshPerson,
 } = await useFetch<PersonDetailsResponse>(`/api/people/${personId.value}`, {
   key: `person-${personId.value}`,
-  query: { locale: locale.value },
-  watch: [locale],
+  query: { locale },
 })
 
 // Computed properties
