@@ -298,22 +298,8 @@ export default defineNuxtConfig({
         { name: 'twitter:image', content: 'https://bingelist.app/og-image.png' },
       ],
       link: [
-        // Default favicon (fallback)
+        // Favicon - red color works in both light and dark mode
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
-        // Light mode - use dark icon for visibility
-        {
-          rel: 'icon',
-          type: 'image/png',
-          href: '/favicon-dark.png',
-          media: '(prefers-color-scheme: light)',
-        },
-        // Dark mode - use light icon for visibility
-        {
-          rel: 'icon',
-          type: 'image/png',
-          href: '/favicon-light.png',
-          media: '(prefers-color-scheme: dark)',
-        },
         // Apple touch icon
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
       ],
