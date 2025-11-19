@@ -4,23 +4,35 @@
  */
 
 import { getCachedCast } from '~/server/utils/tvmaze-cache'
+import { validateShowId } from '~/server/utils/validation'
+import { logger } from '~/utils/logger'
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
+  const rawId = getRouterParam(event, 'id')
 
-  if (!id) {
+  if (!rawId) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Show ID is required',
     })
   }
 
+  // Validate show ID (rejects invalid values like "abc", negative numbers, etc.)
+  const showId = validateShowId(rawId)
+
   try {
     // Vercel KV handles caching globally (7 days TTL)
-    const response = await getCachedCast(parseInt(id))
+    const response = await getCachedCast(showId)
     return response
   } catch (error) {
-    console.error(`Error fetching cast for show ${id}:`, error)
+    logger.error(
+      `Error fetching cast for show ${showId}`,
+      {
+        module: 'cast',
+        showId,
+      },
+      error
+    )
     throw createError({
       statusCode: 404,
       statusMessage: 'Cast not found',

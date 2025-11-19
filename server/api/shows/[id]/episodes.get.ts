@@ -10,17 +10,21 @@ import { translateText } from '~/server/utils/translate'
 import { getLocaleFromRequest, needsTranslation } from '~/server/utils/language'
 import { getCachedEpisodes } from '~/server/utils/tvmaze-cache'
 import { logger } from '~/utils/logger'
+import { validateShowId } from '~/server/utils/validation'
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
+  const rawId = getRouterParam(event, 'id')
   const query = getQuery(event)
 
-  if (!id) {
+  if (!rawId) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Show ID is required',
     })
   }
+
+  // Validate show ID (rejects invalid values like "abc", negative numbers, etc.)
+  const showId = validateShowId(rawId)
 
   // Get locale from request for translation
   const locale = getLocaleFromRequest(event)
@@ -30,13 +34,13 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Vercel KV handles caching globally (7 days TTL)
-    const episodes = await getCachedEpisodes(parseInt(id))
+    const episodes = await getCachedEpisodes(showId)
 
     // Validate response is an array
     if (!Array.isArray(episodes)) {
-      logger.error(`Invalid episodes response for show ${id}`, {
+      logger.error(`Invalid episodes response for show ${showId}`, {
         module: 'episodes',
-        showId: id,
+        showId,
         response: episodes,
       })
       return []
@@ -78,10 +82,10 @@ export default defineEventHandler(async (event) => {
     return episodes
   } catch (error) {
     logger.error(
-      `Error fetching episodes for show ${id}`,
+      `Error fetching episodes for show ${showId}`,
       {
         module: 'episodes',
-        showId: id,
+        showId,
       },
       error
     )
