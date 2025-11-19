@@ -167,23 +167,12 @@
       </div>
 
       <!-- Initial State -->
-      <div v-else class="text-center py-16">
-        <img
-          src="/optimized/empty-state-illustration.png"
-          alt=""
-          class="mx-auto h-48 w-48 object-contain opacity-50 dark:opacity-30"
-          aria-hidden="true"
-          width="192"
-          height="192"
-          loading="lazy"
-        />
-        <h3 class="mt-6 text-lg font-medium text-gray-900 dark:text-gray-100">
-          {{ t('search.initialStateTitle') }}
-        </h3>
-        <p class="mt-2 text-gray-500 dark:text-gray-400">
-          {{ t('search.initialStateHint') }}
-        </p>
-      </div>
+      <EmptyState
+        v-else
+        :title="t('search.initialStateTitle')"
+        :message="t('search.initialStateHint')"
+        heading-level="h3"
+      />
     </div>
   </div>
 </template>

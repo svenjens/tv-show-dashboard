@@ -74,23 +74,7 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else class="text-center py-16 px-4" role="status">
-        <img
-          src="/optimized/empty-state-illustration.png"
-          alt=""
-          class="mx-auto h-48 w-48 object-contain opacity-50 dark:opacity-30"
-          aria-hidden="true"
-          width="192"
-          height="192"
-          loading="lazy"
-        />
-        <h2 class="mt-6 text-lg font-medium text-gray-900 dark:text-gray-100">
-          {{ t('watchlist.empty') }}
-        </h2>
-        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          {{ t('watchlist.emptyMessage') }}
-        </p>
-      </div>
+      <EmptyState v-else :title="t('watchlist.empty')" :message="t('watchlist.emptyMessage')" />
     </main>
   </div>
 </template>
