@@ -254,7 +254,7 @@ async function enrichWithTMDBData(
 export default defineEventHandler(async (event: H3Event) => {
   const startTime = Date.now()
   const timings: Record<string, number> = {}
-  
+
   // Validate route parameters with Zod
   const rawId = getRouterParam(event, 'id')
   const query = getQuery(event)
@@ -335,10 +335,14 @@ export default defineEventHandler(async (event: H3Event) => {
 
     // Add performance timing headers for debugging
     timings.total = Date.now() - startTime
-    setHeader(event, 'Server-Timing', Object.entries(timings)
-      .map(([key, value]) => `${key};dur=${value}`)
-      .join(', '))
-    
+    setHeader(
+      event,
+      'Server-Timing',
+      Object.entries(timings)
+        .map(([key, value]) => `${key};dur=${value}`)
+        .join(', ')
+    )
+
     return combinedData
   } catch (error) {
     // Handle validation errors
