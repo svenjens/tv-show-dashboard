@@ -2,13 +2,9 @@
 import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useSearchStore } from '@/stores'
 import { useSEO } from '@/composables'
-import { STREAMING_PLATFORMS } from '@/types/streaming'
 import SearchBar from '@/components/SearchBar.client.vue'
 import ShowCard from '@/components/ShowCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import ErrorMessage from '@/components/ErrorMessage.vue'
-import AdSense from '@/components/AdSense.vue'
-import FilterBar from '@/components/FilterBar.vue'
 import SearchModeToggle from '@/components/SearchModeToggle.vue'
 import SearchModeInfo from '@/components/SearchModeInfo.vue'
 import ExampleQueries from '@/components/ExampleQueries.vue'
@@ -25,7 +21,6 @@ const searchStore = useSearchStore()
 
 const searchBarRef = ref<InstanceType<typeof SearchBar> | null>(null)
 const searchQuery = ref('')
-const filters = ref({ status: '', network: '', year: '', streaming: [] as string[] })
 const isSemanticMode = ref(false)
 const semanticIntent = ref<any>(null)
 const isSemanticLoading = ref(false)
@@ -34,50 +29,6 @@ const isSemanticLoading = ref(false)
 const exampleQueries = computed(() => {
   const queries = t('search.exampleQueries', { returnObjects: true })
   return Array.isArray(queries) ? queries : []
-})
-
-// Check if any search results have streaming data or if we're loading it
-const hasStreamingData = computed(() => {
-  return (
-    searchStore.loadingStreamingData ||
-    searchStore.fullResults.some((result) => result.show.streamingAvailability)
-  )
-})
-
-// Apply filters to search results
-const filteredResults = computed(() => {
-  let results = searchStore.fullResults
-
-  if (filters.value.status) {
-    results = results.filter((result) => result.show.status === filters.value.status)
-  }
-
-  if (filters.value.network) {
-    results = results.filter((result) => {
-      const networkName = result.show.network?.name || result.show.webChannel?.name
-      return networkName === filters.value.network
-    })
-  }
-
-  if (filters.value.year) {
-    results = results.filter((result) => {
-      if (!result.show.premiered) return false
-      const year = new Date(result.show.premiered).getFullYear()
-      return year.toString() === filters.value.year
-    })
-  }
-
-  if (filters.value.streaming.length > 0) {
-    results = results.filter((result) => {
-      if (!result.show.streamingAvailability) return false
-      return result.show.streamingAvailability.some((option) => {
-        const platform = STREAMING_PLATFORMS[option.service.id]
-        return platform?.name && filters.value.streaming.includes(platform.name)
-      })
-    })
-  }
-
-  return results
 })
 
 // SEO (multilingual)
@@ -255,7 +206,7 @@ onMounted(() => {
           class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-fr"
         >
           <ShowCard
-            v-for="result in searchStore.results"
+            v-for="result in searchStore.fullResults"
             :key="result.show.id"
             :show="result.show"
             :match-reason="result.matchedTerm"
@@ -275,6 +226,7 @@ onMounted(() => {
         v-if="
           isSemanticMode && (!searchQuery || !searchStore.hasResults) && !searchStore.isSearching
         "
+        class="mt-8"
         :examples="exampleQueries"
         :has-query="!!searchQuery"
         @select="
@@ -283,7 +235,6 @@ onMounted(() => {
             handleSearch(example)
           }
         "
-        class="mt-8"
       />
     </main>
   </div>

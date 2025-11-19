@@ -169,9 +169,9 @@ function handleImageError() {
         <div class="min-h-[2rem]">
           <GenreTags
             v-if="show.genres && show.genres.length > 0"
+            v-motion
             :genres="show.genres"
             :max-display="4"
-            v-motion
           />
         </div>
 
