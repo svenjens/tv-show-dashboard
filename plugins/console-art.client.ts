@@ -2,7 +2,7 @@ import packageJson from '../package.json'
 
 export default defineNuxtPlugin(() => {
   // Only run in browser
-  if (process.client) {
+  if (import.meta.client) {
     // ASCII Art for BingeList
     const asciiArt = `
  ██████╗ ██╗███╗   ██╗ ██████╗ ███████╗██╗     ██╗███████╗████████╗
