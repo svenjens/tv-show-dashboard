@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import SafeHtml from '@/components/SafeHtml.vue'
 import { useShowsStore } from '@/stores'
 import { getShowImage, extractIdFromSlug, createShowSlug } from '@/utils'
@@ -93,11 +93,6 @@ const {
   }
 )
 
-// Ensure shows are loaded for related shows
-if (showsStore.showsCount === 0 && !showsStore.isLoading) {
-  showsStore.fetchAllShows()
-}
-
 // Streaming availability comes from server now
 const streamingAvailability = computed(() => show.value?.streamingAvailability || [])
 
@@ -105,6 +100,13 @@ const streamingAvailability = computed(() => show.value?.streamingAvailability |
 const relatedShows = computed(() => {
   if (!show.value) return []
   return showsStore.getRelatedShows(show.value, 6)
+})
+
+// Ensure shows are loaded for related shows (client-side only)
+onMounted(() => {
+  if (showsStore.showsCount === 0 && !showsStore.isLoading) {
+    showsStore.fetchAllShows()
+  }
 })
 
 // Episodes - prefetch immediately (common user action)
