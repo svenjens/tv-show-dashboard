@@ -4,6 +4,7 @@ import SafeHtml from '@/components/SafeHtml.vue'
 import { useShowsStore } from '@/stores'
 import { getShowImage, extractIdFromSlug, createShowSlug } from '@/utils'
 import { useSEO, getShowSEO, generateShowStructuredData } from '@/composables'
+import type { CastMember, Episode } from '@/types'
 import RatingBadge from '@/components/RatingBadge.vue'
 import GenreTags from '@/components/GenreTags.vue'
 import ShowCard from '@/components/ShowCard.vue'
@@ -106,15 +107,15 @@ const relatedShows = computed(() => {
   return showsStore.getRelatedShows(show.value, 6)
 })
 
-// Episodes - prefetch immediately (common action)
+// Episodes - prefetch immediately (common user action)
 const {
   data: episodes,
   error: episodesError,
   pending: episodesLoading,
   execute: fetchEpisodes,
-} = await useLazyAsyncData(
+} = await useLazyAsyncData<Episode[]>(
   `episodes-${showId.value}`,
-  () => $fetch(`/api/shows/${showId.value}/episodes`),
+  () => $fetch<Episode[]>(`/api/shows/${showId.value}/episodes`),
   {
     immediate: true, // Prefetch episodes (common user action)
     server: false, // Only fetch on client
@@ -127,9 +128,9 @@ const {
   error: castError,
   pending: castLoading,
   execute: fetchCast,
-} = await useLazyAsyncData(
+} = await useLazyAsyncData<CastMember[]>(
   `cast-${showId.value}`,
-  () => $fetch(`/api/shows/${showId.value}/cast`),
+  () => $fetch<CastMember[]>(`/api/shows/${showId.value}/cast`),
   {
     immediate: false,
     server: false, // Only fetch on client when needed
@@ -424,7 +425,7 @@ watch(
           <!-- Cast Tab -->
           <div v-else-if="activeTab === 'cast'">
             <CastList
-              :cast="(cast as any) || []"
+              :cast="cast || []"
               :loading="castLoading"
               :error="castError"
               @retry="fetchCast"

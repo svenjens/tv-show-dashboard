@@ -4,7 +4,7 @@
  * don't work properly in Nuxt 4 with @nuxtjs/i18n
  */
 export default defineNuxtPlugin((nuxtApp) => {
-  const i18n = nuxtApp.$i18n as any
+  const i18n = nuxtApp.$i18n
 
   // Guard: ensure i18n is ready
   if (!i18n || typeof i18n.setDateTimeFormat !== 'function') {

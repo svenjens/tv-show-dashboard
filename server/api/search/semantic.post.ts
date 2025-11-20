@@ -4,6 +4,7 @@
  */
 
 import OpenAI from 'openai'
+import type { Show, SemanticIntent } from '@/types'
 
 /**
  * Validate search query
@@ -98,7 +99,7 @@ IMPORTANT: The "reason" should explain WHY the search term matches the query, NO
 async function generateSearchTermsWithGPT(
   openai: OpenAI,
   query: string
-): Promise<{ searches: Array<{ term: string; reason: string }>; intent: any }> {
+): Promise<{ searches: Array<{ term: string; reason: string }>; intent: SemanticIntent }> {
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [
@@ -148,9 +149,9 @@ function normalizeSearchTerms(
 async function searchTVMazeForTerm(
   term: string,
   reason: string
-): Promise<Array<{ show: any; score: number; matchedTerm: string }>> {
+): Promise<Array<{ show: Show; score: number; matchedTerm: string }>> {
   try {
-    const shows = await $fetch<Array<{ show: any; score: number }>>(
+    const shows = await $fetch<Array<{ show: Show; score: number }>>(
       `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(term)}`,
       {
         headers: {
@@ -182,7 +183,7 @@ async function searchTVMazeForTerm(
  */
 async function searchWithMultipleTerms(
   searches: Array<{ term: string; reason: string }>
-): Promise<Array<{ show: any; score: number; matchedTerm: string }>> {
+): Promise<Array<{ show: Show; score: number; matchedTerm: string }>> {
   const allResults = new Map() // Deduplicate by show ID
 
   // Limit to 5 terms to avoid too many API calls
@@ -210,7 +211,7 @@ async function searchWithMultipleTerms(
  * Fallback to regular TVMaze search
  */
 async function fallbackSearch(query: string) {
-  const fallbackResults = await $fetch<Array<{ show: any; score: number }>>(
+  const fallbackResults = await $fetch<Array<{ show: Show; score: number }>>(
     `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`,
     {
       headers: {

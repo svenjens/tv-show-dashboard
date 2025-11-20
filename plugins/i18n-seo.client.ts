@@ -3,6 +3,11 @@
  * Ensures proper hreflang tags and x-default are set
  */
 
+interface LocaleConfig {
+  code: string
+  iso?: string
+}
+
 export default defineNuxtPlugin(() => {
   const { locales } = useI18n()
   const route = useRoute()
@@ -18,10 +23,11 @@ export default defineNuxtPlugin(() => {
       const links: { rel: string; hreflang: string; href: string }[] = []
 
       // Generate hreflang links for each locale
-      locales.value.forEach((loc: any) => {
+      // Cast to unknown first to avoid TS errors with string[] union
+      ;(locales.value as unknown as LocaleConfig[]).forEach((loc) => {
         const localeCode = loc.code
-        const isoCode = loc.iso.toLowerCase() // Convert to lowercase per Google guidelines
-        const localePath = switchLocalePath(localeCode)
+        const isoCode = loc.iso ? loc.iso.toLowerCase() : loc.code // Convert to lowercase per Google guidelines
+        const localePath = switchLocalePath(localeCode as any)
 
         if (localePath) {
           links.push({
