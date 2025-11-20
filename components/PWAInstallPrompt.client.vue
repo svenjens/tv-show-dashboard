@@ -141,20 +141,3 @@ function handleDismiss() {
   opacity: 0;
 }
 </style>
-
-<style scoped>
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: all 0.3s ease-out;
-}
-
-.slide-up-enter-from {
-  transform: translateY(100%);
-  opacity: 0;
-}
-
-.slide-up-leave-to {
-  transform: translateY(100%);
-  opacity: 0;
-}
-</style>

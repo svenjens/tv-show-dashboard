@@ -401,17 +401,9 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      navigateFallback: '/en',
-      navigateFallbackDenylist: [
-        /^\/api/,
-        /^\/_nuxt/,
-        /^\/sw.js/,
-        /^\/manifest.webmanifest/,
-        /^\/manifest/,
-        /^\/en$/, // Don't precache /en (it's the fallback, handled by runtime)
-        /^\/nl$/, // Don't precache locale roots
-        /^\/es$/, // Don't precache locale roots
-      ],
+      // Disable navigateFallback - Nuxt handles routing via SSR
+      // This prevents "non-precached-url" errors
+      navigateFallback: undefined,
       globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico,webp,woff2}'],
       maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
       globIgnores: [
@@ -423,7 +415,6 @@ export default defineNuxtConfig({
       cleanupOutdatedCaches: true,
       skipWaiting: true,
       clientsClaim: true,
-      // Don't precache root URL - it redirects to /en
       dontCacheBustURLsMatching: /\.\w{8}\./,
       runtimeCaching: [
         {
@@ -482,7 +473,6 @@ export default defineNuxtConfig({
       ],
     },
     client: {
-      installPrompt: true,
       // Periodicaly check for updates every hour
       periodicSyncForUpdates: 3600,
     },
