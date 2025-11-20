@@ -355,6 +355,7 @@ export default defineNuxtConfig({
 
   // PWA configuration
   pwa: {
+    strategies: 'generateSW',
     registerType: 'autoUpdate',
     manifest: {
       name: 'BingeList - TV Show Discovery',
@@ -366,19 +367,19 @@ export default defineNuxtConfig({
       display: 'standalone',
       orientation: 'portrait-primary',
       scope: '/',
-      start_url: '/',
+      start_url: '/en',
       lang: 'en',
       dir: 'ltr',
       categories: ['entertainment', 'lifestyle'],
       icons: [
         {
-          src: '/favicon-192.png',
+          src: '/icon-192.png',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: '/favicon-512.png',
+          src: '/icon-512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any maskable',
@@ -400,11 +401,34 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      navigateFallback: '/',
+      navigateFallback: '/en',
+      navigateFallbackDenylist: [
+        /^\/api/,
+        /^\/_nuxt/,
+        /^\/sw.js/,
+        /^\/manifest.webmanifest/,
+        /^\/manifest/,
+      ],
       globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico,webp,woff2}'],
       maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
-      globIgnores: ['**/originals/**', '**/node_modules/**'],
+      globIgnores: ['**/originals/**', '**/node_modules/**', '**/*.map'],
+      cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
+      // Don't precache root URL - it redirects to /en
+      dontCacheBustURLsMatching: /\.\w{8}\./,
       runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/bingelist\.app\/$/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'root-redirect',
+            expiration: {
+              maxEntries: 1,
+              maxAgeSeconds: 60 * 60, // 1 hour
+            },
+          },
+        },
         {
           urlPattern: /^https:\/\/api\.tvmaze\.com\/.*/i,
           handler: 'NetworkFirst',
