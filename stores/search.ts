@@ -7,7 +7,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { logger } from '@/utils'
 import { useToast } from '@/composables'
-import type { Show, SearchResult, ApiError } from '@/types'
+import type { Show, SearchResult, ApiError, SemanticSearchResponse, SemanticIntent } from '@/types'
 
 export const useSearchStore = defineStore('search', () => {
   // Only initialize toast on client-side
@@ -20,7 +20,7 @@ export const useSearchStore = defineStore('search', () => {
   const error = ref<ApiError | null>(null)
   const recentSearches = ref<string[]>([])
   const loadingStreamingData = ref<boolean>(false)
-  const semanticIntent = ref<any>(null)
+  const semanticIntent = ref<SemanticIntent | null>(null)
 
   // AbortController for streaming data enrichment
   let enrichmentController: AbortController | null = null
@@ -95,7 +95,7 @@ export const useSearchStore = defineStore('search', () => {
     error.value = null
 
     try {
-      const response = await $fetch<{ results: any[]; intent: any }>('/api/search/semantic', {
+      const response = await $fetch<SemanticSearchResponse>('/api/search/semantic', {
         method: 'POST',
         body: { query },
       })
@@ -103,7 +103,7 @@ export const useSearchStore = defineStore('search', () => {
       semanticIntent.value = response.intent
 
       // Map results
-      const results = response.results.map((r: any) => ({
+      const results = response.results.map((r) => ({
         show: r.show,
         score: r.score,
         matchedTerm: r.matchedTerm,

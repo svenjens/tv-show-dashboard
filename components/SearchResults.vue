@@ -2,11 +2,12 @@
 import { useSearchStore } from '@/stores'
 import ShowCard from '@/components/ShowCard.vue'
 import SemanticIntentDisplay from '@/components/SemanticIntentDisplay.vue'
+import type { SemanticIntent } from '@/types'
 
 defineProps<{
   searchQuery: string
   isSemanticMode: boolean
-  semanticIntent: any
+  semanticIntent: SemanticIntent | null
 }>()
 
 const { t } = useI18n()
@@ -18,7 +19,6 @@ const searchStore = useSearchStore()
     <SemanticIntentDisplay
       v-if="isSemanticMode"
       :intent="semanticIntent"
-      :search-query="searchQuery"
       class="mb-6"
     />
 

@@ -196,3 +196,23 @@ export interface ShowDetailsResponse extends Show {
   } | null
   streamingAvailability: import('./streaming').StreamingAvailability[]
 }
+
+/**
+ * Semantic Search types
+ */
+export interface SemanticIntent {
+  genres?: string[]
+  mood?: string[] | string
+  theme?: string
+  similar?: string
+  fallback?: boolean
+  [key: string]: unknown
+}
+
+export interface SemanticSearchResponse {
+  query: string
+  intent: SemanticIntent
+  searchTerms: string[]
+  results: SearchResult[]
+  total: number
+}

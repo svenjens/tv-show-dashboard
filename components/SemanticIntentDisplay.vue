@@ -1,12 +1,7 @@
 <script setup lang="ts">
-const { t } = useI18n()
+import type { SemanticIntent } from '@/types'
 
-interface SemanticIntent {
-  genres?: string[]
-  mood?: string[]
-  similar?: string
-  fallback?: boolean
-}
+const { t } = useI18n()
 
 interface Props {
   intent: SemanticIntent | null
@@ -40,13 +35,15 @@ defineProps<Props>()
           </span>
 
           <!-- Moods -->
-          <span
-            v-for="mood in intent.mood"
-            :key="mood"
-            class="px-2 py-1 bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded text-xs font-medium"
-          >
-            {{ mood }}
-          </span>
+          <template v-if="intent.mood">
+            <span
+              v-for="mood in (Array.isArray(intent.mood) ? intent.mood : [intent.mood])"
+              :key="mood"
+              class="px-2 py-1 bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded text-xs font-medium"
+            >
+              {{ mood }}
+            </span>
+          </template>
 
           <!-- Similar to -->
           <span
