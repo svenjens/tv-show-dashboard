@@ -17,7 +17,8 @@ export default defineEventHandler((event) => {
 
   // Create a Request-like object for the geolocation helper
   // The geolocation function only reads headers, so we can create a minimal Request object
-  const request = new Request('http://localhost', {
+  // The URL doesn't matter - geolocation() only needs the headers
+  const request = new Request('https://bingelist.app', {
     headers: new Headers(headers as Record<string, string>),
   })
 
