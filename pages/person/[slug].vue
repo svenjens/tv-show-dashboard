@@ -32,15 +32,14 @@ if (!personId.value) {
 
 // Tabs configuration
 const tabs = [
-  { id: 'biography', label: 'tabs.biography' },
   { id: 'shows', label: 'tabs.shows' },
   { id: 'information', label: 'tabs.information' },
 ]
 
 // Active tab management
-const initialTab = (route.query.tab as string) || 'biography'
+const initialTab = (route.query.tab as string) || 'shows'
 const validTabs = tabs.map((t) => t.id)
-const activeTab = ref(validTabs.includes(initialTab) ? initialTab : 'biography')
+const activeTab = ref(validTabs.includes(initialTab) ? initialTab : 'shows')
 
 // Watch for URL query changes
 watch(
@@ -209,12 +208,9 @@ if (person.value) {
               </span>
             </div>
 
-            <!-- Biography Preview (first 300 chars) -->
-            <div v-if="biography" class="text-gray-200 leading-relaxed">
-              <p class="line-clamp-4">
-                {{ biography.replace(/<[^>]*>/g, '').slice(0, 300)
-                }}{{ biography.length > 300 ? '...' : '' }}
-              </p>
+            <!-- Full Biography -->
+            <div v-if="biography" class="text-gray-200 leading-relaxed mt-4">
+              <SafeHtml :content="biography" class="prose prose-lg prose-invert max-w-none" />
             </div>
           </div>
         </div>
@@ -222,31 +218,8 @@ if (person.value) {
 
       <!-- Tab Content -->
       <template #content>
-        <!-- Biography Tab -->
-        <div v-if="activeTab === 'biography'">
-          <article v-if="biography" class="mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-              {{ t('person.biography') }}
-            </h2>
-            <SafeHtml
-              :content="biography"
-              class="text-gray-700 dark:text-gray-300 leading-relaxed prose prose-lg dark:prose-invert max-w-none"
-            />
-          </article>
-          <div
-            v-else
-            class="text-center py-12 text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-lg"
-          >
-            <Icon
-              name="heroicons:document-text"
-              class="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4"
-            />
-            <p>{{ t('person.noBiography') }}</p>
-          </div>
-        </div>
-
         <!-- Shows Tab -->
-        <div v-else-if="activeTab === 'shows'">
+        <div v-if="activeTab === 'shows'">
           <div v-if="person.castCredits && person.castCredits.length > 0" class="mb-8">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
               {{ t('person.knownFor') }}
