@@ -231,30 +231,35 @@ npm run test:coverage
 
 ### Testing Streaming Availability
 
-The streaming availability feature shows where shows can be watched online. Currently, it detects streaming platforms from the TVMaze API's `webChannel` property.
+The streaming availability feature shows where shows can be watched online using **TMDB's Watch Providers API**. It displays multiple platforms per show, including:
+
+- **Subscription services** (Netflix, Disney+, HBO Max, etc.)
+- **Buy options** (iTunes, Google Play, Amazon Prime Video, etc.)
+- **Rent options** (Apple TV, Vudu, etc.)
+
+The availability is **country-specific** and defaults to the United States (US) if no country code is provided.
 
 **Test Cases:**
 
-| Show                | webChannel         | Result                | Use Case                             |
-| ------------------- | ------------------ | --------------------- | ------------------------------------ |
-| **Stranger Things** | Netflix            | ✅ Shows Netflix      | Netflix Original                     |
-| **The Boys**        | Amazon Prime Video | ✅ Shows Amazon Prime | Prime Original                       |
-| **The Mandalorian** | Disney+            | ✅ Shows Disney+      | Disney+ Original                     |
-| **Game of Thrones** | HBO Max            | ✅ Shows HBO Max      | HBO Original                         |
-| **Under the Dome**  | CBS                | ❌ No streaming       | Network TV (no webChannel streaming) |
-| **Breaking Bad**    | AMC                | ❌ No streaming       | Network TV (requires external API)   |
+| Show                | Expected Result                                    | Use Case                            |
+| ------------------- | -------------------------------------------------- | ----------------------------------- |
+| **Stranger Things** | ✅ Multiple platforms (Netflix subscription)       | Popular show with wide availability |
+| **The Wire**        | ✅ Multiple platforms (HBO Max, Prime Video, etc.) | Show available on multiple services |
+| **The Office**      | ✅ Multiple platforms (Peacock, Netflix, etc.)     | Popular show with various options   |
+| **Breaking Bad**    | ✅ Multiple platforms (Netflix, AMC+, etc.)        | Show available on subscription      |
+| **The Mandalorian** | ✅ Multiple platforms (Disney+ subscription)       | Disney+ Original                    |
 
 **Empty State Testing:**
 
-- Navigate to shows without a `webChannel` property to test the "not available" message
-- Example shows: "Breaking Bad", "The Office", "Friends"
+- Navigate to shows without TMDB data or shows not available in your country
+- The component will display a "not available" message
+- Example: Very obscure shows or shows not released in your region
 
-**Future Enhancement:**
-To show multi-platform availability (e.g., a show on both Netflix and Hulu), we would need to integrate with:
+**Note:**
 
-- Streaming Availability API
-- JustWatch API (deprecated)
-- TMDB (limited streaming data)
+- Streaming availability requires a valid TMDB API key (`TMDB_API_KEY`)
+- The feature automatically fetches providers for the user's detected or selected country
+- Multiple platforms can be shown simultaneously (e.g., a show available on both Netflix and Hulu)
 
 ## 🏗️ Architecture
 
