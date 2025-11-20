@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const { t } = useI18n()
 
@@ -28,6 +28,11 @@ const emit = defineEmits<{
 const searchInput = ref<HTMLInputElement | null>(null)
 const localQuery = ref(props.modelValue)
 const showSuggestions = ref(false)
+
+// Determine when to show recent searches dropdown
+const showRecentSearches = computed(() => {
+  return showSuggestions.value && props.recentSearches.length > 0 && !localQuery.value
+})
 
 // Focus method to be called from parent
 function focus() {
@@ -152,7 +157,7 @@ if (typeof window !== 'undefined') {
       leave-to-class="opacity-0 translate-y-1"
     >
       <div
-        v-if="showSuggestions && recentSearches.length > 0 && !localQuery"
+        v-if="showRecentSearches"
         class="absolute z-10 mt-2 w-full rounded-lg bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
       >
         <div

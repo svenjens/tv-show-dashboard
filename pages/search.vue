@@ -26,6 +26,15 @@ const exampleQueries = computed(() => {
   return Array.isArray(queries) ? queries : []
 })
 
+// Determine when to show example queries
+const showExampleQueries = computed(() => {
+  return (
+    isSemanticMode.value &&
+    (!searchQuery.value || !searchStore.hasResults) &&
+    !searchStore.isSearching
+  )
+})
+
 // SEO (multilingual)
 useSEO({
   title: t('seo.search.title'),
@@ -154,9 +163,7 @@ onMounted(() => {
 
       <!-- Example Queries (in semantic mode when no search performed) -->
       <ExampleQueries
-        v-if="
-          isSemanticMode && (!searchQuery || !searchStore.hasResults) && !searchStore.isSearching
-        "
+        v-if="showExampleQueries"
         class="mt-8"
         :examples="exampleQueries"
         :has-query="!!searchQuery"
