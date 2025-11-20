@@ -64,13 +64,16 @@ const handleRetry = () => {
         <!-- BingeList Logo -->
         <div class="text-center mb-8">
           <NuxtLink :to="localePath('/')" class="inline-block">
-            <img
-              src="/optimized/logo-main.png"
-              alt="BingeList"
-              width="300"
-              height="90"
-              class="h-20 w-auto mx-auto dark:brightness-110 hover:scale-105 transition-transform"
-            />
+            <picture>
+              <source srcset="/optimized/logo-main-256.webp" type="image/webp" />
+              <img
+                src="/optimized/logo-main-256.png"
+                alt="BingeList"
+                width="256"
+                height="77"
+                class="h-20 w-auto mx-auto dark:brightness-110 hover:scale-105 transition-transform"
+              />
+            </picture>
           </NuxtLink>
         </div>
 

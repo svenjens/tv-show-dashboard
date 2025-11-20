@@ -232,15 +232,18 @@ onMounted(() => {
               class="hidden md:block focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 rounded-lg"
               :aria-label="t('navigation.home')"
             >
-              <img
-                src="/optimized/logo-main.png"
-                alt="BingeList Logo"
-                class="h-16 w-16 object-contain hover:scale-105 transition-transform"
-                width="64"
-                height="64"
-                loading="eager"
-                fetchpriority="high"
-              />
+              <picture>
+                <source srcset="/optimized/logo-main-64.webp" type="image/webp" />
+                <img
+                  src="/optimized/logo-main-64.png"
+                  alt="BingeList Logo"
+                  class="h-16 w-16 object-contain hover:scale-105 transition-transform"
+                  width="64"
+                  height="64"
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              </picture>
             </NuxtLink>
             <div>
               <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ t('home.title') }}</h1>
