@@ -331,6 +331,64 @@ watch(
                   <dd>{{ t('show.minutes', { count: show.runtime }) }}</dd>
                 </div>
               </dl>
+
+              <!-- External Links -->
+              <div
+                v-if="show.officialSite || show.externals?.imdb || show._links?.self"
+                class="flex flex-wrap gap-3 mt-6"
+              >
+                <!-- Official Website -->
+                <a
+                  v-if="show.officialSite"
+                  :href="show.officialSite"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors text-sm font-medium"
+                  :aria-label="`Visit official website for ${show.name}`"
+                >
+                  <Icon name="heroicons:globe-alt" class="w-4 h-4" />
+                  Official Site
+                </a>
+
+                <!-- IMDb -->
+                <a
+                  v-if="show.externals?.imdb"
+                  :href="`https://www.imdb.com/title/${show.externals.imdb}/`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors text-sm font-medium"
+                  :aria-label="`View ${show.name} on IMDb`"
+                >
+                  <Icon name="simple-icons:imdb" class="w-4 h-4" />
+                  IMDb
+                </a>
+
+                <!-- TheTVDB -->
+                <a
+                  v-if="show.externals?.thetvdb"
+                  :href="`https://thetvdb.com/?tab=series&id=${show.externals.thetvdb}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
+                  :aria-label="`View ${show.name} on TheTVDB`"
+                >
+                  <Icon name="heroicons:film" class="w-4 h-4" />
+                  TheTVDB
+                </a>
+
+                <!-- TVMaze -->
+                <a
+                  v-if="show._links?.self?.href"
+                  :href="show._links.self.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm font-medium"
+                  :aria-label="`View ${show.name} on TVMaze`"
+                >
+                  <Icon name="heroicons:information-circle" class="w-4 h-4" />
+                  TVMaze
+                </a>
+              </div>
             </div>
           </div>
         </div>
