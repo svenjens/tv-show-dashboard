@@ -2,16 +2,26 @@
 import { useSearchStore } from '@/stores'
 import ShowCard from '@/components/ShowCard.vue'
 import SemanticIntentDisplay from '@/components/SemanticIntentDisplay.vue'
-import type { SemanticIntent } from '@/types'
+import type { SemanticIntent, SearchResult } from '@/types'
 
-defineProps<{
+interface Props {
   searchQuery: string
   isSemanticMode: boolean
   semanticIntent: SemanticIntent | null
-}>()
+  filteredResults?: SearchResult[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  filteredResults: undefined,
+})
 
 const { t } = useI18n()
 const searchStore = useSearchStore()
+
+// Use filtered results if provided, otherwise use all results from store
+const displayResults = computed(() => {
+  return props.filteredResults || searchStore.fullResults
+})
 </script>
 
 <template>
@@ -28,7 +38,7 @@ const searchStore = useSearchStore()
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-fr">
       <ShowCard
-        v-for="result in searchStore.fullResults"
+        v-for="result in displayResults"
         :key="result.show.id"
         :show="result.show"
         :match-reason="result.matchedTerm"

@@ -10,6 +10,8 @@ import SearchModeInfo from '@/components/SearchModeInfo.vue'
 import ExampleQueries from '@/components/ExampleQueries.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import SkipToContent from '@/components/SkipToContent.client.vue'
+import FilterBar from '@/components/FilterBar.vue'
+import type { Show } from '@/types'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -19,6 +21,52 @@ const searchStore = useSearchStore()
 const searchHeaderRef = ref<InstanceType<typeof SearchHeader> | null>(null)
 const searchQuery = ref('')
 const isSemanticMode = ref(false)
+
+// Filters
+const filters = ref({
+  status: '',
+  network: '',
+  year: '',
+  streaming: [] as string[],
+})
+
+// Filter shows based on selected filters
+const filteredResults = computed(() => {
+  let results = searchStore.fullResults
+
+  if (filters.value.status) {
+    results = results.filter((result) => result.show.status === filters.value.status)
+  }
+
+  if (filters.value.network) {
+    results = results.filter(
+      (result) =>
+        result.show.network?.name === filters.value.network ||
+        result.show.webChannel?.name === filters.value.network
+    )
+  }
+
+  if (filters.value.year) {
+    const year = parseInt(filters.value.year)
+    results = results.filter((result) => {
+      if (!result.show.premiered) return false
+      const showYear = new Date(result.show.premiered).getFullYear()
+      return showYear === year
+    })
+  }
+
+  return results
+})
+
+// Get shows for FilterBar
+const searchShows = computed(() => {
+  return searchStore.fullResults.map((result) => result.show)
+})
+
+// Show FilterBar when we have results
+const showFilters = computed(() => {
+  return searchStore.hasResults && !searchStore.isSearching
+})
 
 // Example queries for semantic search (from i18n)
 const exampleQueries = computed(() => {
@@ -140,6 +188,28 @@ onMounted(() => {
         <SearchModeInfo :is-semantic-mode="isSemanticMode" class="mb-4" />
       </div>
 
+      <!-- Example Queries (in semantic mode, shown before filters) -->
+      <ExampleQueries
+        v-if="showExampleQueries"
+        class="mb-8"
+        :examples="exampleQueries"
+        :has-query="!!searchQuery"
+        @select="
+          (example) => {
+            searchQuery = example
+            handleSearch(example)
+          }
+        "
+      />
+
+      <!-- Filters (shown when we have results) -->
+      <FilterBar
+        v-if="showFilters"
+        v-model="filters"
+        :shows="searchShows"
+        class="mb-6"
+      />
+
       <div v-if="searchStore.isSearching" class="text-center py-16">
         <LoadingSpinner :text="t('status.searching')" :full-screen="false" />
       </div>
@@ -149,6 +219,7 @@ onMounted(() => {
         :search-query="searchQuery"
         :is-semantic-mode="isSemanticMode"
         :semantic-intent="searchStore.semanticIntent"
+        :filtered-results="filteredResults"
       />
 
       <!-- Initial State -->
@@ -156,20 +227,6 @@ onMounted(() => {
         v-else
         :title="t('search.initialStateTitle')"
         :message="t('search.initialStateHint')"
-      />
-
-      <!-- Example Queries (in semantic mode when no search performed) -->
-      <ExampleQueries
-        v-if="showExampleQueries"
-        class="mt-8"
-        :examples="exampleQueries"
-        :has-query="!!searchQuery"
-        @select="
-          (example) => {
-            searchQuery = example
-            handleSearch(example)
-          }
-        "
       />
     </main>
   </div>
