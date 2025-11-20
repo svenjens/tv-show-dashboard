@@ -23,10 +23,14 @@ export default defineNuxtConfig({
           },
         },
       },
+      // Minify HTML and remove comments in production
+      minify: 'esbuild',
     },
     esbuild: {
       // Keep console.log statements in production (for easter eggs)
       drop: [], // Don't drop any console statements
+      // Remove comments in production builds
+      legalComments: 'none',
     },
   },
 
@@ -50,6 +54,8 @@ export default defineNuxtConfig({
         '/api/**', // Never prerender API routes
       ],
     },
+    // Minify HTML output in production
+    minify: true,
   },
 
   // Route rules for SSG and caching
