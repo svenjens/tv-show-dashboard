@@ -29,8 +29,10 @@ const showDebug = computed(() => {
     <!-- Toast Notifications -->
     <ToastNotification />
 
-    <!-- PWA Install Prompt -->
-    <PWAInstallPrompt />
+    <!-- PWA Install Prompt (client-only) -->
+    <ClientOnly>
+      <PWAInstallPrompt />
+    </ClientOnly>
   </div>
 </template>
 

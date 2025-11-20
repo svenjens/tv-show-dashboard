@@ -24,6 +24,10 @@ export default defineNuxtConfig({
         },
       },
     },
+    esbuild: {
+      // Keep console.log statements in production (for easter eggs)
+      drop: [], // Don't drop any console statements
+    },
   },
 
   // Nitro configuration
@@ -383,14 +387,15 @@ export default defineNuxtConfig({
       screenshots: [
         {
           src: '/og-image.png',
-          sizes: '1200x1200',
+          sizes: '1200x630',
           type: 'image/png',
+          form_factor: 'wide',
         },
       ],
     },
     workbox: {
       navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico}'],
+      globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico,webp,woff2}'],
       maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
       globIgnores: ['**/originals/**', '**/node_modules/**'],
       runtimeCaching: [
@@ -444,7 +449,7 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 3600,
     },
     devOptions: {
-      enabled: true,
+      enabled: false, // Disable PWA in development to avoid conflicts
       type: 'module',
     },
   },
