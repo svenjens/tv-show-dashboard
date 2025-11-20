@@ -17,9 +17,9 @@ Your ultimate TV show discovery and tracking platform. Built with **Nuxt 4**, Ty
 This version uses **Nuxt 4** with:
 
 - 🚀 **Server-Side Rendering (SSR)** for better SEO and initial load
-- 💾 **Multi-layer caching** (Server + Route + Client) with 48x faster response times
+- 💾 **Multi-layer caching** (Server + Route + Client) for optimal performance
 - 🔥 **Cache warming** for instant first-page loads
-- 🎯 **Smart prefetching** for popular shows
+- 🎯 **Smart prefetching** of episodes and related content
 - 📦 **Automatic code splitting** and optimization
 
 ## 🚀 Features
