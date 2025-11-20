@@ -2,28 +2,23 @@
 import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useSearchStore } from '@/stores'
 import { useSEO } from '@/composables'
-import SearchBar from '@/components/SearchBar.client.vue'
-import ShowCard from '@/components/ShowCard.vue'
+import SearchHeader from '@/components/SearchHeader.vue'
+import SearchResults from '@/components/SearchResults.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import SearchModeToggle from '@/components/SearchModeToggle.vue'
 import SearchModeInfo from '@/components/SearchModeInfo.vue'
 import ExampleQueries from '@/components/ExampleQueries.vue'
-import SemanticIntentDisplay from '@/components/SemanticIntentDisplay.vue'
-import BackButton from '@/components/BackButton.vue'
-import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
-import DarkModeToggle from '@/components/DarkModeToggle.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import SkipToContent from '@/components/SkipToContent.client.vue'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const searchStore = useSearchStore()
 
-const searchBarRef = ref<InstanceType<typeof SearchBar> | null>(null)
+const searchHeaderRef = ref<InstanceType<typeof SearchHeader> | null>(null)
 const searchQuery = ref('')
 const isSemanticMode = ref(false)
-const semanticIntent = ref<any>(null)
-const isSemanticLoading = ref(false)
 
 // Example queries for semantic search (from i18n)
 const exampleQueries = computed(() => {
@@ -57,56 +52,16 @@ async function handleSearch(query: string) {
 
   if (isSemanticMode.value) {
     // AI-powered semantic search
-    await handleSemanticSearch(query)
+    await searchStore.semanticSearch(query)
   } else {
     // Regular keyword search
-    semanticIntent.value = null
+    searchStore.semanticIntent = null
     await searchStore.search(query)
-  }
-
-  // Enrich results with streaming data (runs in background)
-  if (searchStore.hasResults) {
-    searchStore.enrichWithStreamingData()
-  }
-}
-
-async function handleSemanticSearch(query: string) {
-  isSemanticLoading.value = true
-  semanticIntent.value = null
-
-  try {
-    const response = await $fetch<{ results: any[]; intent: any }>('/api/search/semantic', {
-      method: 'POST',
-      body: { query },
-    })
-
-    // Store intent for display
-    semanticIntent.value = response.intent
-
-    // Update search store with results (including matchedTerm for each result)
-    const searchResults = response.results.map((r: any) => ({
-      show: r.show,
-      score: r.score,
-      matchedTerm: r.matchedTerm,
-    }))
-    searchStore.setResults(searchResults)
-
+    
     // Enrich results with streaming data (runs in background)
     if (searchStore.hasResults) {
       searchStore.enrichWithStreamingData()
     }
-  } catch (error) {
-    console.error('Semantic search failed:', error)
-    // Fallback to regular search
-    semanticIntent.value = null
-    await searchStore.search(query)
-
-    // Enrich fallback results with streaming data
-    if (searchStore.hasResults) {
-      searchStore.enrichWithStreamingData()
-    }
-  } finally {
-    isSemanticLoading.value = false
   }
 }
 
@@ -116,7 +71,23 @@ watch(
   (newQuery) => {
     if (typeof newQuery === 'string' && newQuery !== searchQuery.value) {
       searchQuery.value = newQuery
+      // We default to regular search when URL changes without explicit mode toggle, 
+      // but handleSearch handles the logic based on isSemanticMode which is set in onMounted/watch
+      // Wait, if URL changes, we just call searchStore.search?
+      // The original code did:
+      /*
+      searchQuery.value = newQuery
       searchStore.search(newQuery)
+      */
+      // I should probably stick to that or use handleSearch? 
+      // handleSearch updates URL, so calling it from URL watcher might cause loop? 
+      // But route.query.q change comes from URL update.
+      // So just searching is correct.
+      searchStore.search(newQuery)
+      // Also enrich?
+      if (searchStore.hasResults) {
+        searchStore.enrichWithStreamingData()
+      }
     }
   }
 )
@@ -137,15 +108,18 @@ onMounted(() => {
     searchQuery.value = query
     // Trigger search with the appropriate mode
     if (isSemanticMode.value) {
-      handleSemanticSearch(query)
+      searchStore.semanticSearch(query)
     } else {
       searchStore.search(query)
+      if (searchStore.hasResults) {
+        searchStore.enrichWithStreamingData()
+      }
     }
   }
 
   // Auto-focus search bar when navigating from home page
   nextTick(() => {
-    searchBarRef.value?.focus()
+    searchHeaderRef.value?.focus()
   })
 })
 </script>
@@ -155,29 +129,11 @@ onMounted(() => {
     <SkipToContent />
 
     <!-- Header -->
-    <header
-      class="bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900 text-white"
-    >
-      <div class="max-w-7xl mx-auto px-4 py-8">
-        <div class="flex items-center justify-between mb-4">
-          <BackButton />
-          <div class="flex items-center gap-3">
-            <DarkModeToggle variant="header" />
-            <LanguageSwitcher />
-          </div>
-        </div>
-
-        <SearchBar
-          ref="searchBarRef"
-          v-model="searchQuery"
-          :placeholder="t('search.placeholder')"
-          :recent-searches="searchStore.recentSearches"
-          data-testid="search-bar"
-          @search="handleSearch"
-          @clear-recent="searchStore.clearRecentSearches()"
-        />
-      </div>
-    </header>
+    <SearchHeader
+      ref="searchHeaderRef"
+      v-model="searchQuery"
+      @search="handleSearch"
+    />
 
     <!-- Main Content -->
     <main id="main-content" class="max-w-7xl mx-auto px-4 py-8" tabindex="-1">
@@ -186,33 +142,16 @@ onMounted(() => {
         <SearchModeInfo :is-semantic-mode="isSemanticMode" class="mb-4" />
       </div>
 
-      <div v-if="searchStore.isSearching || isSemanticLoading" class="text-center py-16">
+      <div v-if="searchStore.isSearching" class="text-center py-16">
         <LoadingSpinner :text="t('status.searching')" :full-screen="false" />
       </div>
 
-      <div v-else-if="searchStore.hasResults">
-        <SemanticIntentDisplay
-          v-if="isSemanticMode"
-          :intent="semanticIntent"
-          :search-query="searchQuery"
-          class="mb-6"
-        />
-
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-          {{ t('search.resultsTitle', { query: searchQuery }) }}
-        </h2>
-
-        <div
-          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-fr"
-        >
-          <ShowCard
-            v-for="result in searchStore.fullResults"
-            :key="result.show.id"
-            :show="result.show"
-            :match-reason="result.matchedTerm"
-          />
-        </div>
-      </div>
+      <SearchResults
+        v-else-if="searchStore.hasResults"
+        :search-query="searchQuery"
+        :is-semantic-mode="isSemanticMode"
+        :semantic-intent="searchStore.semanticIntent"
+      />
 
       <!-- Initial State -->
       <EmptyState
@@ -239,18 +178,3 @@ onMounted(() => {
     </main>
   </div>
 </template>
-
-<style scoped>
-/* Make search input connect seamlessly with button on desktop */
-@media (min-width: 640px) {
-  .search-input-wrapper :deep(input) {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  /* Ensure SearchBar takes full width */
-  .search-input-wrapper :deep(.relative) {
-    max-width: none;
-  }
-}
-</style>

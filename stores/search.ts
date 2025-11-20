@@ -20,6 +20,7 @@ export const useSearchStore = defineStore('search', () => {
   const error = ref<ApiError | null>(null)
   const recentSearches = ref<string[]>([])
   const loadingStreamingData = ref<boolean>(false)
+  const semanticIntent = ref<any>(null)
 
   // AbortController for streaming data enrichment
   let enrichmentController: AbortController | null = null
@@ -79,6 +80,61 @@ export const useSearchStore = defineStore('search', () => {
         toast.error('Search failed. Please try again.')
       }
       logger.error('[Search Store] Search failed:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Perform a semantic search
+   */
+  async function semanticSearch(query: string): Promise<void> {
+    searchQuery.value = query
+    loading.value = true
+    semanticIntent.value = null
+    error.value = null
+
+    try {
+      const response = await $fetch<{ results: any[]; intent: any }>('/api/search/semantic', {
+        method: 'POST',
+        body: { query },
+      })
+
+      semanticIntent.value = response.intent
+
+      // Map results
+      const results = response.results.map((r: any) => ({
+        show: r.show,
+        score: r.score,
+        matchedTerm: r.matchedTerm,
+      }))
+      
+      // Use setResults logic but call it here or logic reuse
+      // Cancel any ongoing streaming enrichment from previous results
+      if (enrichmentController) {
+        enrichmentController.abort()
+        enrichmentController = null
+        loadingStreamingData.value = false
+      }
+
+      searchResults.value = results
+      
+      if (hasResults.value) {
+        enrichWithStreamingData()
+      }
+    } catch (err) {
+      logger.error('[Search Store] Semantic search failed:', err)
+      // Fallback to regular search
+      semanticIntent.value = null
+      // Don't await here to avoid double loading state issues if possible, but we need to wait for fallback
+      // The fallback search handles its own loading state, so we can let it run.
+      // However, we are in a try-catch block.
+      await search(query)
+      
+      // If fallback search found results, enrich them
+      if (hasResults.value) {
+        enrichWithStreamingData()
+      }
     } finally {
       loading.value = false
     }
@@ -190,6 +246,7 @@ export const useSearchStore = defineStore('search', () => {
     searchQuery.value = ''
     searchResults.value = []
     error.value = null
+    semanticIntent.value = null
   }
 
   /**
@@ -293,6 +350,7 @@ export const useSearchStore = defineStore('search', () => {
     loading.value = false
     loadingStreamingData.value = false
     error.value = null
+    semanticIntent.value = null
     // Don't clear recent searches on reset
   }
 
@@ -309,6 +367,7 @@ export const useSearchStore = defineStore('search', () => {
     error,
     recentSearches,
     loadingStreamingData,
+    semanticIntent,
 
     // Getters
     results,
@@ -319,6 +378,7 @@ export const useSearchStore = defineStore('search', () => {
 
     // Actions
     search,
+    semanticSearch,
     enrichWithStreamingData,
     setResults,
     clearSearch,
