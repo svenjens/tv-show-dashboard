@@ -23,6 +23,7 @@
     "placeholder": "Search TV shows...",
     "searchByName": "Search for TV shows by name...",
     "resultsFor": "Found {count} result for \"{query}\" | Found {count} results for \"{query}\"",
+    "resultsTitle": "Results for \"{query}\"",
     "noResults": "No results found for \"{query}\"",
     "noResultsMessage": "Try searching with different keywords or check your spelling.",
     "noResultsTitle": "No shows found",

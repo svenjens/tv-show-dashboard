@@ -23,6 +23,7 @@
     "placeholder": "Buscar series...",
     "searchByName": "Buscar series por nombre...",
     "resultsFor": "Se encontró {count} resultado para \"{query}\" | Se encontraron {count} resultados para \"{query}\"",
+    "resultsTitle": "Resultados para \"{query}\"",
     "noResults": "No se encontraron resultados para \"{query}\"",
     "noResultsMessage": "Intenta buscar con palabras clave diferentes o verifica la ortografía.",
     "noResultsTitle": "No se encontraron series",

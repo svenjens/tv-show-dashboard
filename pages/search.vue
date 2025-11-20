@@ -28,11 +28,8 @@ const exampleQueries = computed(() => {
 
 // Determine when to show example queries
 const showExampleQueries = computed(() => {
-  return (
-    isSemanticMode.value &&
-    (!searchQuery.value || !searchStore.hasResults) &&
-    !searchStore.isSearching
-  )
+  // Always show in semantic mode (even with results)
+  return isSemanticMode.value && !searchStore.isSearching
 })
 
 // SEO (multilingual)

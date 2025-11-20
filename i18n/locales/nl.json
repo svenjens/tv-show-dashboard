@@ -23,6 +23,7 @@
     "placeholder": "Zoek tv-series...",
     "searchByName": "Zoek tv-series op naam...",
     "resultsFor": "{count} resultaat gevonden voor \"{query}\" | {count} resultaten gevonden voor \"{query}\"",
+    "resultsTitle": "Resultaten voor \"{query}\"",
     "noResults": "Geen resultaten gevonden voor \"{query}\"",
     "noResultsMessage": "Probeer te zoeken met andere trefwoorden of controleer je spelling.",
     "noResultsTitle": "Geen series gevonden",
