@@ -60,8 +60,8 @@ function handleClearAll() {
             <button
               v-if="watchlistStore.hasShows"
               class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 active:bg-red-500/40 text-white border border-red-400/50 hover:border-red-400/70 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md"
-              @click="handleClearAll"
               :aria-label="t('watchlist.clearAll')"
+              @click="handleClearAll"
             >
               <Icon name="heroicons:trash" class="w-5 h-5" />
               {{ t('watchlist.clearAll') }}
