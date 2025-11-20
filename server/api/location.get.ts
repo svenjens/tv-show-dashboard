@@ -1,19 +1,33 @@
+import { geolocation } from '@vercel/functions'
+
 /**
- * Server API route for detecting user location via Vercel headers
+ * Server API route for detecting user location via Vercel's geolocation API
  * This runs server-side and has access to Vercel's geo-location headers
  *
+ * Using @vercel/functions package for better geolocation detection
+ * Docs: https://vercel.com/guides/geo-ip-headers-geolocation-vercel-functions
+ *
  * Testing with VPN:
- * - In production: Uses Vercel's x-vercel-ip-country header (based on IP)
+ * - In production: Uses Vercel's geolocation API (based on IP)
  * - For testing: Add ?country=US to override (only in dev/preview)
  */
 export default defineEventHandler((event) => {
   const headers = getHeaders(event)
   const query = getQuery(event)
 
-  // Get country from Vercel header
-  let country = headers['x-vercel-ip-country']
+  // Create a Request-like object for the geolocation helper
+  // The geolocation function only reads headers, so we can create a minimal Request object
+  const request = new Request('http://localhost', {
+    headers: new Headers(headers as Record<string, string>),
+  })
 
-  // Fallback logic: Try to detect from Accept-Language header if Vercel header is missing
+  // Use Vercel's geolocation helper (reads x-vercel-ip-* headers)
+  const geo = geolocation(request)
+
+  // Extract country from geolocation or fall back to direct headers
+  let country = geo.country || headers['x-vercel-ip-country']
+
+  // Fallback logic: Try to detect from Accept-Language header if Vercel geolocation is missing
   if (!country) {
     const acceptLanguage = headers['accept-language']
     if (acceptLanguage) {
@@ -36,29 +50,26 @@ export default defineEventHandler((event) => {
     console.log(`[Location API] Test override: country=${country}`)
   }
 
-  const city = headers['x-vercel-ip-city']
-  const region = headers['x-vercel-ip-country-region']
-  const latitude = headers['x-vercel-ip-latitude']
-  const longitude = headers['x-vercel-ip-longitude']
-  const timezone = headers['x-vercel-ip-timezone']
-
   return {
     country,
-    city,
-    region,
-    latitude,
-    longitude,
-    timezone,
-    detected: !!headers['x-vercel-ip-country'], // True if Vercel header was present
+    city: geo.city || headers['x-vercel-ip-city'],
+    region: geo.region || headers['x-vercel-ip-country-region'],
+    latitude: geo.latitude || headers['x-vercel-ip-latitude'],
+    longitude: geo.longitude || headers['x-vercel-ip-longitude'],
+    timezone: headers['x-vercel-ip-timezone'],
+    detected: !!(geo.country || headers['x-vercel-ip-country']), // True if Vercel geolocation was present
     // Add debug info to help troubleshoot location detection
     debug: {
-      vercelCountry: headers['x-vercel-ip-country'] || null,
+      vercelCountry: geo.country || headers['x-vercel-ip-country'] || null,
+      vercelCity: geo.city || null,
       acceptLanguage: headers['accept-language'] || null,
-      detectionMethod: headers['x-vercel-ip-country']
-        ? 'vercel-header'
-        : headers['accept-language']
-          ? 'accept-language'
-          : 'fallback',
+      detectionMethod: geo.country
+        ? 'vercel-geolocation'
+        : headers['x-vercel-ip-country']
+          ? 'vercel-header'
+          : headers['accept-language']
+            ? 'accept-language'
+            : 'fallback',
       overridden: !!query.country,
     },
   }

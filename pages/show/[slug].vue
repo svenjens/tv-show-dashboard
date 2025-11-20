@@ -250,20 +250,24 @@ watch(
 
     <!-- Debug Info (only visible with ?debug=1) -->
     <div
-      v-if="route.query.debug === '1' && show"
+      v-if="route.query.debug === '1'"
       class="bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100 p-4 border-b-2 border-yellow-300 dark:border-yellow-700"
     >
       <div class="container mx-auto">
-        <h3 class="font-bold mb-2">🐛 Debug Info</h3>
-        <div class="text-sm space-y-1">
-          <div><strong>User Country:</strong> {{ userCountry }}</div>
-          <div><strong>Location Detected:</strong> {{ country || 'N/A' }}</div>
-          <div>
-            <strong>Streaming Available:</strong> {{ streamingAvailability.length }} providers
+        <h3 class="font-bold mb-2">🐛 Debug Info - Country Detection</h3>
+        <div class="text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <div><strong>Final Country Used:</strong> {{ userCountry }}</div>
+            <div><strong>From /api/location:</strong> {{ country || 'N/A' }}</div>
+            <div v-if="show">
+              <strong>Streaming Providers:</strong> {{ streamingAvailability.length }}
+            </div>
           </div>
-          <div v-if="streamingAvailability.length > 0">
-            <strong>Providers:</strong>
-            {{ streamingAvailability.map((s) => s.service.name).join(', ') }}
+          <div v-if="show && streamingAvailability.length > 0" class="space-y-1">
+            <div><strong>Available on:</strong></div>
+            <div class="text-xs">
+              {{ streamingAvailability.map((s) => s.service.name).join(', ') }}
+            </div>
           </div>
         </div>
       </div>
