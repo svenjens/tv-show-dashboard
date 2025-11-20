@@ -27,7 +27,7 @@ const handleBack = () => {
     <div class="max-w-7xl mx-auto px-4" :class="compact ? 'py-6' : 'py-8'">
       <div class="flex items-center justify-between mb-4">
         <button
-          class="inline-flex items-center gap-2 hover:text-primary-200 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 rounded-lg px-2 py-1"
+          class="inline-flex items-center gap-2 hover:text-primary-200 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 rounded-lg px-3 py-2"
           :aria-label="t('navigation.back')"
           @click="handleBack"
         >

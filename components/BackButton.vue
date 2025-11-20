@@ -24,7 +24,7 @@ const handleClick = () => {
 <template>
   <button
     :class="[
-      'inline-flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 rounded-lg px-2 py-1',
+      'inline-flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 rounded-lg px-3 py-2',
       variant === 'header'
         ? 'text-white hover:text-primary-300 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-primary-800'
         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-primary-500',
