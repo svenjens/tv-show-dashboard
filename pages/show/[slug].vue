@@ -248,33 +248,8 @@ watch(
       @retry="() => navigateTo(localePath(`/show/${route.params.slug}`))"
     />
 
-    <!-- Debug Info (only visible with ?debug=1) -->
-    <div
-      v-if="route.query.debug === '1'"
-      class="bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100 p-4 border-b-2 border-yellow-300 dark:border-yellow-700"
-    >
-      <div class="container mx-auto">
-        <h3 class="font-bold mb-2">🐛 Debug Info - Country Detection</h3>
-        <div class="text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="space-y-1">
-            <div><strong>Final Country Used:</strong> {{ userCountry }}</div>
-            <div><strong>From /api/location:</strong> {{ country || 'N/A' }}</div>
-            <div v-if="show">
-              <strong>Streaming Providers:</strong> {{ streamingAvailability.length }}
-            </div>
-          </div>
-          <div v-if="show && streamingAvailability.length > 0" class="space-y-1">
-            <div><strong>Available on:</strong></div>
-            <div class="text-xs">
-              {{ streamingAvailability.map((s) => s.service.name).join(', ') }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Show Details -->
-    <div v-else-if="show" class="pb-12">
+    <div v-if="show" class="pb-12">
       <!-- Hero Section -->
       <header class="relative bg-gray-900 dark:bg-gray-950 text-white">
         <!-- Background Image -->

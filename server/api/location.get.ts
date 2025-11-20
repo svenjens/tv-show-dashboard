@@ -7,9 +7,10 @@ import { geolocation } from '@vercel/functions'
  * Using @vercel/functions package for better geolocation detection
  * Docs: https://vercel.com/guides/geo-ip-headers-geolocation-vercel-functions
  *
- * Testing with VPN:
- * - In production: Uses Vercel's geolocation API (based on IP)
- * - For testing: Add ?country=US to override (only in dev/preview)
+ * Note on VPN usage:
+ * - Vercel detects the IP address at the edge network level
+ * - Browser-based VPNs may not affect the detected country since Vercel sees the original IP
+ * - For testing different countries, add ?country=US to the URL (dev/preview only)
  */
 export default defineEventHandler((event) => {
   const headers = getHeaders(event)
