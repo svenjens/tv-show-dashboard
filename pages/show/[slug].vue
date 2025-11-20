@@ -267,7 +267,7 @@ watch(
           />
         </div>
 
-        <div class="relative max-w-7xl mx-auto px-4 py-12">
+        <div class="relative max-w-7xl mx-auto px-4 pt-6 pb-12">
           <div class="flex items-center justify-between mb-6">
             <BackButton variant="header" :custom-handler="() => navigateTo(localePath('/'))" />
 
