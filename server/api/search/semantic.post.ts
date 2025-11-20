@@ -152,12 +152,7 @@ async function searchTVMazeForTerm(
 ): Promise<Array<{ show: Show; score: number; matchedTerm: string }>> {
   try {
     const shows = await $fetch<Array<{ show: Show; score: number }>>(
-      `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(term)}`,
-      {
-        headers: {
-          'User-Agent': 'BingeList/1.0',
-        },
-      }
+      `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(term)}`
     )
 
     // Validate response is an array
@@ -212,12 +207,7 @@ async function searchWithMultipleTerms(
  */
 async function fallbackSearch(query: string) {
   const fallbackResults = await $fetch<Array<{ show: Show; score: number }>>(
-    `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`,
-    {
-      headers: {
-        'User-Agent': 'BingeList/1.0',
-      },
-    }
+    `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`
   )
 
   // Validate response is an array
