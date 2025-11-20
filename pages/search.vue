@@ -188,7 +188,7 @@ onMounted(() => {
         <SearchModeInfo :is-semantic-mode="isSemanticMode" class="mb-4" />
       </div>
 
-      <!-- Example Queries (in semantic mode, shown before filters) -->
+      <!-- Example Queries (always show in semantic mode) -->
       <ExampleQueries
         v-if="showExampleQueries"
         class="mb-8"
@@ -222,9 +222,9 @@ onMounted(() => {
         :filtered-results="filteredResults"
       />
 
-      <!-- Initial State -->
+      <!-- Initial State (only show when NOT in semantic mode OR when semantic but no query) -->
       <EmptyState
-        v-else
+        v-else-if="!isSemanticMode || !showExampleQueries"
         :title="t('search.initialStateTitle')"
         :message="t('search.initialStateHint')"
       />
