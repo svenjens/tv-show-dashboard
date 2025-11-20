@@ -1,7 +1,7 @@
 <template>
   <div class="relative">
     <button
-      class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-300 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-all duration-200 active:scale-95 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700"
+      :class="buttonClass"
       :aria-label="t('accessibility.toggleLanguage')"
       :aria-expanded="isOpen"
       @click="isOpen = !isOpen"
@@ -47,12 +47,29 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
+interface Props {
+  variant?: 'default' | 'header'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'default',
+})
+
 const { t, locale, setLocale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
 const isOpen = ref(false)
 const currentLocale = computed(() => locale.value)
 const availableLocales = computed(() => locales.value)
+
+const buttonClass = computed(() => {
+  if (props.variant === 'header') {
+    return 'flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-white/10 rounded-lg border border-white/20 hover:bg-white/20 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 transition-all duration-200 active:scale-95'
+  }
+  return 'flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-300 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-all duration-200 active:scale-95 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700'
+})
 
 async function changeLanguage(newLocale: string) {
   if (newLocale === currentLocale.value) {

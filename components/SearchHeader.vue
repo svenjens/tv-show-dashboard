@@ -31,10 +31,10 @@ defineExpose({
   >
     <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-4">
-        <BackButton />
+        <BackButton variant="header" />
         <div class="flex items-center gap-3">
           <DarkModeToggle variant="header" />
-          <LanguageSwitcher />
+          <LanguageSwitcher variant="header" />
         </div>
       </div>
 
