@@ -64,7 +64,7 @@ const showId = computed(() => extractIdFromSlug(slug.value))
 
 // Get user's country from location middleware
 const { country } = useLocation()
-const userCountry = computed(() => country.value || 'US')
+const userCountry = computed(() => country.value || 'NL')
 
 // Validate show ID before fetching
 if (!showId.value) {

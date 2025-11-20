@@ -25,9 +25,9 @@ export default defineEventHandler((event) => {
     }
   }
 
-  // Final fallback to US (more neutral than NL for international users)
+  // Final fallback to NL (default country)
   if (!country) {
-    country = 'US'
+    country = 'NL'
   }
 
   // Override for testing (not in production)
