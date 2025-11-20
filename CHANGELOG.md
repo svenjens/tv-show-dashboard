@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.2.1](https://github.com/svenjens/tv-show-dashboard/compare/v4.2.0...v4.2.1) (2025-11-20)
+
+
+### Bug Fixes
+
+* **ui:** enable SSR for SearchBar to prevent flash on page load ([4b95228](https://github.com/svenjens/tv-show-dashboard/commit/4b95228a2bce54e9efe1d27330cd82d330b83b2e))
+* **ui:** ensure related shows load after page refresh ([5c2319f](https://github.com/svenjens/tv-show-dashboard/commit/5c2319fc6499e5204022f5d95ea3df8b6ac16add))
+* **ui:** remove flash on search bar page load ([cb2375c](https://github.com/svenjens/tv-show-dashboard/commit/cb2375ca26e26d6bb63a5ca304f5dca641914204))
+
 ## [4.2.0](https://github.com/svenjens/tv-show-dashboard/compare/v4.1.0...v4.2.0) (2025-11-20)
 
 ### Features
