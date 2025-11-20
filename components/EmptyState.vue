@@ -12,7 +12,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <div class="text-center py-16 px-4" role="status">
-    <NuxtImg
+    <img
       src="/optimized/empty-state-illustration.png"
       alt=""
       class="mx-auto h-48 w-48 object-contain opacity-50 dark:opacity-30"
