@@ -187,4 +187,3 @@ try {
   console.error('❌ Error analyzing bundle:', error.message)
   process.exit(1)
 }
-

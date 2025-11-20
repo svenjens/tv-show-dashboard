@@ -6,11 +6,7 @@ import { logger } from '@/utils'
 const { t } = useI18n()
 
 // @vite-pwa/nuxt composable
-const {
-  offlineReady,
-  needRefresh,
-  updateServiceWorker,
-} = useRegisterSW()
+const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW()
 
 // Storage key for dismissal tracking
 const STORAGE_KEY = 'pwa-install-dismissed'

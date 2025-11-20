@@ -170,7 +170,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   // Unregister route guard
   unregisterGuard()
-  
+
   // Only clear search if NOT navigating to a show detail page
   if (!navigatingToShow) {
     searchStore.clearSearch()
