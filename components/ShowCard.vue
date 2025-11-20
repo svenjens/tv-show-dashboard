@@ -100,7 +100,7 @@ function handleImageError() {
     v-motion
     :initial="{ opacity: 0, y: 20 }"
     :visible="{ opacity: 1, y: 0, transition: { duration: 400, delay: 50 } }"
-    class="card group/card cursor-pointer rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1 h-full flex flex-col border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-4 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+    class="card group/card cursor-pointer rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 hover:-translate-y-1 h-full flex flex-col border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-4 focus:ring-inset focus:ring-primary-500"
     :data-testid="`show-card-${show.id}`"
     tabindex="0"
     role="link"
