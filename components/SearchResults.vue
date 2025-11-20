@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { useSearchStore } from '@/stores'
 import ShowCard from '@/components/ShowCard.vue'
-import SemanticIntentDisplay from '@/components/SemanticIntentDisplay.vue'
-import type { SemanticIntent, SearchResult } from '@/types'
+import type { SearchResult } from '@/types'
 
 interface Props {
   searchQuery: string
-  isSemanticMode: boolean
-  semanticIntent: SemanticIntent | null
   filteredResults?: SearchResult[]
 }
 
@@ -26,12 +23,6 @@ const displayResults = computed(() => {
 
 <template>
   <div>
-    <SemanticIntentDisplay
-      v-if="isSemanticMode"
-      :intent="semanticIntent"
-      class="mb-6"
-    />
-
     <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       {{ t('search.resultsTitle', { query: searchQuery }) }}
     </h2>

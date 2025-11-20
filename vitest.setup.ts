@@ -1,4 +1,4 @@
-import { vi, config } from 'vitest'
+import { vi } from 'vitest'
 import { config as vueTestConfig } from '@vue/test-utils'
 
 // Mock v-motion directive

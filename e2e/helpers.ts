@@ -32,7 +32,7 @@ export async function makeTestElementsVisible(page: Page) {
 export async function waitForHydration(page: Page) {
   // Wait for DOM content to be loaded
   await page.waitForLoadState('domcontentloaded')
-  
+
   // Small buffer to ensure Vue Router and Pinia stores are ready
   // Increased buffer for CI environments
   await page.waitForTimeout(2000)

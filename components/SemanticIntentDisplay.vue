@@ -37,7 +37,7 @@ defineProps<Props>()
           <!-- Moods -->
           <template v-if="intent.mood">
             <span
-              v-for="mood in (Array.isArray(intent.mood) ? intent.mood : [intent.mood])"
+              v-for="mood in Array.isArray(intent.mood) ? intent.mood : [intent.mood]"
               :key="mood"
               class="px-2 py-1 bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded text-xs font-medium"
             >

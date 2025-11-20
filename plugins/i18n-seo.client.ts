@@ -13,7 +13,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   // @ts-expect-error - i18n is injected by @nuxtjs/i18n
   const i18n = nuxtApp.$i18n
   const locales = computed(() => i18n.locales.value)
-  
+
   const route = useRoute()
   const switchLocalePath = useSwitchLocalePath()
 

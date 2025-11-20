@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import type { Show } from '@/types'
 import { STREAMING_PLATFORMS } from '@/types/streaming'
 
-interface Filters {
+export interface Filters {
   status: string
   network: string
   year: string

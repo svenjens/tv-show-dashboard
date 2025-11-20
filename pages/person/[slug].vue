@@ -312,10 +312,7 @@ if (person.value) {
             </div>
 
             <!-- Show More Button -->
-            <div
-              v-if="canShowMore"
-              class="text-center mt-6"
-            >
+            <div v-if="canShowMore" class="text-center mt-6">
               <button
                 class="px-6 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg transition-colors"
                 @click="showAllCredits = true"

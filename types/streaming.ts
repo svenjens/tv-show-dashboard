@@ -124,6 +124,51 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     themeColorCode: '#FF0000',
     hasAffiliateProgram: false,
   },
+  'hbo-amazon': {
+    id: 'hbo-amazon',
+    name: 'HBO Max Amazon Channel',
+    logo: '/logos/streaming/hbo-amazon.svg',
+    homePage: 'https://www.amazon.com/gp/video/storefront',
+    searchUrl: 'https://www.amazon.com/s?k={query}',
+    themeColorCode: '#002BE7',
+    hasAffiliateProgram: true,
+  },
+  'youtube-tv': {
+    id: 'youtube-tv',
+    name: 'YouTube TV',
+    logo: '/logos/streaming/youtube-tv.svg',
+    homePage: 'https://tv.youtube.com',
+    searchUrl: 'https://tv.youtube.com/search?q={query}',
+    themeColorCode: '#FF0000',
+    hasAffiliateProgram: false,
+  },
+  tbs: {
+    id: 'tbs',
+    name: 'TBS',
+    logo: '/logos/streaming/tbs.svg',
+    homePage: 'https://www.tbs.com',
+    searchUrl: 'https://www.tbs.com/search?q={query}',
+    themeColorCode: '#FF0066',
+    hasAffiliateProgram: false,
+  },
+  'google-play': {
+    id: 'google-play',
+    name: 'Google Play Movies',
+    logo: '/logos/streaming/google-play.svg',
+    homePage: 'https://play.google.com/store/movies',
+    searchUrl: 'https://play.google.com/store/search?q={query}&c=movies',
+    themeColorCode: '#4285F4',
+    hasAffiliateProgram: false,
+  },
+  'fandango-at-home': {
+    id: 'fandango-at-home',
+    name: 'Fandango At Home',
+    logo: '/logos/streaming/fandango-at-home.svg',
+    homePage: 'https://www.fandangoathome.com',
+    searchUrl: 'https://www.fandangoathome.com/search?q={query}',
+    themeColorCode: '#FF6600',
+    hasAffiliateProgram: false,
+  },
 }
 
 export interface AffiliateConfig {
@@ -149,4 +194,10 @@ export const TMDB_PROVIDER_MAP: Record<string, string> = {
   '1853': 'skyshowtime', // SkyShowtime
   '1773': 'skyshowtime', // SkyShowtime (alternate ID)
   '72': 'videoland', // Videoland
+  '1970': 'hbo', // HBO Max Amazon Channel
+  '188': 'youtube-tv', // YouTube TV
+  '503': 'tbs', // TBS
+  '3': 'google-play', // Google Play Movies
+  '7': 'fandango-at-home', // Vudu / Fandango At Home
+  '332': 'fandango-at-home', // Vudu (alternate ID)
 }

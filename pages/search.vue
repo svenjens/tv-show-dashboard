@@ -5,13 +5,10 @@ import { useSEO } from '@/composables'
 import SearchHeader from '@/components/SearchHeader.vue'
 import SearchResults from '@/components/SearchResults.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import SearchModeToggle from '@/components/SearchModeToggle.vue'
-import SearchModeInfo from '@/components/SearchModeInfo.vue'
-import ExampleQueries from '@/components/ExampleQueries.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import SkipToContent from '@/components/SkipToContent.client.vue'
 import FilterBar from '@/components/FilterBar.vue'
-import type { Show } from '@/types'
+import type { Filters } from '@/components/FilterBar.vue'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -23,11 +20,11 @@ const searchQuery = ref('')
 const isSemanticMode = ref(false)
 
 // Filters
-const filters = ref({
+const filters = ref<Filters>({
   status: '',
   network: '',
   year: '',
-  streaming: [] as string[],
+  streaming: [],
 })
 
 // Filter shows based on selected filters
@@ -66,18 +63,6 @@ const searchShows = computed(() => {
 // Show FilterBar when we have results
 const showFilters = computed(() => {
   return searchStore.hasResults && !searchStore.isSearching
-})
-
-// Example queries for semantic search (from i18n)
-const exampleQueries = computed(() => {
-  const queries = t('search.exampleQueries', { returnObjects: true })
-  return Array.isArray(queries) ? queries : []
-})
-
-// Determine when to show example queries
-const showExampleQueries = computed(() => {
-  // Always show in semantic mode (even with results)
-  return isSemanticMode.value && !searchStore.isSearching
 })
 
 // SEO (multilingual)
@@ -190,12 +175,7 @@ onMounted(() => {
     <!-- Main Content -->
     <main id="main-content" class="max-w-7xl mx-auto px-4 py-8" tabindex="-1">
       <!-- Filters (shown when we have results) -->
-      <FilterBar
-        v-if="showFilters"
-        v-model="filters"
-        :shows="searchShows"
-        class="mb-6"
-      />
+      <FilterBar v-if="showFilters" v-model="filters" :shows="searchShows" class="mb-6" />
 
       <div v-if="searchStore.isSearching" class="text-center py-16">
         <LoadingSpinner :text="t('status.searching')" :full-screen="false" />
@@ -204,8 +184,6 @@ onMounted(() => {
       <SearchResults
         v-else-if="searchStore.hasResults"
         :search-query="searchQuery"
-        :is-semantic-mode="isSemanticMode"
-        :semantic-intent="searchStore.semanticIntent"
         :filtered-results="filteredResults"
       />
 

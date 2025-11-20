@@ -18,8 +18,8 @@ defineEmits<{
       :class="[
         'px-4 py-2 rounded-lg font-medium transition-all',
         !modelValue
-          ? 'bg-primary-600 text-white shadow-sm'
-          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600',
+          ? 'bg-white dark:bg-gray-800 text-primary-600 dark:text-primary-400 shadow-sm'
+          : 'bg-white/20 dark:bg-gray-700/50 text-white/70 hover:bg-white/30 dark:hover:bg-gray-700',
       ]"
       @click="$emit('update:modelValue', false)"
     >
@@ -29,8 +29,8 @@ defineEmits<{
       :class="[
         'px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2',
         modelValue
-          ? 'bg-primary-600 text-white shadow-sm'
-          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600',
+          ? 'bg-white dark:bg-gray-800 text-primary-600 dark:text-primary-400 shadow-sm'
+          : 'bg-white/20 dark:bg-gray-700/50 text-white/70 hover:bg-white/30 dark:hover:bg-gray-700',
       ]"
       @click="$emit('update:modelValue', true)"
     >

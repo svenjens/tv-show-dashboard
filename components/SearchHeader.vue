@@ -19,9 +19,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue' | 'search', value: string): void
   (e: 'update:isSemanticMode', value: boolean): void
-  (e: 'search', query: string): void
 }>()
 
 const { t } = useI18n()
@@ -30,13 +29,22 @@ const searchBarRef = ref<InstanceType<typeof SearchBar> | null>(null)
 
 // Example queries for semantic search (from i18n)
 const exampleQueries = computed(() => {
-  const queries = t('search.exampleQueries', { returnObjects: true })
-  return Array.isArray(queries) ? queries : []
+  // Access individual array items directly
+  const queries = []
+  for (let i = 0; i < 10; i++) {
+    const query = t(`search.exampleQueries.${i}`)
+    if (query && !query.startsWith('search.exampleQueries')) {
+      queries.push(query)
+    } else {
+      break
+    }
+  }
+  return queries
 })
 
-// Show example queries in semantic mode
+// Show example queries in semantic mode - always show when in semantic mode
 const showExampleQueries = computed(() => {
-  return props.isSemanticMode && !searchStore.isSearching
+  return props.isSemanticMode
 })
 
 // Expose focus method
@@ -58,44 +66,46 @@ defineExpose({
         </div>
       </div>
 
-      <div class="flex items-start gap-3">
-        <SearchBar
-          ref="searchBarRef"
-          :model-value="modelValue"
-          @update:model-value="emit('update:modelValue', $event)"
-          :placeholder="t('search.placeholder')"
-          :recent-searches="searchStore.recentSearches"
-          data-testid="search-bar"
-          @search="emit('search', $event)"
-          @clear-recent="searchStore.clearRecentSearches()"
-        />
-        <button
-          @click="emit('search', modelValue)"
-          class="flex-shrink-0 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-primary-600 dark:text-primary-400 font-medium px-6 py-3 rounded-lg transition-colors shadow-sm border border-white/20"
-          :aria-label="t('search.searchButton')"
-        >
-          <Icon name="heroicons:magnifying-glass" class="h-5 w-5" />
-        </button>
-      </div>
-
       <!-- Search Mode Toggle and Info -->
-      <div class="mt-6">
+      <div class="max-w-2xl mx-auto mb-6">
         <SearchModeToggle
+          class="mb-3"
           :model-value="isSemanticMode"
           @update:model-value="emit('update:isSemanticMode', $event)"
-          class="mb-3"
         />
-        <SearchModeInfo :is-semantic-mode="isSemanticMode" class="mb-4" />
+        <SearchModeInfo :is-semantic-mode="isSemanticMode" />
       </div>
 
-      <!-- Example Queries (in semantic mode) -->
+      <!-- Example Queries (in semantic mode) - shown ABOVE search bar -->
       <ExampleQueries
         v-if="showExampleQueries"
-        class="mt-6"
+        class="mb-6 max-w-2xl mx-auto"
         :examples="exampleQueries"
         :has-query="!!modelValue"
         @select="emit('search', $event)"
       />
+
+      <div class="flex gap-2 max-w-2xl mx-auto">
+        <div class="flex-1">
+          <SearchBar
+            ref="searchBarRef"
+            data-testid="search-bar"
+            :model-value="modelValue"
+            :placeholder="t('search.placeholder')"
+            :recent-searches="searchStore.recentSearches"
+            @update:model-value="emit('update:modelValue', $event)"
+            @search="emit('search', $event)"
+            @clear-recent="searchStore.clearRecentSearches()"
+          />
+        </div>
+        <button
+          class="flex-shrink-0 h-[48px] bg-white hover:bg-gray-100 active:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-600 text-primary-600 dark:text-primary-400 font-medium px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center"
+          :aria-label="t('search.searchButton')"
+          @click="emit('search', modelValue)"
+        >
+          <Icon name="heroicons:magnifying-glass" class="h-5 w-5" />
+        </button>
+      </div>
     </div>
   </header>
 </template>

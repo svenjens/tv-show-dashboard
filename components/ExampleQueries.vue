@@ -14,15 +14,15 @@ defineEmits<{
 </script>
 
 <template>
-  <div>
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+  <div v-if="examples && examples.length > 0">
+    <h3 class="text-lg font-semibold text-white mb-4">
       {{ hasQuery ? t('search.orTryAsking') : t('search.tryAsking') }}
     </h3>
     <div class="flex flex-wrap gap-3">
       <button
         v-for="example in examples"
         :key="example"
-        class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2"
+        class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600"
         @click="$emit('select', example)"
       >
         {{ example }}
