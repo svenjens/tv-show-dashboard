@@ -31,7 +31,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       ;(locales.value as unknown as LocaleConfig[]).forEach((loc) => {
         const localeCode = loc.code
         const isoCode = loc.iso ? loc.iso.toLowerCase() : loc.code // Convert to lowercase per Google guidelines
-        const localePath = switchLocalePath(localeCode as any)
+        // @ts-expect-error - switchLocalePath types are sometimes too strict for dynamic locale codes
+        const localePath = switchLocalePath(localeCode)
 
         if (localePath) {
           links.push({

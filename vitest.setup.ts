@@ -1,4 +1,10 @@
-import { vi } from 'vitest'
+import { vi, config } from 'vitest'
+import { config as vueTestConfig } from '@vue/test-utils'
+
+// Mock v-motion directive
+vueTestConfig.global.directives = {
+  motion: {},
+}
 
 // Mock localStorage for SSR tests
 global.localStorage = {

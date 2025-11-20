@@ -74,7 +74,7 @@ export const useSearchStore = defineStore('search', () => {
       }
 
       logger.debug(`[Search Store] Found ${results.length} results for "${query}"`)
-    } catch (err) {
+    } catch (err: unknown) {
       error.value = err as ApiError
       if (toast) {
         toast.error('Search failed. Please try again.')
@@ -122,7 +122,7 @@ export const useSearchStore = defineStore('search', () => {
       if (hasResults.value) {
         enrichWithStreamingData()
       }
-    } catch (err) {
+    } catch (err: unknown) {
       logger.error('[Search Store] Semantic search failed:', err)
       // Fallback to regular search
       semanticIntent.value = null

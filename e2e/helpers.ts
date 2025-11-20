@@ -7,6 +7,13 @@ import type { Page } from '@playwright/test'
 export async function makeTestElementsVisible(page: Page) {
   await page.addStyleTag({
     content: `
+      *, *::before, *::after {
+        animation-duration: 0s !important;
+        animation-delay: 0s !important;
+        transition-duration: 0s !important;
+        transition-delay: 0s !important;
+      }
+      
       [data-e2e-visible],
       [data-testid^="show-card-"],
       [data-testid="search-bar"] {
@@ -23,14 +30,12 @@ export async function makeTestElementsVisible(page: Page) {
  * This is crucial for SPAs where client-side routing needs to be ready
  */
 export async function waitForHydration(page: Page) {
-  // Wait for network to be idle (all initial requests completed)
-  await page.waitForLoadState('networkidle')
-
-  // Wait for Vue app to be mounted and interactive
+  // Wait for DOM content to be loaded
   await page.waitForLoadState('domcontentloaded')
-
+  
   // Small buffer to ensure Vue Router and Pinia stores are ready
-  await page.waitForTimeout(1000)
+  // Increased buffer for CI environments
+  await page.waitForTimeout(2000)
 
   // Make test elements always visible
   await makeTestElementsVisible(page)

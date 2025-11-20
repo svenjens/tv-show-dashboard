@@ -50,7 +50,7 @@ export default cachedEventHandler(
       }
     } catch (error) {
       // Preserve existing H3/Nitro errors (from createError)
-      if (error && typeof (error as any).statusCode === 'number') {
+      if (error && typeof error === 'object' && 'statusCode' in error) {
         throw error
       }
 

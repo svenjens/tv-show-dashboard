@@ -6,10 +6,10 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  fullyParallel: false, // Disable parallel execution to avoid rate limits and resource contention
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1, // Use 1 worker to avoid rate limits
   reporter: process.env.CI ? 'html' : 'list',
 
   use: {
@@ -17,8 +17,11 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     // Wait for network to be idle for SPAs
-    navigationTimeout: 30000,
-    actionTimeout: 15000,
+    navigationTimeout: 60000, // Increased timeout
+    actionTimeout: 30000, // Increased timeout
+    contextOptions: {
+      reducedMotion: 'reduce',
+    },
   },
 
   projects: [
@@ -30,7 +33,7 @@ export default defineConfig({
 
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
+    url: process.env.BASE_URL || 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

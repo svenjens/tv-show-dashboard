@@ -125,8 +125,13 @@ async function generateSearchTermsWithGPT(
  * Normalize search terms from GPT response
  * Supports both new format (searches) and old format (searchTerms) for backward compatibility
  */
+interface GPTResponse {
+  searches?: Array<{ term: string; reason: string }>
+  searchTerms?: string[]
+}
+
 function normalizeSearchTerms(
-  gptResult: any,
+  gptResult: GPTResponse,
   fallbackQuery: string
 ): Array<{ term: string; reason: string }> {
   if (Array.isArray(gptResult.searches)) {
