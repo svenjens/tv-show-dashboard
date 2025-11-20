@@ -88,6 +88,15 @@ export const STREAMING_PLATFORMS: Record<string, StreamingPlatform> = {
     themeColorCode: '#000000',
     hasAffiliateProgram: false,
   },
+  'apple-tv': {
+    id: 'apple-tv',
+    name: 'Apple TV',
+    logo: '/logos/streaming/apple-tv.svg',
+    homePage: 'https://tv.apple.com',
+    searchUrl: 'https://tv.apple.com/search?q={query}',
+    themeColorCode: '#000000',
+    hasAffiliateProgram: false,
+  },
   paramount: {
     id: 'paramount',
     name: 'Paramount+',
@@ -189,6 +198,7 @@ export const TMDB_PROVIDER_MAP: Record<string, string> = {
   '1899': 'hbo', // Max (rebranded HBO Max)
   '15': 'hulu', // Hulu
   '350': 'apple', // Apple TV+
+  '2': 'apple-tv', // Apple TV (buy/rent)
   '531': 'paramount', // Paramount+
   '386': 'peacock', // Peacock
   '1853': 'skyshowtime', // SkyShowtime
