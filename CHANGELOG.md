@@ -2,11 +2,10 @@
 
 ## [4.2.3](https://github.com/svenjens/tv-show-dashboard/compare/v4.2.2...v4.2.3) (2025-11-20)
 
-
 ### Bug Fixes
 
-* **pwa:** prevent precaching of favicon symlinks and locale roots ([9139cfa](https://github.com/svenjens/tv-show-dashboard/commit/9139cfabf86c473b6eb7fad6d7c1f8035884eb7f))
-* **pwa:** remove navigateFallback to prevent service worker errors ([99672ec](https://github.com/svenjens/tv-show-dashboard/commit/99672ecae50d0a81b66acf3721d08d3ed2dd7e57))
+- **pwa:** prevent precaching of favicon symlinks and locale roots ([9139cfa](https://github.com/svenjens/tv-show-dashboard/commit/9139cfabf86c473b6eb7fad6d7c1f8035884eb7f))
+- **pwa:** remove navigateFallback to prevent service worker errors ([99672ec](https://github.com/svenjens/tv-show-dashboard/commit/99672ecae50d0a81b66acf3721d08d3ed2dd7e57))
 
 ## [4.2.2](https://github.com/svenjens/tv-show-dashboard/compare/v4.2.1...v4.2.2) (2025-11-20)
 

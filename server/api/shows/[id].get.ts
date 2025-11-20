@@ -169,32 +169,33 @@ function extractStreamingProviders(
   showName: string
 ): StreamingAvailability[] {
   const providers: StreamingAvailability[] = []
+  const seenProviders = new Set<string>()
+
+  // Helper to add provider only if not already seen
+  const addProvider = (provider: TMDBProvider, type: string) => {
+    const tmdbProviderId = String(provider.provider_id)
+    // Create unique key based on provider ID and type
+    const providerKey = `${tmdbProviderId}-${type}`
+
+    if (!seenProviders.has(providerKey)) {
+      seenProviders.add(providerKey)
+      providers.push(transformProvider(provider, type, country, tmdbId, countryData.link, showName))
+    }
+  }
 
   // Flatrate (subscription services like Netflix, Disney+)
   if (Array.isArray(countryData.flatrate)) {
-    providers.push(
-      ...countryData.flatrate.map((p) =>
-        transformProvider(p, 'subscription', country, tmdbId, countryData.link, showName)
-      )
-    )
+    countryData.flatrate.forEach((p) => addProvider(p, 'subscription'))
   }
 
   // Buy options
   if (Array.isArray(countryData.buy)) {
-    providers.push(
-      ...countryData.buy.map((p) =>
-        transformProvider(p, 'buy', country, tmdbId, countryData.link, showName)
-      )
-    )
+    countryData.buy.forEach((p) => addProvider(p, 'buy'))
   }
 
   // Rent options
   if (Array.isArray(countryData.rent)) {
-    providers.push(
-      ...countryData.rent.map((p) =>
-        transformProvider(p, 'rent', country, tmdbId, countryData.link, showName)
-      )
-    )
+    countryData.rent.forEach((p) => addProvider(p, 'rent'))
   }
 
   return providers
@@ -270,8 +271,8 @@ export default cachedEventHandler(
 
       const id = validateShowId(rawId)
 
-      // Validate country code if provided
-      const country = query.country ? validateCountryCode(query.country) : 'US'
+      // Validate country code if provided, default to NL (Netherlands)
+      const country = query.country ? validateCountryCode(query.country) : 'NL'
 
       // Fetch show data from TVMaze
       const show = await fetchShowFromTVMaze(id)
@@ -335,7 +336,7 @@ export default cachedEventHandler(
       const id = getRouterParam(event, 'id') || 'unknown'
       const query = getQuery(event)
       const country = (query.country as string) || 'US'
-      return `show-v3-${id}-${country}` // v3: improved TMDB logo handling
+      return `show-v4-${id}-${country}` // v4: deduplicate providers + default to NL
     },
     swr: true,
     // Vary cache by country for streaming availability
