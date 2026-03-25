@@ -31,7 +31,7 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
-// Mock IntersectionObserver
+// Mock IntersectionObserver (match DOM lib; newer TS includes scrollMargin on the type)
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}
   disconnect() {}
@@ -42,8 +42,9 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {}
   root = null
   rootMargin = ''
+  scrollMargin = ''
   thresholds = []
-}
+} as unknown as typeof globalThis.IntersectionObserver
 
 // Mock color mode composable to prevent plugin errors
 vi.mock('#app', async () => {
