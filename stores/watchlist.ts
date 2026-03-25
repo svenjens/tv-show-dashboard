@@ -175,6 +175,8 @@ export const useWatchlistStore = defineStore('watchlist', () => {
     watchlistCount,
     hasShows,
     isInWatchlist,
+    /** Re-read localStorage (call after Nuxt/Pinia hydration; cold loads can reset skipHydrate refs) */
+    loadFromStorage,
     addToWatchlist,
     removeFromWatchlist,
     toggleWatchlist,

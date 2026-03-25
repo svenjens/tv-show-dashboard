@@ -384,6 +384,8 @@ export const useSearchStore = defineStore('search', () => {
     clearSearch,
     clearError,
     clearRecentSearches,
+    /** Re-read localStorage after hydration (same timing as watchlist loadFromStorage) */
+    loadRecentSearches,
     getShowFromResults,
     $reset,
   }
