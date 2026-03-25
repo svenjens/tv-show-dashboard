@@ -3,7 +3,7 @@
  * Manages user's watchlist with localStorage persistence
  */
 
-import { defineStore } from 'pinia'
+import { defineStore, skipHydrate } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Show, WatchedEpisode } from '@/types'
 import { logger } from '@/utils'
@@ -12,8 +12,10 @@ const WATCHLIST_STORAGE_KEY = 'tv-dashboard-watchlist'
 const WATCHED_EPISODES_STORAGE_KEY = 'tv-dashboard-watched-episodes'
 
 export const useWatchlistStore = defineStore('watchlist', () => {
-  const watchlist = ref<Show[]>([])
-  const watchedEpisodes = ref<WatchedEpisode[]>([])
+  // skipHydrate: SSR snapshot is always empty; without this, payload hydration overwrites
+  // client state after loadFromStorage() and clears the UI despite localStorage data.
+  const watchlist = skipHydrate(ref<Show[]>([]))
+  const watchedEpisodes = skipHydrate(ref<WatchedEpisode[]>([]))
 
   // Load watchlist from localStorage on init
   function loadFromStorage() {

@@ -3,7 +3,7 @@
  * Note: Search page should use direct API calls for better SSR
  */
 
-import { defineStore } from 'pinia'
+import { defineStore, skipHydrate } from 'pinia'
 import { ref, computed } from 'vue'
 import { logger } from '@/utils'
 import { useToast } from '@/composables'
@@ -18,7 +18,7 @@ export const useSearchStore = defineStore('search', () => {
   const searchResults = ref<SearchResult[]>([])
   const loading = ref<boolean>(false)
   const error = ref<ApiError | null>(null)
-  const recentSearches = ref<string[]>([])
+  const recentSearches = skipHydrate(ref<string[]>([]))
   const loadingStreamingData = ref<boolean>(false)
   const semanticIntent = ref<SemanticIntent | null>(null)
 
