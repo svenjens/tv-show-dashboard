@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.4.0](https://github.com/svenjens/tv-show-dashboard/compare/v4.3.0...v4.4.0) (2026-03-25)
+
+
+### Features
+
+* **search:** go to home from search header ([39824a6](https://github.com/svenjens/tv-show-dashboard/commit/39824a6c69d2c67f07416545eb1323ee242d6f7d))
+
+
+### Bug Fixes
+
+* **stores:** skip Pinia hydration for localStorage-backed state ([aa055f7](https://github.com/svenjens/tv-show-dashboard/commit/aa055f77b9fb758c12bba07117715890ab2563e4))
+* **test:** align IntersectionObserver mock with DOM types for typecheck ([08700b2](https://github.com/svenjens/tv-show-dashboard/commit/08700b279bab27f22a7be28a7b3d4ab839883d3d))
+
 ## [4.3.0](https://github.com/svenjens/tv-show-dashboard/compare/v4.2.3...v4.3.0) (2025-11-20)
 
 ### Features
