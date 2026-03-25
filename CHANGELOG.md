@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.1](https://github.com/svenjens/tv-show-dashboard/compare/v4.4.0...v4.4.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **stores:** rehydrate localStorage after app mount ([e7ee1c3](https://github.com/svenjens/tv-show-dashboard/commit/e7ee1c3e0180322b1f12f50d0d5b4b6de593a637))
+
 ## [4.4.0](https://github.com/svenjens/tv-show-dashboard/compare/v4.3.0...v4.4.0) (2026-03-25)
 
 ### Features
