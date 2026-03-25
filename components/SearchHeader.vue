@@ -24,8 +24,13 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 const searchStore = useSearchStore()
 const searchBarRef = ref<InstanceType<typeof SearchBar> | null>(null)
+
+function goToHome() {
+  navigateTo(localePath('/'))
+}
 
 // Example queries for semantic search (from i18n)
 const exampleQueries = computed(() => {
@@ -59,7 +64,7 @@ defineExpose({
   >
     <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-4">
-        <BackButton variant="header" />
+        <BackButton variant="header" :custom-handler="goToHome" :label="t('navigation.home')" />
         <div class="flex items-center gap-3">
           <DarkModeToggle variant="header" />
           <LanguageSwitcher variant="header" />

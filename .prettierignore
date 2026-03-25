@@ -24,3 +24,9 @@ yarn.lock
 # Generated files
 .worklog
 
+# Local-only notes (skip format check on push)
+CODE_IMPROVEMENTS.md
+INTERVIEW_QUESTIONS.md
+TECH_ASSESSMENT_CHEATSHEET.md
+interview-quiz.html
+

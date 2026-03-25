@@ -5,11 +5,14 @@ const router = useRouter()
 interface Props {
   variant?: 'header' | 'default'
   customHandler?: () => void
+  /** When set, used for visible text and aria-label (e.g. Home instead of Back) */
+  label?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
   customHandler: undefined,
+  label: undefined,
 })
 
 const handleClick = () => {
@@ -29,10 +32,10 @@ const handleClick = () => {
         ? 'text-white hover:text-primary-300 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-primary-800'
         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-primary-500',
     ]"
-    :aria-label="t('navigation.back')"
+    :aria-label="label ?? t('navigation.back')"
     @click="handleClick"
   >
     <Icon name="heroicons:chevron-left" class="h-5 w-5" />
-    {{ t('navigation.back') }}
+    {{ label ?? t('navigation.back') }}
   </button>
 </template>

@@ -93,5 +93,11 @@ yarn-error.log*
 .settings
 .classpath
 
+# Local-only notes (not committed or pushed)
+CODE_IMPROVEMENTS.md
+INTERVIEW_QUESTIONS.md
+TECH_ASSESSMENT_CHEATSHEET.md
+interview-quiz.html
+
 # Vercel
 .vercel
